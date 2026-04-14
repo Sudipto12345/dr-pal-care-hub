@@ -7,9 +7,9 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-import heroNatureBg from "@/assets/hero-nature-bg.jpg";
-import aboutNatureBg from "@/assets/about-nature-bg.jpg";
-import ctaNatureBg from "@/assets/cta-nature-bg.jpg";
+import heroBanner from "@/assets/doctor-hero-banner.png";
+import aboutDoctor from "@/assets/about-doctor.jpg";
+import ctaBackground from "@/assets/cta-patient.jpg";
 import featureConsultation from "@/assets/feature-consultation.jpg";
 import featureMedicine from "@/assets/feature-medicine.jpg";
 import featureOnline from "@/assets/feature-online.jpg";
