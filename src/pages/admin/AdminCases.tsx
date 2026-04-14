@@ -1,15 +1,17 @@
 import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import StatusBadge from "@/components/shared/StatusBadge";
-import NewCaseForm from "@/components/forms/NewCaseForm";
 import { mockCases } from "@/data/mockData";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const AdminCases = () => (
   <div className="space-y-0 animate-fade-in">
     <PageHeader
       title="Case Management"
       description="Track patient cases and treatment progress"
-      actions={<NewCaseForm />}
+      actions={<Button variant="hero" size="sm" asChild><Link to="/admin/cases/new"><Plus className="w-4 h-4 mr-1" /> New Case</Link></Button>}
     />
     <DataTable
       data={mockCases}
