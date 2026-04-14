@@ -67,7 +67,7 @@ const Index = () => {
     <div className="overflow-x-hidden">
       {/* ─── HERO ─── */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <img src={heroNatureBg} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={heroBanner} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60" />
 
         {/* Floating particles */}
@@ -143,7 +143,7 @@ const Index = () => {
 
       {/* ─── ABOUT ME ─── */}
       <section className="py-20 md:py-28 relative overflow-hidden">
-        <img src={aboutNatureBg} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover opacity-[0.06]" />
+        <img src={aboutDoctor} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover opacity-[0.08]" />
         <div className="absolute inset-0 bg-gradient-to-br from-accent/80 via-background/90 to-background" />
 
         <div className="container mx-auto px-4 relative z-10">
@@ -362,7 +362,7 @@ const Index = () => {
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="relative rounded-3xl overflow-hidden shadow-elevated">
-            <img src={ctaNatureBg} alt="" loading="lazy" width={1920} height={768} className="w-full h-72 md:h-[22rem] object-cover" />
+            <img src={ctaBackground} alt="" loading="lazy" width={1920} height={768} className="w-full h-72 md:h-[22rem] object-cover" />
             <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/70 to-transparent" />
             <div className="absolute inset-0 flex items-center">
               <div className="px-8 md:px-14 max-w-lg">
