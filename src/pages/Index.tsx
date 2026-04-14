@@ -76,10 +76,10 @@ const Index = () => (
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button size="lg" className="bg-secondary text-white hover:bg-secondary/90 rounded-xl font-semibold shadow-elevated transition-all duration-300 hover:-translate-y-0.5 px-7" asChild>
+            <Button size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-xl font-semibold shadow-elevated transition-all duration-300 hover:-translate-y-0.5 px-7" asChild>
               <Link to="/book-appointment"><Calendar className="w-4 h-4 mr-2" /> Book Appointment</Link>
             </Button>
-            <Button size="lg" variant="outline" className="rounded-xl border-white/15 text-white/70 hover:bg-white/8 hover:text-white transition-all duration-300 backdrop-blur-sm" asChild>
+            <Button size="lg" variant="outline" className="rounded-xl border-white/30 text-white bg-white/10 hover:bg-white/20 hover:text-white transition-all duration-300 backdrop-blur-sm" asChild>
               <Link to="/contact"><Phone className="w-4 h-4 mr-2" /> WhatsApp Consultation</Link>
             </Button>
           </div>
