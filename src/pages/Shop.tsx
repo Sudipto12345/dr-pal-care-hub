@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ShoppingCart, Search, ShoppingBag, Star, SlidersHorizontal, X } from "lucide-react";
 import { shopProducts, shopCategories, type Product } from "@/data/shopData";
 import { useCart } from "@/hooks/useCart";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 
 const Shop = () => {
@@ -19,6 +20,7 @@ const Shop = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [stockOnly, setStockOnly] = useState(false);
   const { addItem, totalItems, setIsOpen } = useCart();
+  const { t } = useLanguage();
 
   const filtered = useMemo(() => {
     let items = shopProducts.filter((p) => {
@@ -37,7 +39,7 @@ const Shop = () => {
   const FilterSidebar = () => (
     <div className="space-y-6">
       <div>
-        <h4 className="font-heading font-semibold text-sm text-foreground mb-3">Category</h4>
+        <h4 className="font-heading font-semibold text-sm text-foreground mb-3">{t.shop.category}</h4>
         <div className="flex flex-col gap-1.5">
           {shopCategories.map((c) => (
             <button
@@ -48,14 +50,14 @@ const Shop = () => {
                 category === c ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-accent"
               )}
             >
-              {c}
+              {c === "All" ? t.shop.all : c}
             </button>
           ))}
         </div>
       </div>
 
       <div>
-        <h4 className="font-heading font-semibold text-sm text-foreground mb-3">Price Range</h4>
+        <h4 className="font-heading font-semibold text-sm text-foreground mb-3">{t.shop.priceRange}</h4>
         <Slider min={0} max={1000} step={50} value={priceRange} onValueChange={setPriceRange} className="mb-2" />
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>৳{priceRange[0]}</span>
@@ -64,10 +66,10 @@ const Shop = () => {
       </div>
 
       <div>
-        <h4 className="font-heading font-semibold text-sm text-foreground mb-3">Availability</h4>
+        <h4 className="font-heading font-semibold text-sm text-foreground mb-3">{t.shop.availability}</h4>
         <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
           <input type="checkbox" checked={stockOnly} onChange={(e) => setStockOnly(e.target.checked)} className="rounded border-border" />
-          In Stock Only
+          {t.shop.inStockOnly}
         </label>
       </div>
     </div>
@@ -77,32 +79,31 @@ const Shop = () => {
     <div>
       <section className="page-title-banner">
         <div className="container mx-auto px-4 text-center">
-          <h1>Homeopathic Shop</h1>
-          <p>Quality remedies and wellness products — naturally effective</p>
+          <h1>{t.shop.pageTitle}</h1>
+          <p>{t.shop.pageSubtitle}</p>
         </div>
       </section>
 
       <section className="py-8 md:py-12">
         <div className="container mx-auto px-4">
-          {/* Top bar */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
             <div className="relative w-full sm:w-72">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input placeholder="Search products..." className="pl-9 rounded-xl" value={search} onChange={(e) => setSearch(e.target.value)} />
+              <Input placeholder={t.shop.searchProducts} className="pl-9 rounded-xl" value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
             <div className="flex items-center gap-3 w-full sm:w-auto">
               <Button variant="outline" size="sm" className="md:hidden rounded-xl gap-1.5" onClick={() => setShowFilters(!showFilters)}>
-                <SlidersHorizontal className="w-3.5 h-3.5" /> Filters
+                <SlidersHorizontal className="w-3.5 h-3.5" /> {t.shop.filters}
               </Button>
               <Select value={sort} onValueChange={setSort}>
                 <SelectTrigger className="w-40 rounded-xl text-xs h-9">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="newest">Newest</SelectItem>
-                  <SelectItem value="price-asc">Price: Low → High</SelectItem>
-                  <SelectItem value="price-desc">Price: High → Low</SelectItem>
-                  <SelectItem value="rating">Top Rated</SelectItem>
+                  <SelectItem value="newest">{t.shop.newest}</SelectItem>
+                  <SelectItem value="price-asc">{t.shop.priceLowHigh}</SelectItem>
+                  <SelectItem value="price-desc">{t.shop.priceHighLow}</SelectItem>
+                  <SelectItem value="rating">{t.shop.topRated}</SelectItem>
                 </SelectContent>
               </Select>
               <Button variant="outline" size="icon" className="relative rounded-xl h-9 w-9" onClick={() => setIsOpen(true)}>
@@ -116,11 +117,10 @@ const Shop = () => {
             </div>
           </div>
 
-          {/* Mobile filter drawer */}
           {showFilters && (
             <div className="md:hidden mb-6 p-4 rounded-xl border border-border bg-card animate-fade-in">
               <div className="flex items-center justify-between mb-4">
-                <span className="font-heading font-semibold text-sm">Filters</span>
+                <span className="font-heading font-semibold text-sm">{t.shop.filters}</span>
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowFilters(false)}><X className="w-4 h-4" /></Button>
               </div>
               <FilterSidebar />
@@ -128,26 +128,22 @@ const Shop = () => {
           )}
 
           <div className="flex gap-8">
-            {/* Desktop sidebar */}
             <aside className="hidden md:block w-56 flex-shrink-0">
-              <div className="sticky top-20">
-                <FilterSidebar />
-              </div>
+              <div className="sticky top-20"><FilterSidebar /></div>
             </aside>
 
-            {/* Product grid */}
             <div className="flex-1">
-              <p className="text-xs text-muted-foreground mb-4">{filtered.length} product{filtered.length !== 1 ? "s" : ""} found</p>
+              <p className="text-xs text-muted-foreground mb-4">{filtered.length} {filtered.length !== 1 ? t.shop.productsFound : t.shop.productFound}</p>
               {filtered.length === 0 ? (
                 <div className="text-center py-20 text-muted-foreground">
                   <ShoppingCart className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                  <p className="font-medium">No products found</p>
-                  <p className="text-xs mt-1">Try adjusting your filters</p>
+                  <p className="font-medium">{t.shop.noProducts}</p>
+                  <p className="text-xs mt-1">{t.shop.adjustFilters}</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                   {filtered.map((p) => (
-                    <ProductCard key={p.id} product={p} onAdd={addItem} />
+                    <ProductCard key={p.id} product={p} onAdd={addItem} t={t} />
                   ))}
                 </div>
               )}
@@ -159,7 +155,7 @@ const Shop = () => {
   );
 };
 
-const ProductCard = ({ product: p, onAdd }: { product: Product; onAdd: (item: any) => void }) => {
+const ProductCard = ({ product: p, onAdd, t }: { product: Product; onAdd: (item: any) => void; t: any }) => {
   const outOfStock = p.stock === 0;
   return (
     <Card className="group border-border/50 rounded-2xl overflow-hidden hover-lift bg-card">
@@ -173,7 +169,7 @@ const ProductCard = ({ product: p, onAdd }: { product: Product; onAdd: (item: an
           )}
           {outOfStock && (
             <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
-              <Badge variant="secondary" className="text-xs">Out of Stock</Badge>
+              <Badge variant="secondary" className="text-xs">{t.shop.outOfStock}</Badge>
             </div>
           )}
         </div>
@@ -200,7 +196,7 @@ const ProductCard = ({ product: p, onAdd }: { product: Product; onAdd: (item: an
             disabled={outOfStock}
             onClick={(e) => { e.preventDefault(); onAdd({ id: p.id, name: p.name, price: p.price, category: p.category }); }}
           >
-            <ShoppingCart className="w-3 h-3 mr-1" /> Add
+            <ShoppingCart className="w-3 h-3 mr-1" /> {t.shop.addToCart}
           </Button>
         </div>
       </CardContent>
