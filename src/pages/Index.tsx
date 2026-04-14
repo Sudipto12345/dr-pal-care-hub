@@ -21,8 +21,8 @@ import clinicExterior from "@/assets/clinic-exterior.jpg";
 import doctorProfile from "@/assets/doctor-profile.png";
 
 /* SVG leaf decorations */
-const FloatingLeaf = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="none" className={className}>
+const FloatingLeaf = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className} style={style}>
     <path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5C5 13 8.5 10 12 10s7 3 8.7 7c.8-1.5 1.3-3.2 1.3-5 0-5.5-4.5-10-10-10z" fill="currentColor" opacity="0.15" />
   </svg>
 );
