@@ -16,10 +16,10 @@ const treatments = [
 
 const Treatments = () => (
   <div>
-    <section className="gradient-hero text-primary-foreground py-16 md:py-20">
+    <section className="page-title-banner">
       <div className="container mx-auto px-4 text-center">
-        <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4">Treatments</h1>
-        <p className="text-primary-foreground/70 max-w-lg mx-auto">Specialized homeopathic treatments for a wide range of conditions</p>
+        <h1>Treatments</h1>
+        <p>Specialized homeopathic treatments for a wide range of conditions</p>
       </div>
     </section>
     <section className="py-16">
