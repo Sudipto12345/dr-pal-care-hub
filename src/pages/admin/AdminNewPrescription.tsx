@@ -1,0 +1,332 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { Plus, Trash2, ArrowLeft, ClipboardPlus, User, Stethoscope, Pill, MessageSquare, Eye, Calendar } from "lucide-react";
+import PatientSelector from "@/components/shared/PatientSelector";
+import ConfirmDialog from "@/components/shared/ConfirmDialog";
+
+interface MedicineRow {
+  name: string;
+  potency: string;
+  dose: string;
+  frequency: string;
+}
+
+const emptyMedicine: MedicineRow = { name: "", potency: "", dose: "", frequency: "" };
+
+const potencyOptions = ["3X", "6X", "12X", "30C", "200C", "1M", "10M", "50M", "CM", "Q (Mother Tincture)"];
+
+const AdminNewPrescription = () => {
+  const [patientId, setPatientId] = useState("");
+  const [patientName, setPatientName] = useState("");
+  const [followUpDate, setFollowUpDate] = useState("");
+  const [complaint, setComplaint] = useState("");
+  const [diagnosis, setDiagnosis] = useState("");
+  const [notes, setNotes] = useState("");
+  const [medicines, setMedicines] = useState<MedicineRow[]>([{ ...emptyMedicine }]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const addMedicine = () => setMedicines((m) => [...m, { ...emptyMedicine }]);
+
+  const removeMedicine = (index: number) => {
+    if (medicines.length <= 1) return;
+    setMedicines((m) => m.filter((_, i) => i !== index));
+  };
+
+  const updateMedicine = (index: number, field: keyof MedicineRow, value: string) => {
+    setMedicines((m) => m.map((row, i) => (i === index ? { ...row, [field]: value } : row)));
+    if (errors[`med_${index}_${field}`]) setErrors((e) => ({ ...e, [`med_${index}_${field}`]: "" }));
+  };
+
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!patientId) e.patientId = "Select a patient";
+    if (!diagnosis.trim()) e.diagnosis = "Diagnosis is required";
+    medicines.forEach((m, i) => {
+      if (!m.name.trim()) e[`med_${i}_name`] = "Required";
+    });
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const handleSubmit = (ev: React.FormEvent) => {
+    ev.preventDefault();
+    if (!validate()) {
+      toast.error("Please fix the errors before submitting");
+      return;
+    }
+    toast.success("Prescription created successfully", {
+      description: `For ${patientName} – ${diagnosis}`,
+    });
+  };
+
+  const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+
+  return (
+    <div className="space-y-0 animate-fade-in">
+      {/* Hero Banner */}
+      <div className="bg-[hsl(var(--sidebar-background))] text-white rounded-2xl p-6 flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+            <ClipboardPlus className="w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="text-xl font-heading font-bold flex items-center gap-2">
+              <Plus className="w-5 h-5" /> New Prescription
+            </h1>
+            <p className="text-white/70 text-sm">Create a detailed prescription for your patient</p>
+          </div>
+        </div>
+        <Button variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10 rounded-xl" asChild>
+          <Link to="/admin/prescriptions"><ArrowLeft className="w-4 h-4 mr-1" /> Back to List</Link>
+        </Button>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left: Form */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Patient Information */}
+            <div className="bg-card rounded-2xl border border-border p-6">
+              <div className="flex items-center gap-2 mb-5">
+                <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <User className="w-4 h-4 text-primary" />
+                </div>
+                <h2 className="font-heading font-semibold text-base">Patient Information</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm text-muted-foreground mb-1.5 block">Select Patient *</Label>
+                  <PatientSelector
+                    value={patientId}
+                    onChange={(id, name) => {
+                      setPatientId(id);
+                      setPatientName(name);
+                      if (errors.patientId) setErrors((e) => ({ ...e, patientId: "" }));
+                    }}
+                    error={errors.patientId}
+                  />
+                </div>
+                <div>
+                  <Label className="text-sm text-muted-foreground mb-1.5 block">Follow-up Date</Label>
+                  <Input
+                    type="date"
+                    value={followUpDate}
+                    onChange={(e) => setFollowUpDate(e.target.value)}
+                    className="rounded-xl h-10"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Clinical Details */}
+            <div className="bg-card rounded-2xl border border-border p-6">
+              <div className="flex items-center gap-2 mb-5">
+                <div className="w-7 h-7 rounded-lg bg-destructive/10 flex items-center justify-center">
+                  <Stethoscope className="w-4 h-4 text-destructive" />
+                </div>
+                <h2 className="font-heading font-semibold text-base">Clinical Details</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm text-muted-foreground mb-1.5 block">Chief Complaint</Label>
+                  <Textarea
+                    value={complaint}
+                    onChange={(e) => setComplaint(e.target.value)}
+                    placeholder="Describe the patient's primary complaints..."
+                    className="rounded-xl min-h-[100px] resize-y"
+                  />
+                </div>
+                <div>
+                  <Label className="text-sm text-muted-foreground mb-1.5 block">Diagnosis *</Label>
+                  <Textarea
+                    value={diagnosis}
+                    onChange={(e) => {
+                      setDiagnosis(e.target.value);
+                      if (errors.diagnosis) setErrors((er) => ({ ...er, diagnosis: "" }));
+                    }}
+                    placeholder="Your diagnosis after evaluation..."
+                    className="rounded-xl min-h-[100px] resize-y"
+                  />
+                  {errors.diagnosis && <p className="text-xs text-destructive mt-1">{errors.diagnosis}</p>}
+                </div>
+              </div>
+            </div>
+
+            {/* Medicines */}
+            <div className="bg-card rounded-2xl border border-border p-6">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-secondary/10 flex items-center justify-center">
+                    <Pill className="w-4 h-4 text-secondary" />
+                  </div>
+                  <h2 className="font-heading font-semibold text-base">Medicines</h2>
+                </div>
+                <span className="text-sm text-secondary font-medium">{medicines.length} medicine{medicines.length !== 1 ? "s" : ""}</span>
+              </div>
+
+              <div className="space-y-4">
+                {medicines.map((med, i) => (
+                  <div key={i} className="p-5 rounded-xl border border-border bg-muted/20 space-y-4 relative">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-secondary text-white text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                        <span className="text-sm font-semibold text-foreground">Medicine #{i + 1}</span>
+                      </div>
+                      {medicines.length > 1 && (
+                        <ConfirmDialog
+                          trigger={
+                            <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive">
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          }
+                          title="Remove Medicine"
+                          description={med.name ? `Remove "${med.name}"?` : "Remove this medicine?"}
+                          confirmLabel="Remove"
+                          variant="destructive"
+                          onConfirm={() => removeMedicine(i)}
+                        />
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Medicine Name *</Label>
+                        <Input
+                          value={med.name}
+                          onChange={(e) => updateMedicine(i, "name", e.target.value)}
+                          placeholder="e.g., Rhus Toxicodendron"
+                          className="mt-1 rounded-xl"
+                        />
+                        {errors[`med_${i}_name`] && <p className="text-xs text-destructive mt-1">{errors[`med_${i}_name`]}</p>}
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Potency</Label>
+                        <select
+                          value={med.potency}
+                          onChange={(e) => updateMedicine(i, "potency", e.target.value)}
+                          className="mt-1 w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                        >
+                          <option value="">Select</option>
+                          {potencyOptions.map((p) => (
+                            <option key={p} value={p}>{p}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Dose</Label>
+                        <Input
+                          value={med.dose}
+                          onChange={(e) => updateMedicine(i, "dose", e.target.value)}
+                          placeholder="e.g., 4 pills, Twice Daily"
+                          className="mt-1 rounded-xl"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-xs text-muted-foreground">Frequency / Repetition</Label>
+                      <Input
+                        value={med.frequency}
+                        onChange={(e) => updateMedicine(i, "frequency", e.target.value)}
+                        placeholder="e.g., 5 Days, then wait / Once daily x 7 days"
+                        className="mt-1 rounded-xl"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <Button type="button" variant="outline" size="sm" onClick={addMedicine} className="mt-4 rounded-xl text-secondary border-secondary/30 hover:bg-secondary/5">
+                <Plus className="w-4 h-4 mr-1" /> Add Another Medicine
+              </Button>
+            </div>
+
+            {/* Advice & Instructions */}
+            <div className="bg-card rounded-2xl border border-border p-6">
+              <div className="flex items-center gap-2 mb-5">
+                <div className="w-7 h-7 rounded-lg bg-info/10 flex items-center justify-center">
+                  <MessageSquare className="w-4 h-4 text-info" />
+                </div>
+                <h2 className="font-heading font-semibold text-base">Advice & Instructions</h2>
+              </div>
+              <Textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Dietary advice, lifestyle changes, do's and don'ts..."
+                className="rounded-xl min-h-[120px] resize-y"
+              />
+            </div>
+          </div>
+
+          {/* Right: Preview Panel */}
+          <div className="lg:col-span-1">
+            <div className="bg-card rounded-2xl border border-border p-6 sticky top-24">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-7 h-7 rounded-lg bg-secondary/10 flex items-center justify-center">
+                  <Eye className="w-4 h-4 text-secondary" />
+                </div>
+                <h2 className="font-heading font-semibold text-base">Preview</h2>
+              </div>
+
+              {/* Patient preview */}
+              <div className="flex flex-col items-center text-center mb-6">
+                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-3">
+                  <User className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <p className="font-semibold text-foreground">{patientName || "Select Patient"}</p>
+                <p className="text-xs text-muted-foreground">{today}</p>
+              </div>
+
+              {/* Diagnosis preview */}
+              {diagnosis && (
+                <div className="mb-4 p-3 rounded-xl bg-muted/30 border border-border">
+                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Diagnosis</p>
+                  <p className="text-sm text-foreground">{diagnosis}</p>
+                </div>
+              )}
+
+              {/* Medicines preview */}
+              <div className="mb-6">
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-2">Medicines</p>
+                {medicines.some((m) => m.name) ? (
+                  <div className="space-y-2">
+                    {medicines.filter((m) => m.name).map((m, i) => (
+                      <div key={i} className="p-2.5 rounded-lg bg-muted/30 border border-border">
+                        <p className="text-sm font-medium text-foreground">{m.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {[m.potency, m.dose, m.frequency].filter(Boolean).join(" · ") || "—"}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No medicines added yet</p>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="space-y-2">
+                <Button type="submit" variant="hero" className="w-full rounded-xl" onClick={handleSubmit}>
+                  <ClipboardPlus className="w-4 h-4 mr-2" /> Create Prescription
+                </Button>
+                <Button type="button" variant="outline" className="w-full rounded-xl" asChild>
+                  <Link to="/admin/prescriptions"><X className="w-4 h-4 mr-1" /> Cancel</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+// Need X icon
+import { X } from "lucide-react";
+
+export default AdminNewPrescription;
