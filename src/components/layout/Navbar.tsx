@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Leaf } from "lucide-react";
+import { Menu, X, Leaf, ShoppingCart } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
 
 const navLinks = [
   { label: "Home", path: "/" },
@@ -16,6 +17,7 @@ const navLinks = [
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const { totalItems, setIsOpen: openCart } = useCart();
 
   return (
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
@@ -47,6 +49,14 @@ const Navbar = () => {
         </div>
 
         <div className="hidden lg:flex items-center gap-2">
+          <button onClick={() => openCart(true)} className="relative p-2 rounded-lg hover:bg-accent transition-colors">
+            <ShoppingCart className="w-5 h-5 text-foreground" />
+            {totalItems > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center animate-scale-in">
+                {totalItems}
+              </span>
+            )}
+          </button>
           <Button variant="ghost" size="sm" asChild>
             <Link to="/patient/dashboard">Patient Portal</Link>
           </Button>
@@ -58,9 +68,19 @@ const Navbar = () => {
           </Button>
         </div>
 
-        <button className="lg:hidden p-2" onClick={() => setOpen(!open)}>
-          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        <div className="lg:hidden flex items-center gap-1">
+          <button onClick={() => openCart(true)} className="relative p-2 rounded-lg hover:bg-accent transition-colors">
+            <ShoppingCart className="w-5 h-5 text-foreground" />
+            {totalItems > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center animate-scale-in">
+                {totalItems}
+              </span>
+            )}
+          </button>
+          <button className="p-2" onClick={() => setOpen(!open)}>
+            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       {open && (
