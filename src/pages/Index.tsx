@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, Stethoscope, Pill, ShieldCheck, Star, ArrowRight, Calendar, Leaf, Phone, MapPin } from "lucide-react";
+import { Heart, Stethoscope, Pill, ShieldCheck, Star, ArrowRight, Calendar, Leaf, Phone, MapPin, Quote } from "lucide-react";
 
 import doctorHero from "@/assets/doctor-hero.png";
 import featureConsultation from "@/assets/feature-consultation.jpg";
@@ -16,9 +16,9 @@ import ctaPatient from "@/assets/cta-patient.jpg";
 import clinicExterior from "@/assets/clinic-exterior.jpg";
 
 const features = [
-  { img: featureConsultation, title: "Personal Consultation", desc: "One-on-one detailed case taking and personalized treatment plans" },
-  { img: featureMedicine, title: "Medicine Preparation", desc: "Carefully prepared homeopathic remedies from premium sources" },
-  { img: featureOnline, title: "Online Consultation", desc: "Get expert homeopathic advice from the comfort of your home" },
+  { img: featureConsultation, title: "Personal Consultation", desc: "One-on-one detailed case taking and personalized treatment plans tailored to your constitution.", rotate: "-0.5deg" },
+  { img: featureMedicine, title: "Medicine Preparation", desc: "Carefully prepared homeopathic remedies sourced from trusted pharmacies across India.", rotate: "0.3deg" },
+  { img: featureOnline, title: "Online Consultation", desc: "Get expert homeopathic advice from the comfort of your home — anywhere in the world.", rotate: "-0.2deg" },
 ];
 
 const highlights = [
@@ -35,41 +35,45 @@ const blogs = [
 ];
 
 const testimonials = [
-  { name: "Priya Sharma", text: "Dr. Pal's treatment completely cured my chronic allergies. Highly recommend!", rating: 5 },
-  { name: "Rajesh Kumar", text: "After years of conventional medicine, homeopathy finally gave me relief from migraines.", rating: 5 },
-  { name: "Anita Desai", text: "The holistic approach and caring nature of Dr. Pal is truly commendable.", rating: 5 },
+  { name: "Priya Sharma", location: "New Delhi", text: "Dr. Pal's treatment completely cured my chronic allergies after 3 months. I wish I had found homeopathy sooner.", rating: 5 },
+  { name: "Rajesh Kumar", location: "Kolkata", text: "After years of conventional medicine, homeopathy finally gave me lasting relief from migraines.", rating: 5 },
+  { name: "Anita Desai", location: "Mumbai", text: "The holistic approach and genuine caring nature of Dr. Pal is truly commendable. My whole family trusts him.", rating: 5 },
 ];
 
 const Index = () => (
-  <div>
+  <div className="overflow-x-hidden">
     {/* ─── HERO ─── */}
-    <section className="relative overflow-hidden bg-gradient-to-br from-accent via-background to-accent/60">
-      {/* Soft blurred background circles */}
-      <div className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-secondary/10 blur-3xl" />
-      <div className="absolute -bottom-40 right-0 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
+    <section className="relative overflow-hidden" style={{ background: "linear-gradient(165deg, hsl(100 12% 97%), hsl(120 16% 94%) 40%, hsl(90 10% 96%) 100%)" }}>
+      {/* Organic background blobs */}
+      <div className="absolute top-[-15%] left-[-8%] w-[45vw] h-[45vw] max-w-[550px] max-h-[550px] rounded-full opacity-40" style={{ background: "radial-gradient(circle, hsl(148 30% 80% / 0.4), transparent 70%)" }} />
+      <div className="absolute bottom-[-20%] right-[-5%] w-[40vw] h-[40vw] max-w-[480px] max-h-[480px] rounded-full opacity-30" style={{ background: "radial-gradient(circle, hsl(90 20% 85% / 0.3), transparent 70%)" }} />
 
-      <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
-        <div className="grid md:grid-cols-2 gap-10 items-center">
+      <div className="container mx-auto px-4 pt-12 pb-16 md:pt-20 md:pb-24 relative z-10">
+        <div className="grid md:grid-cols-[1fr_0.9fr] gap-8 lg:gap-14 items-center">
           {/* Left – Text */}
           <div className="order-2 md:order-1">
-            <div className="inline-flex items-center gap-2 bg-secondary/10 rounded-full px-4 py-1.5 text-sm text-secondary font-medium mb-5">
-              <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+            <div className="inline-flex items-center gap-2 bg-secondary/8 border border-secondary/15 rounded-full px-4 py-1.5 text-sm text-secondary font-medium mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
               Now accepting new patients
             </div>
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground mb-4">
+
+            <h1 className="font-heading text-[2.5rem] md:text-5xl lg:text-[3.5rem] font-bold leading-[1.15] text-foreground mb-3 tracking-tight">
               Dr. Amit Kumar Pal
             </h1>
-            <p className="font-heading text-xl md:text-2xl font-semibold text-secondary mb-4">
+
+            <p className="font-handwritten text-2xl md:text-3xl text-secondary/80 mb-5" style={{ transform: "rotate(-0.5deg)" }}>
               Advanced Homeopathic &amp; Wellness Care
             </p>
-            <p className="text-muted-foreground text-lg mb-8 max-w-lg">
+
+            <p className="text-muted-foreground text-base md:text-lg mb-8 max-w-[28rem] leading-relaxed">
               Personalized, root-cause based homeopathic treatment for long-term healing. Gentle, safe, and effective care for the whole family.
             </p>
+
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" className="gradient-primary text-primary-foreground rounded-2xl font-semibold shadow-elevated hover:opacity-90 transition-opacity" asChild>
+              <Button size="lg" className="gradient-primary text-primary-foreground rounded-xl font-semibold shadow-soft hover:shadow-elevated transition-all duration-300 hover:-translate-y-0.5" asChild>
                 <Link to="/book-appointment"><Calendar className="w-4 h-4 mr-2" /> Book Appointment</Link>
               </Button>
-              <Button size="lg" variant="outline" className="rounded-2xl border-secondary/40 text-secondary hover:bg-secondary/5" asChild>
+              <Button size="lg" variant="outline" className="rounded-xl border-border text-foreground hover:bg-accent/60 transition-all duration-300" asChild>
                 <Link to="/contact"><Phone className="w-4 h-4 mr-2" /> WhatsApp Consultation</Link>
               </Button>
             </div>
@@ -77,18 +81,29 @@ const Index = () => (
 
           {/* Right – Doctor Image */}
           <div className="order-1 md:order-2 flex justify-center">
-            <div className="relative">
+            <div className="relative" style={{ transform: "rotate(0.8deg)" }}>
               <img
                 src={doctorHero}
                 alt="Dr. Amit Kumar Pal - Homeopathic Doctor"
                 width={600}
                 height={450}
-                className="rounded-3xl shadow-elevated object-cover w-full max-w-lg"
+                className="rounded-2xl shadow-elevated object-cover w-full max-w-lg img-organic"
               />
-              {/* Glass overlay card */}
-              <div className="absolute -bottom-4 -left-4 bg-card/80 backdrop-blur-lg border border-border rounded-2xl px-4 py-3 shadow-card">
-                <p className="text-xs text-muted-foreground">Experience</p>
-                <p className="font-heading font-bold text-2xl text-foreground">20+ Years</p>
+              {/* Experience badge */}
+              <div
+                className="absolute -bottom-5 -left-3 bg-card/90 backdrop-blur-md border border-border/60 rounded-xl px-4 py-3 shadow-card"
+                style={{ transform: "rotate(-2deg)" }}
+              >
+                <p className="text-[11px] text-muted-foreground tracking-wide uppercase">Experience</p>
+                <p className="font-heading font-bold text-xl text-foreground leading-none mt-0.5">20+ Years</p>
+              </div>
+              {/* Patients badge */}
+              <div
+                className="absolute -top-3 -right-3 bg-card/90 backdrop-blur-md border border-border/60 rounded-xl px-3 py-2 shadow-card hidden md:block"
+                style={{ transform: "rotate(1.5deg)" }}
+              >
+                <p className="font-heading font-bold text-lg text-secondary leading-none">5,000+</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">Happy Patients</p>
               </div>
             </div>
           </div>
@@ -96,17 +111,17 @@ const Index = () => (
       </div>
 
       {/* Bottom highlights bar */}
-      <div className="border-t border-border bg-card/60 backdrop-blur-sm">
+      <div className="border-t border-border/50 bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border">
-            {highlights.map((h) => (
-              <div key={h.title} className="flex items-center gap-3 py-5 px-4">
-                <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center flex-shrink-0">
-                  <h.icon className="w-5 h-5 text-primary-foreground" />
+          <div className="grid grid-cols-2 md:grid-cols-4">
+            {highlights.map((h, i) => (
+              <div key={h.title} className={`flex items-center gap-3 py-5 px-4 ${i > 0 ? "border-l border-border/40" : ""}`}>
+                <div className="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0" style={{ borderRadius: "8px 10px 8px 12px" }}>
+                  <h.icon className="w-4 h-4 text-primary-foreground" />
                 </div>
                 <div>
-                  <p className="font-heading font-semibold text-sm text-foreground">{h.title}</p>
-                  <p className="text-xs text-muted-foreground">{h.desc}</p>
+                  <p className="font-heading font-semibold text-sm text-foreground leading-tight">{h.title}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{h.desc}</p>
                 </div>
               </div>
             ))}
@@ -116,15 +131,24 @@ const Index = () => (
     </section>
 
     {/* ─── FEATURES ─── */}
-    <section className="py-16 md:py-24">
+    <section className="py-20 md:py-28">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-3">Our Services</h2>
-          <p className="text-muted-foreground max-w-md mx-auto">Comprehensive homeopathic care tailored to your unique needs</p>
+        <div className="text-center mb-14">
+          <p className="font-handwritten text-xl text-secondary mb-2">What we offer</p>
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-3">
+            Our <span className="underline-hand">Services</span>
+          </h2>
+          <p className="text-muted-foreground max-w-md mx-auto text-sm md:text-base">
+            Comprehensive homeopathic care tailored to your unique needs
+          </p>
         </div>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-7 lg:gap-9">
           {features.map((f) => (
-            <Card key={f.title} className="group overflow-hidden border-border rounded-2xl hover:shadow-card transition-all duration-300">
+            <Card
+              key={f.title}
+              className="group overflow-hidden border-border/60 rounded-2xl hover-lift bg-card"
+              style={{ transform: `rotate(${f.rotate})` }}
+            >
               <div className="aspect-[4/3] overflow-hidden">
                 <img
                   src={f.img}
@@ -132,12 +156,12 @@ const Index = () => (
                   loading="lazy"
                   width={768}
                   height={512}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover img-organic group-hover:scale-[1.04] transition-transform duration-700 ease-out"
                 />
               </div>
-              <CardContent className="p-6">
-                <h3 className="font-heading font-semibold text-lg text-foreground mb-2">{f.title}</h3>
-                <p className="text-sm text-muted-foreground">{f.desc}</p>
+              <CardContent className="p-5 md:p-6">
+                <h3 className="font-heading font-semibold text-lg text-foreground mb-1.5">{f.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
               </CardContent>
             </Card>
           ))}
@@ -145,38 +169,58 @@ const Index = () => (
       </div>
     </section>
 
+    {/* ─── Soft divider ─── */}
+    <div className="container mx-auto px-4">
+      <div className="divider-leaf text-secondary">
+        <Leaf className="w-4 h-4 opacity-40" />
+      </div>
+    </div>
+
     {/* ─── ABOUT DOCTOR ─── */}
-    <section className="py-16 md:py-24 bg-accent/50">
+    <section className="py-20 md:py-28">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid md:grid-cols-[0.85fr_1fr] gap-10 lg:gap-16 items-center">
           <div className="relative">
-            <img
-              src={aboutDoctor}
-              alt="Dr. Amit Kumar Pal in clinic"
-              loading="lazy"
-              width={640}
-              height={800}
-              className="rounded-3xl shadow-elevated object-cover w-full max-w-md mx-auto group-hover:scale-105 transition-transform duration-500"
-            />
+            <div style={{ transform: "rotate(-1deg)" }}>
+              <img
+                src={aboutDoctor}
+                alt="Dr. Amit Kumar Pal in clinic"
+                loading="lazy"
+                width={640}
+                height={800}
+                className="rounded-2xl shadow-card object-cover w-full max-w-[380px] mx-auto img-organic"
+              />
+            </div>
+            {/* Handwritten note */}
+            <div
+              className="absolute -bottom-6 right-0 md:right-4 bg-card border border-border/50 rounded-xl px-4 py-2.5 shadow-soft"
+              style={{ transform: "rotate(2deg)" }}
+            >
+              <p className="font-handwritten text-lg text-secondary">"Healing with heart" 🌿</p>
+            </div>
           </div>
+
           <div>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">About Dr. Amit Kumar Pal</h2>
-            <p className="text-secondary font-medium mb-3">BHMS, MD (Homeopathy) — 20+ Years of Experience</p>
-            <p className="text-muted-foreground mb-6 leading-relaxed">
+            <p className="font-handwritten text-xl text-secondary mb-2">Get to know</p>
+            <h2 className="font-heading text-3xl md:text-[2.5rem] font-bold text-foreground mb-3 leading-tight">
+              About Dr. Amit Kumar Pal
+            </h2>
+            <p className="text-secondary/80 font-medium text-sm mb-4">BHMS, MD (Homeopathy) — 20+ Years of Experience</p>
+            <p className="text-muted-foreground mb-6 text-[15px] leading-[1.75]">
               Dr. Amit Kumar Pal is a renowned homeopathic physician specializing in chronic disease management, skin disorders, and respiratory ailments.
-              With a deep understanding of classical homeopathy, he provides individualized treatment that targets the root cause of illness.
+              With a deep understanding of classical homeopathy, he provides individualized treatment that targets the root cause — not just the symptoms.
             </p>
-            <ul className="space-y-3 mb-8">
-              {["No side effects", "Safe for all ages", "Treats root cause", "Affordable & accessible"].map((item) => (
-                <li key={item} className="flex items-center gap-3 text-foreground">
-                  <div className="w-6 h-6 rounded-full gradient-primary flex items-center justify-center flex-shrink-0">
-                    <ShieldCheck className="w-3.5 h-3.5 text-primary-foreground" />
+            <ul className="space-y-3.5 mb-8">
+              {["No side effects — ever", "Safe for all ages, from infants to elderly", "Treats the root cause, not symptoms", "Affordable & accessible healthcare"].map((item, i) => (
+                <li key={item} className="flex items-start gap-3 text-foreground text-[15px]">
+                  <div className="w-5 h-5 rounded-md gradient-primary flex items-center justify-center flex-shrink-0 mt-0.5" style={{ borderRadius: `${6 + i}px` }}>
+                    <ShieldCheck className="w-3 h-3 text-primary-foreground" />
                   </div>
                   {item}
                 </li>
               ))}
             </ul>
-            <Button className="gradient-primary text-primary-foreground rounded-2xl" asChild>
+            <Button className="gradient-primary text-primary-foreground rounded-xl hover:shadow-card transition-all duration-300 hover:-translate-y-0.5" asChild>
               <Link to="/about">Learn More <ArrowRight className="w-4 h-4 ml-1" /></Link>
             </Button>
           </div>
@@ -185,26 +229,29 @@ const Index = () => (
     </section>
 
     {/* ─── PRODUCTS ─── */}
-    <section className="py-16 md:py-24">
+    <section className="py-20 md:py-28" style={{ background: "linear-gradient(180deg, hsl(100 12% 97%), hsl(90 10% 94%) 100%)" }}>
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid md:grid-cols-2 gap-10 lg:gap-14 items-center">
           <div>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">Premium Homeopathic Products</h2>
-            <p className="text-muted-foreground mb-6 leading-relaxed">
-              We source the highest quality homeopathic medicines and natural remedies. Each product is carefully selected for purity and effectiveness.
+            <p className="font-handwritten text-xl text-secondary mb-2">Shop natural</p>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4 leading-tight">
+              Premium Homeopathic<br /> Products
+            </h2>
+            <p className="text-muted-foreground mb-7 text-[15px] leading-[1.75] max-w-md">
+              We source the highest quality homeopathic medicines and natural remedies. Each product is carefully selected for purity, potency, and effectiveness.
             </p>
-            <Button variant="outline" className="rounded-2xl border-secondary/40 text-secondary" asChild>
+            <Button variant="outline" className="rounded-xl border-border text-foreground hover:bg-accent/60 transition-all duration-300" asChild>
               <Link to="/shop">Browse Shop <ArrowRight className="w-4 h-4 ml-1" /></Link>
             </Button>
           </div>
-          <div className="overflow-hidden rounded-3xl shadow-card">
+          <div className="overflow-hidden rounded-2xl shadow-card" style={{ transform: "rotate(0.5deg)" }}>
             <img
               src={productsDisplay}
               alt="Homeopathic products"
               loading="lazy"
               width={768}
               height={512}
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover img-organic hover:scale-[1.03] transition-transform duration-700 ease-out"
             />
           </div>
         </div>
@@ -212,23 +259,36 @@ const Index = () => (
     </section>
 
     {/* ─── TESTIMONIALS ─── */}
-    <section className="py-16 md:py-24 bg-accent/50">
+    <section className="py-20 md:py-28">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-3">Patient Testimonials</h2>
-          <p className="text-muted-foreground">Hear from those who have experienced healing</p>
+        <div className="text-center mb-14">
+          <p className="font-handwritten text-xl text-secondary mb-2">Real stories</p>
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-3">
+            Patient <span className="underline-hand">Testimonials</span>
+          </h2>
+          <p className="text-muted-foreground text-sm md:text-base">Hear from those who have experienced healing</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((t) => (
-            <Card key={t.name} className="border-border rounded-2xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {testimonials.map((t, i) => (
+            <Card
+              key={t.name}
+              className="border-border/50 rounded-2xl hover-lift bg-card"
+              style={{ transform: `rotate(${i === 0 ? "-0.4" : i === 1 ? "0.3" : "-0.2"}deg)` }}
+            >
               <CardContent className="p-6">
-                <div className="flex gap-1 mb-3">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-secondary text-secondary" />
-                  ))}
+                <Quote className="w-8 h-8 text-secondary/20 mb-3 -scale-x-100" />
+                <p className="text-muted-foreground text-[15px] mb-5 leading-relaxed italic">{t.text}</p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-heading font-semibold text-foreground">{t.name}</p>
+                    <p className="text-xs text-muted-foreground">{t.location}</p>
+                  </div>
+                  <div className="flex gap-0.5">
+                    {Array.from({ length: t.rating }).map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-secondary/70 text-secondary/70" />
+                    ))}
+                  </div>
                 </div>
-                <p className="text-muted-foreground text-sm mb-4">&ldquo;{t.text}&rdquo;</p>
-                <p className="font-heading font-semibold text-foreground">{t.name}</p>
               </CardContent>
             </Card>
           ))}
@@ -236,21 +296,33 @@ const Index = () => (
       </div>
     </section>
 
+    {/* ─── Soft divider ─── */}
+    <div className="container mx-auto px-4">
+      <div className="divider-leaf text-secondary">
+        <Leaf className="w-4 h-4 opacity-40" />
+      </div>
+    </div>
+
     {/* ─── BLOG ─── */}
-    <section className="py-16 md:py-24">
+    <section className="py-20 md:py-28">
       <div className="container mx-auto px-4">
-        <div className="flex items-end justify-between mb-12">
+        <div className="flex items-end justify-between mb-14">
           <div>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-3">Latest Articles</h2>
-            <p className="text-muted-foreground">Health tips and insights from Dr. Pal</p>
+            <p className="font-handwritten text-xl text-secondary mb-2">From our journal</p>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-2">Latest Articles</h2>
+            <p className="text-muted-foreground text-sm md:text-base">Health tips and insights from Dr. Pal</p>
           </div>
-          <Button variant="ghost" className="text-secondary hidden md:flex" asChild>
+          <Button variant="ghost" className="text-secondary hidden md:flex hover:bg-secondary/5 transition-colors" asChild>
             <Link to="/blog">View All <ArrowRight className="w-4 h-4 ml-1" /></Link>
           </Button>
         </div>
-        <div className="grid md:grid-cols-3 gap-8">
-          {blogs.map((b) => (
-            <Card key={b.title} className="group overflow-hidden border-border rounded-2xl hover:shadow-card transition-all duration-300">
+        <div className="grid md:grid-cols-3 gap-7 lg:gap-9">
+          {blogs.map((b, i) => (
+            <Card
+              key={b.title}
+              className="group overflow-hidden border-border/50 rounded-2xl hover-lift bg-card"
+              style={{ transform: `rotate(${i === 0 ? "0.3" : i === 1 ? "-0.4" : "0.2"}deg)` }}
+            >
               <div className="aspect-[16/10] overflow-hidden">
                 <img
                   src={b.img}
@@ -258,13 +330,13 @@ const Index = () => (
                   loading="lazy"
                   width={768}
                   height={512}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover img-organic group-hover:scale-[1.04] transition-transform duration-700 ease-out"
                 />
               </div>
               <CardContent className="p-5">
-                <p className="text-xs text-muted-foreground mb-2">{b.date}</p>
-                <h3 className="font-heading font-semibold text-foreground mb-2">{b.title}</h3>
-                <p className="text-sm text-muted-foreground">{b.excerpt}</p>
+                <p className="text-[11px] text-muted-foreground mb-2 uppercase tracking-wider">{b.date}</p>
+                <h3 className="font-heading font-semibold text-foreground mb-2 leading-snug">{b.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{b.excerpt}</p>
               </CardContent>
             </Card>
           ))}
@@ -275,25 +347,26 @@ const Index = () => (
     {/* ─── CTA ─── */}
     <section className="py-16 md:py-24">
       <div className="container mx-auto px-4">
-        <div className="relative rounded-3xl overflow-hidden shadow-elevated">
+        <div className="relative rounded-2xl overflow-hidden shadow-elevated" style={{ transform: "rotate(-0.3deg)" }}>
           <img
             src={ctaPatient}
             alt="Happy patient with doctor"
             loading="lazy"
             width={1280}
             height={540}
-            className="w-full h-80 md:h-96 object-cover"
+            className="w-full h-72 md:h-[22rem] object-cover img-organic"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/70 to-transparent" />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(105deg, hsl(152 38% 24% / 0.92) 0%, hsl(152 38% 24% / 0.6) 50%, transparent 100%)" }} />
           <div className="absolute inset-0 flex items-center">
-            <div className="px-8 md:px-14 max-w-lg">
-              <h2 className="font-heading text-3xl md:text-4xl font-bold text-primary-foreground mb-4">
+            <div className="px-8 md:px-12 max-w-lg">
+              <p className="font-handwritten text-xl text-primary-foreground/70 mb-2">Take the first step</p>
+              <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-primary-foreground mb-4 leading-tight">
                 Ready to Start Your Healing Journey?
               </h2>
-              <p className="text-primary-foreground/80 mb-6">
-                Book a consultation today and discover the natural path to wellness.
+              <p className="text-primary-foreground/70 mb-6 text-[15px]">
+                Book a consultation and discover the natural path to wellness.
               </p>
-              <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 rounded-2xl font-semibold" asChild>
+              <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 rounded-xl font-semibold transition-all duration-300 hover:-translate-y-0.5" asChild>
                 <Link to="/book-appointment"><Calendar className="w-4 h-4 mr-2" /> Book Now</Link>
               </Button>
             </div>
@@ -303,39 +376,40 @@ const Index = () => (
     </section>
 
     {/* ─── CLINIC / MAP ─── */}
-    <section className="py-16 md:py-24 bg-accent/50">
+    <section className="py-20 md:py-28" style={{ background: "linear-gradient(180deg, hsl(100 12% 97%), hsl(90 10% 94%) 100%)" }}>
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-8 items-center">
-          <div className="overflow-hidden rounded-3xl shadow-card">
+        <div className="grid md:grid-cols-[1.1fr_1fr] gap-8 lg:gap-14 items-center">
+          <div className="overflow-hidden rounded-2xl shadow-card" style={{ transform: "rotate(-0.5deg)" }}>
             <img
               src={clinicExterior}
               alt="Pal Homeopathic Clinic exterior"
               loading="lazy"
               width={1280}
               height={512}
-              className="w-full h-64 md:h-80 object-cover hover:scale-105 transition-transform duration-500"
+              className="w-full h-60 md:h-72 object-cover img-organic hover:scale-[1.03] transition-transform duration-700 ease-out"
             />
           </div>
           <div>
-            <h2 className="font-heading text-3xl font-bold text-foreground mb-4">Visit Our Clinic</h2>
-            <div className="space-y-4 text-muted-foreground">
+            <p className="font-handwritten text-xl text-secondary mb-2">Come see us</p>
+            <h2 className="font-heading text-3xl font-bold text-foreground mb-5">Visit Our Clinic</h2>
+            <div className="space-y-4 text-muted-foreground text-[15px]">
               <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-secondary mt-0.5 flex-shrink-0" />
+                <MapPin className="w-4.5 h-4.5 text-secondary mt-1 flex-shrink-0" />
                 <p>123 Healing Lane, New Delhi 110001, India</p>
               </div>
               <div className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-secondary mt-0.5 flex-shrink-0" />
+                <Phone className="w-4.5 h-4.5 text-secondary mt-1 flex-shrink-0" />
                 <p>+91 98765 43210</p>
               </div>
               <div className="flex items-start gap-3">
-                <Calendar className="w-5 h-5 text-secondary mt-0.5 flex-shrink-0" />
+                <Calendar className="w-4.5 h-4.5 text-secondary mt-1 flex-shrink-0" />
                 <div>
                   <p>Mon – Sat: 10:00 AM – 8:00 PM</p>
-                  <p>Sunday: By appointment only</p>
+                  <p className="text-muted-foreground/70">Sunday: By appointment only</p>
                 </div>
               </div>
             </div>
-            <Button className="gradient-primary text-primary-foreground rounded-2xl mt-6" asChild>
+            <Button className="gradient-primary text-primary-foreground rounded-xl mt-7 hover:shadow-card transition-all duration-300 hover:-translate-y-0.5" asChild>
               <Link to="/contact">Get Directions <ArrowRight className="w-4 h-4 ml-1" /></Link>
             </Button>
           </div>
