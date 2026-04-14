@@ -6,14 +6,18 @@ import StatusBadge from "@/components/shared/StatusBadge";
 import { mockBlogPosts } from "@/data/mockData";
 
 const AdminBlog = () => (
-  <div>
+  <div className="space-y-0 animate-fade-in">
     <PageHeader
       title="Blog Posts"
-      description="Manage blog content"
-      actions={<Button variant="hero" size="sm"><Plus className="w-4 h-4 mr-1" /> New Post</Button>}
+      description="Manage blog content and articles"
+      actions={<Button size="sm" className="rounded-xl gradient-primary text-primary-foreground"><Plus className="w-4 h-4 mr-1" /> New Post</Button>}
     />
     <DataTable
       data={mockBlogPosts}
+      searchPlaceholder="Search posts..."
+      filterColumn="status"
+      filterOptions={["Published", "Draft"]}
+      filterLabel="Status"
       columns={[
         { header: "Title", accessor: "title" },
         { header: "Category", accessor: "category" },

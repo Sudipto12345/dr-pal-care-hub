@@ -5,16 +5,19 @@ import NewCaseForm from "@/components/forms/NewCaseForm";
 import { mockCases } from "@/data/mockData";
 
 const AdminCases = () => (
-  <div>
+  <div className="space-y-0 animate-fade-in">
     <PageHeader
       title="Case Management"
-      description="Track patient cases and progress"
+      description="Track patient cases and treatment progress"
       actions={<NewCaseForm />}
     />
     <DataTable
       data={mockCases}
+      searchPlaceholder="Search cases..."
+      filterColumn="status"
+      filterOptions={["Ongoing", "Improving", "Resolved"]}
+      filterLabel="Status"
       columns={[
-        { header: "ID", accessor: "id" },
         { header: "Patient", accessor: "patientName" },
         { header: "Condition", accessor: "condition" },
         { header: "Start Date", accessor: "startDate" },

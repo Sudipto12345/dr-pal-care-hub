@@ -9,7 +9,7 @@ import { Trash2, Eye } from "lucide-react";
 import { toast } from "sonner";
 
 const AdminPatients = () => (
-  <div>
+  <div className="space-y-0 animate-fade-in">
     <PageHeader
       title="Patients"
       description="Manage patient records"
@@ -17,8 +17,11 @@ const AdminPatients = () => (
     />
     <DataTable
       data={mockPatients}
+      searchPlaceholder="Search patients..."
+      filterColumn="status"
+      filterOptions={["Active", "Inactive"]}
+      filterLabel="Status"
       columns={[
-        { header: "ID", accessor: "id" },
         { header: "Name", accessor: "name" },
         { header: "Age", accessor: (row) => `${row.age}y` },
         { header: "Gender", accessor: "gender" },
@@ -27,15 +30,16 @@ const AdminPatients = () => (
         { header: "Status", accessor: (row) => <StatusBadge status={row.status} /> },
         {
           header: "Actions",
+          className: "text-right",
           accessor: (row) => (
-            <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => toast.info(`Viewing ${row.name}`)}>
+            <div className="flex items-center justify-end gap-1">
+              <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted" onClick={() => toast.info(`Viewing ${row.name}`)}>
                 <Eye className="w-4 h-4" />
               </Button>
               <ConfirmDialog
-                trigger={<Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>}
+                trigger={<Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"><Trash2 className="w-4 h-4" /></Button>}
                 title="Delete Patient"
-                description={`Are you sure you want to delete ${row.name}? This action cannot be undone and will remove all associated records.`}
+                description={`Are you sure you want to delete ${row.name}? This cannot be undone.`}
                 confirmLabel="Delete"
                 variant="destructive"
                 onConfirm={() => toast.success(`${row.name} deleted`)}
