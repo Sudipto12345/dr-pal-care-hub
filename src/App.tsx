@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { CartProvider } from "@/hooks/useCart";
+import CartSheet from "@/components/shop/CartSheet";
 
 import PublicLayout from "@/components/layout/PublicLayout";
 import PatientLayout from "@/components/layout/PatientLayout";
@@ -39,8 +41,10 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+    <CartProvider>
       <Toaster />
       <Sonner />
+      <CartSheet />
       <BrowserRouter>
         <Routes>
           <Route element={<PublicLayout />}>
@@ -78,6 +82,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+    </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
