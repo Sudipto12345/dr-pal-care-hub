@@ -1,12 +1,12 @@
-import { LayoutDashboard, Users, FileText, FolderOpen, CalendarDays, Package, PenSquare, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, FileText, FolderOpen, CalendarDays, Package, PenSquare, LogOut, Leaf, ChevronDown } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, Link } from "react-router-dom";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
-import { Leaf } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { Separator } from "@/components/ui/separator";
 
 const AdminSidebar = () => {
   const { state } = useSidebar();
@@ -27,59 +27,71 @@ const AdminSidebar = () => {
     { title: t.admin.blog, url: "/admin/blog", icon: PenSquare },
   ];
 
+  const renderItem = (item: typeof mainItems[0]) => {
+    const active = location.pathname === item.url;
+    return (
+      <SidebarMenuItem key={item.url}>
+        <SidebarMenuButton asChild isActive={active}>
+          <NavLink
+            to={item.url}
+            end
+            className={`rounded-xl transition-all duration-150 ${active ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
+            activeClassName="bg-primary/10 text-primary font-semibold"
+          >
+            <item.icon className={`mr-2.5 h-4 w-4 ${active ? "text-primary" : ""}`} />
+            {!collapsed && <span>{item.title}</span>}
+          </NavLink>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    );
+  };
+
   return (
-    <Sidebar collapsible="icon">
-      <SidebarContent>
-        <div className="p-4 flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
-            <Leaf className="w-4 h-4 text-primary-foreground" />
+    <Sidebar collapsible="icon" className="border-r border-border bg-card">
+      <SidebarContent className="px-2 py-3">
+        {/* Logo */}
+        <div className="px-3 py-2 mb-2 flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0 shadow-sm">
+            <Leaf className="w-5 h-5 text-primary-foreground" />
           </div>
-          {!collapsed && <span className="font-heading font-bold text-sm text-foreground">{t.nav.adminPanel}</span>}
+          {!collapsed && (
+            <div className="min-w-0">
+              <p className="font-bold text-sm text-foreground truncate">Dr. Amit Kumar Pal</p>
+              <p className="text-[10px] text-muted-foreground truncate">{t.nav.adminPanel}</p>
+            </div>
+          )}
         </div>
 
+        <Separator className="mb-2" />
+
         <SidebarGroup>
-          <SidebarGroupLabel>Clinical</SidebarGroupLabel>
+          {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/70 font-semibold px-3 mb-1">Clinical</SidebarGroupLabel>}
           <SidebarGroupContent>
-            <SidebarMenu>
-              {mainItems.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild isActive={location.pathname === item.url}>
-                    <NavLink to={item.url} end className="hover:bg-muted/50" activeClassName="bg-accent text-accent-foreground font-medium">
-                      <item.icon className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+            <SidebarMenu className="space-y-0.5">
+              {mainItems.map(renderItem)}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
+        <Separator className="my-2" />
+
         <SidebarGroup>
-          <SidebarGroupLabel>Manage</SidebarGroupLabel>
+          {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/70 font-semibold px-3 mb-1">Manage</SidebarGroupLabel>}
           <SidebarGroupContent>
-            <SidebarMenu>
-              {manageItems.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild isActive={location.pathname === item.url}>
-                    <NavLink to={item.url} end className="hover:bg-muted/50" activeClassName="bg-accent text-accent-foreground font-medium">
-                      <item.icon className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+            <SidebarMenu className="space-y-0.5">
+              {manageItems.map(renderItem)}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="p-3">
+
+      <SidebarFooter className="p-3 border-t border-border">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link to="/login" className="text-muted-foreground hover:text-foreground">
+              <Link to="/" className="text-muted-foreground hover:text-foreground rounded-xl">
                 <LogOut className="mr-2 h-4 w-4" />
-                {!collapsed && <span>{t.login.signIn}</span>}
+                {!collapsed && <span className="text-sm">Back to Site</span>}
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
