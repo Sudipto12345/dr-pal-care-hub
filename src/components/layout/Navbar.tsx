@@ -1,23 +1,25 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Leaf, ShoppingCart } from "lucide-react";
+import { Menu, X, Leaf, ShoppingCart, Globe } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
-
-const navLinks = [
-  { label: "Home", path: "/" },
-  { label: "About", path: "/about" },
-  { label: "Treatments", path: "/treatments" },
-  { label: "Services", path: "/services" },
-  { label: "Shop", path: "/shop" },
-  { label: "Blog", path: "/blog" },
-  { label: "Contact", path: "/contact" },
-];
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const { totalItems, setIsOpen: openCart } = useCart();
+  const { lang, toggleLang, t } = useLanguage();
+
+  const navLinks = [
+    { label: t.nav.home, path: "/" },
+    { label: t.nav.about, path: "/about" },
+    { label: t.nav.treatments, path: "/treatments" },
+    { label: t.nav.services, path: "/services" },
+    { label: t.nav.shop, path: "/shop" },
+    { label: t.nav.blog, path: "/blog" },
+    { label: t.nav.contact, path: "/contact" },
+  ];
 
   return (
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
@@ -28,7 +30,9 @@ const Navbar = () => {
           </div>
           <div className="flex flex-col">
             <span className="font-heading font-bold text-sm leading-tight text-foreground">Dr. Amit Kumar Pal</span>
-            <span className="text-[10px] text-muted-foreground leading-tight">Homeopathic Care</span>
+            <span className="text-[10px] text-muted-foreground leading-tight">
+              {lang === "bn" ? "হোমিওপ্যাথিক সেবা" : "Homeopathic Care"}
+            </span>
           </div>
         </Link>
 
@@ -49,6 +53,16 @@ const Navbar = () => {
         </div>
 
         <div className="hidden lg:flex items-center gap-2">
+          {/* Language toggle */}
+          <button
+            onClick={toggleLang}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-border hover:bg-accent transition-colors"
+            title="Switch Language"
+          >
+            <Globe className="w-3.5 h-3.5" />
+            {lang === "en" ? "বাংলা" : "EN"}
+          </button>
+
           <button onClick={() => openCart(true)} className="relative p-2 rounded-lg hover:bg-accent transition-colors">
             <ShoppingCart className="w-5 h-5 text-foreground" />
             {totalItems > 0 && (
@@ -58,17 +72,24 @@ const Navbar = () => {
             )}
           </button>
           <Button variant="ghost" size="sm" asChild>
-            <Link to="/patient/dashboard">Patient Portal</Link>
+            <Link to="/patient/dashboard">{t.nav.patientPortal}</Link>
           </Button>
           <Button variant="ghost" size="sm" asChild>
-            <Link to="/admin/dashboard">Admin</Link>
+            <Link to="/admin/dashboard">{t.nav.admin}</Link>
           </Button>
           <Button variant="hero" size="sm" asChild>
-            <Link to="/book-appointment">Book Appointment</Link>
+            <Link to="/book-appointment">{t.nav.bookAppointment}</Link>
           </Button>
         </div>
 
         <div className="lg:hidden flex items-center gap-1">
+          {/* Mobile language toggle */}
+          <button
+            onClick={toggleLang}
+            className="p-2 rounded-lg hover:bg-accent transition-colors text-xs font-semibold"
+          >
+            {lang === "en" ? "বা" : "EN"}
+          </button>
           <button onClick={() => openCart(true)} className="relative p-2 rounded-lg hover:bg-accent transition-colors">
             <ShoppingCart className="w-5 h-5 text-foreground" />
             {totalItems > 0 && (
@@ -97,13 +118,13 @@ const Navbar = () => {
           ))}
           <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-border">
             <Button variant="ghost" size="sm" asChild>
-              <Link to="/patient/dashboard" onClick={() => setOpen(false)}>Patient Portal</Link>
+              <Link to="/patient/dashboard" onClick={() => setOpen(false)}>{t.nav.patientPortal}</Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <Link to="/admin/dashboard" onClick={() => setOpen(false)}>Admin Panel</Link>
+              <Link to="/admin/dashboard" onClick={() => setOpen(false)}>{t.nav.adminPanel}</Link>
             </Button>
             <Button variant="hero" size="sm" asChild>
-              <Link to="/book-appointment" onClick={() => setOpen(false)}>Book Appointment</Link>
+              <Link to="/book-appointment" onClick={() => setOpen(false)}>{t.nav.bookAppointment}</Link>
             </Button>
           </div>
         </div>

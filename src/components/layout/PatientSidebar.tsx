@@ -6,19 +6,21 @@ import {
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
 import { Leaf } from "lucide-react";
-
-const items = [
-  { title: "Dashboard", url: "/patient/dashboard", icon: LayoutDashboard },
-  { title: "Appointments", url: "/patient/appointments", icon: CalendarDays },
-  { title: "Prescriptions", url: "/patient/prescriptions", icon: FileText },
-  { title: "Orders", url: "/patient/orders", icon: ShoppingBag },
-  { title: "Profile", url: "/patient/profile", icon: User },
-];
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const PatientSidebar = () => {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
+  const { t } = useLanguage();
+
+  const items = [
+    { title: t.patient.dashboard, url: "/patient/dashboard", icon: LayoutDashboard },
+    { title: t.patient.appointments, url: "/patient/appointments", icon: CalendarDays },
+    { title: t.patient.prescriptions, url: "/patient/prescriptions", icon: FileText },
+    { title: t.patient.orders, url: "/patient/orders", icon: ShoppingBag },
+    { title: t.patient.profile, url: "/patient/profile", icon: User },
+  ];
 
   return (
     <Sidebar collapsible="icon">
@@ -27,14 +29,14 @@ const PatientSidebar = () => {
           <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
             <Leaf className="w-4 h-4 text-primary-foreground" />
           </div>
-          {!collapsed && <span className="font-heading font-bold text-sm text-foreground">Patient Portal</span>}
+          {!collapsed && <span className="font-heading font-bold text-sm text-foreground">{t.nav.patientPortal}</span>}
         </div>
         <SidebarGroup>
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton asChild isActive={location.pathname === item.url}>
                     <NavLink to={item.url} end className="hover:bg-muted/50" activeClassName="bg-accent text-accent-foreground font-medium">
                       <item.icon className="mr-2 h-4 w-4" />
@@ -53,7 +55,7 @@ const PatientSidebar = () => {
             <SidebarMenuButton asChild>
               <Link to="/login" className="text-muted-foreground hover:text-foreground">
                 <LogOut className="mr-2 h-4 w-4" />
-                {!collapsed && <span>Logout</span>}
+                {!collapsed && <span>{t.login.signIn}</span>}
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

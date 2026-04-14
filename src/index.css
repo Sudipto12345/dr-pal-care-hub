@@ -2,7 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap');
+
+/* Bangla font class */
+.font-bangla {
+  --font-body: 'Noto Sans Bengali', 'Inter', sans-serif;
+}
+.font-bangla body,
+.font-bangla p,
+.font-bangla span,
+.font-bangla a,
+.font-bangla li,
+.font-bangla input,
+.font-bangla textarea,
+.font-bangla button,
+.font-bangla label {
+  font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
+  line-height: 1.7;
+}
 
 @layer base {
   :root {
