@@ -212,43 +212,6 @@ const Index = () => {
         </div>
       </section>
 
-      <div className="container mx-auto px-4"><div className="divider-leaf text-secondary"><Leaf className="w-4 h-4 opacity-40" /></div></div>
-
-      {/* ─── ABOUT DOCTOR ─── */}
-      <section className="py-20 md:py-28">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-[0.85fr_1fr] gap-10 lg:gap-16 items-center">
-            <div className="relative">
-              <div style={{ transform: "rotate(-1deg)" }}>
-                <img src={aboutDoctor} alt={t.doctor.name} loading="lazy" width={640} height={800} className="rounded-2xl shadow-card object-cover w-full max-w-[380px] mx-auto img-organic" />
-              </div>
-              <div className="absolute -bottom-6 right-0 md:right-4 bg-card border border-border/50 rounded-xl px-4 py-2.5 shadow-soft" style={{ transform: "rotate(2deg)" }}>
-                <p className="font-handwritten text-lg text-secondary">{t.common.healingWithHeart}</p>
-              </div>
-            </div>
-
-            <div>
-              <p className="font-handwritten text-xl text-secondary mb-2">{t.about.sectionTag}</p>
-              <h2 className="font-heading text-3xl md:text-[2.5rem] font-bold text-foreground mb-3 leading-tight">{t.about.sectionTitle}</h2>
-              <p className="text-secondary/80 font-medium text-sm mb-4">{t.about.credential}</p>
-              <p className="text-muted-foreground mb-6 text-[15px] leading-[1.75]">{t.about.bio}</p>
-              <ul className="space-y-3.5 mb-8">
-                {[t.about.point1, t.about.point2, t.about.point3, t.about.point4].map((item, i) => (
-                  <li key={item} className="flex items-start gap-3 text-foreground text-[15px]">
-                    <div className="w-5 h-5 rounded-md gradient-primary flex items-center justify-center flex-shrink-0 mt-0.5" style={{ borderRadius: `${6 + i}px` }}>
-                      <ShieldCheck className="w-3 h-3 text-primary-foreground" />
-                    </div>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Button className="gradient-primary text-primary-foreground rounded-xl hover:shadow-card transition-all duration-300 hover:-translate-y-0.5" asChild>
-                <Link to="/about">{t.doctor.learnMore} <ArrowRight className="w-4 h-4 ml-1" /></Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ─── PRODUCTS ─── */}
       <section className="py-20 md:py-28" style={{ background: "linear-gradient(180deg, hsl(100 12% 97%), hsl(90 10% 94%) 100%)" }}>
