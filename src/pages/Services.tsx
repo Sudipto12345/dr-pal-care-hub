@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Stethoscope, Baby, Brain, Flower2, Bone, Eye, HeartPulse, Pill } from "lucide-react";
 import PageHero from "@/components/shared/PageHero";
-import heroServices from "@/assets/hero-services.jpg";
+import heroServices from "@/assets/doctor-hero-banner.png";
 
 const services = [
   { icon: Stethoscope, title: "General Consultation", desc: "Complete health assessment and constitutional analysis for personalized treatment." },
@@ -21,7 +21,7 @@ const Services = () => (
       subtitle="Comprehensive homeopathic treatments for a healthier you"
       bgImage={heroServices}
       icon={<HeartPulse className="w-7 h-7 text-white" />}
-      gradient="from-secondary/85 via-secondary/60 to-primary/50"
+      gradient="from-primary/90 via-primary/70 to-secondary/60"
     />
     <section className="py-16">
       <div className="container mx-auto px-4">
