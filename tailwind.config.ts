@@ -10,6 +10,11 @@ export default {
       padding: "2rem",
       screens: { "2xl": "1280px" },
     },
+    fontFamily: {
+        heading: ['"Inter"', "system-ui", "-apple-system", "sans-serif"],
+        body: ['"Inter"', "system-ui", "-apple-system", "sans-serif"],
+        handwritten: ['"Inter"', "cursive"],
+      },
     extend: {
       spacing: {
         "4.5": "1.125rem",
