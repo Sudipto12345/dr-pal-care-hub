@@ -1,0 +1,91 @@
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Menu, X, Leaf } from "lucide-react";
+
+const navLinks = [
+  { label: "Home", path: "/" },
+  { label: "About", path: "/about" },
+  { label: "Services", path: "/services" },
+  { label: "Shop", path: "/shop" },
+  { label: "Blog", path: "/blog" },
+  { label: "Contact", path: "/contact" },
+];
+
+const Navbar = () => {
+  const [open, setOpen] = useState(false);
+  const location = useLocation();
+
+  return (
+    <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
+      <div className="container mx-auto flex items-center justify-between h-16 px-4">
+        <Link to="/" className="flex items-center gap-2">
+          <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center">
+            <Leaf className="w-5 h-5 text-primary-foreground" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-heading font-bold text-sm leading-tight text-foreground">Dr. Amit Kumar Pal</span>
+            <span className="text-[10px] text-muted-foreground leading-tight">Homeopathic Care</span>
+          </div>
+        </Link>
+
+        {/* Desktop */}
+        <div className="hidden md:flex items-center gap-1">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                location.pathname === link.path
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="hidden md:flex items-center gap-2">
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/login">Login</Link>
+          </Button>
+          <Button variant="hero" size="sm" asChild>
+            <Link to="/book-appointment">Book Appointment</Link>
+          </Button>
+        </div>
+
+        {/* Mobile toggle */}
+        <button className="md:hidden p-2" onClick={() => setOpen(!open)}>
+          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+      </div>
+
+      {/* Mobile menu */}
+      {open && (
+        <div className="md:hidden border-t border-border bg-card px-4 pb-4 animate-fade-in">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              onClick={() => setOpen(false)}
+              className="block py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground"
+            >
+              {link.label}
+            </Link>
+          ))}
+          <div className="flex flex-col gap-2 mt-3">
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
+            </Button>
+            <Button variant="hero" size="sm" asChild>
+              <Link to="/book-appointment" onClick={() => setOpen(false)}>Book Appointment</Link>
+            </Button>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+};
+
+export default Navbar;
