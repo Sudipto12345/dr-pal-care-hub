@@ -6,6 +6,7 @@ import { Menu, X, Leaf } from "lucide-react";
 const navLinks = [
   { label: "Home", path: "/" },
   { label: "About", path: "/about" },
+  { label: "Treatments", path: "/treatments" },
   { label: "Services", path: "/services" },
   { label: "Shop", path: "/shop" },
   { label: "Blog", path: "/blog" },
@@ -29,8 +30,7 @@ const Navbar = () => {
           </div>
         </Link>
 
-        {/* Desktop */}
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden lg:flex items-center gap-1">
           {navLinks.map((link) => (
             <Link
               key={link.path}
@@ -46,24 +46,25 @@ const Navbar = () => {
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden lg:flex items-center gap-2">
           <Button variant="ghost" size="sm" asChild>
-            <Link to="/login">Login</Link>
+            <Link to="/patient/dashboard">Patient Portal</Link>
+          </Button>
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/admin/dashboard">Admin</Link>
           </Button>
           <Button variant="hero" size="sm" asChild>
             <Link to="/book-appointment">Book Appointment</Link>
           </Button>
         </div>
 
-        {/* Mobile toggle */}
-        <button className="md:hidden p-2" onClick={() => setOpen(!open)}>
+        <button className="lg:hidden p-2" onClick={() => setOpen(!open)}>
           {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
-      {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-border bg-card px-4 pb-4 animate-fade-in">
+        <div className="lg:hidden border-t border-border bg-card px-4 pb-4 animate-fade-in">
           {navLinks.map((link) => (
             <Link
               key={link.path}
@@ -74,9 +75,12 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
-          <div className="flex flex-col gap-2 mt-3">
+          <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-border">
             <Button variant="ghost" size="sm" asChild>
-              <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
+              <Link to="/patient/dashboard" onClick={() => setOpen(false)}>Patient Portal</Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/admin/dashboard" onClick={() => setOpen(false)}>Admin Panel</Link>
             </Button>
             <Button variant="hero" size="sm" asChild>
               <Link to="/book-appointment" onClick={() => setOpen(false)}>Book Appointment</Link>
