@@ -97,6 +97,18 @@
   }
 }
 
+/* Clean compact page title banner */
+.page-title-banner {
+  @apply py-10 md:py-14 border-b border-border/40;
+  background: linear-gradient(180deg, hsl(var(--accent)) 0%, hsl(var(--background)) 100%);
+}
+.page-title-banner h1 {
+  @apply font-heading text-2xl md:text-3xl font-bold text-foreground tracking-tight;
+}
+.page-title-banner p {
+  @apply text-muted-foreground text-sm mt-1.5 max-w-md mx-auto;
+}
+
 @layer utilities {
   .gradient-primary {
     background: var(--gradient-primary);

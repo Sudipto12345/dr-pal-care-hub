@@ -5,10 +5,10 @@ import { mockBlogPosts } from "@/data/mockData";
 
 const Blog = () => (
   <div>
-    <section className="gradient-hero text-primary-foreground py-16 md:py-20">
+    <section className="page-title-banner">
       <div className="container mx-auto px-4 text-center">
-        <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4">Health Blog</h1>
-        <p className="text-primary-foreground/70 max-w-lg mx-auto">Insights and tips for natural wellness</p>
+        <h1>Health Blog</h1>
+        <p>Insights and tips for natural wellness</p>
       </div>
     </section>
     <section className="py-16">

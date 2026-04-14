@@ -6,10 +6,10 @@ import { Phone, Mail, MapPin, Clock } from "lucide-react";
 
 const Contact = () => (
   <div>
-    <section className="gradient-hero text-primary-foreground py-16 md:py-20">
+    <section className="page-title-banner">
       <div className="container mx-auto px-4 text-center">
-        <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
-        <p className="text-primary-foreground/70 max-w-lg mx-auto">Get in touch for appointments and inquiries</p>
+        <h1>Contact Us</h1>
+        <p>Get in touch for appointments and inquiries</p>
       </div>
     </section>
     <section className="py-16">
