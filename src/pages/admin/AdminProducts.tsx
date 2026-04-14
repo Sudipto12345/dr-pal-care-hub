@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import StatusBadge from "@/components/shared/StatusBadge";
+import ProductForm from "@/components/forms/ProductForm";
 import { mockProducts } from "@/data/mockData";
 
 const AdminProducts = () => (
@@ -10,7 +9,7 @@ const AdminProducts = () => (
     <PageHeader
       title="Products"
       description="Manage shop inventory"
-      actions={<Button variant="hero" size="sm"><Plus className="w-4 h-4 mr-1" /> Add Product</Button>}
+      actions={<ProductForm />}
     />
     <DataTable
       data={mockProducts}
