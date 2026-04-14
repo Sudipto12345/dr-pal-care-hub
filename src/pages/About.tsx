@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import doctorProfile from "@/assets/doctor-profile.png";
 import { useLanguage } from "@/i18n/LanguageContext";
+import PageHero from "@/components/shared/PageHero";
+import heroServices from "@/assets/hero-services.jpg";
 
 const About = () => {
   const { t } = useLanguage();
@@ -17,12 +19,13 @@ const About = () => {
 
   return (
     <div>
-      <section className="page-title-banner">
-        <div className="container mx-auto px-4 text-center">
-          <h1>{t.about.pageTitle}</h1>
-          <p>{t.about.pageSubtitle}</p>
-        </div>
-      </section>
+      <PageHero
+        title={t.about.pageTitle}
+        subtitle={t.about.pageSubtitle}
+        bgImage={heroServices}
+        icon={<Users className="w-7 h-7 text-white" />}
+        gradient="from-primary/85 via-secondary/65 to-info/40"
+      />
 
       <section className="py-14 md:py-20">
         <div className="container mx-auto px-4">

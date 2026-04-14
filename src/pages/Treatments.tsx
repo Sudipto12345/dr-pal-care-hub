@@ -1,5 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Stethoscope, Baby, Brain, Flower2, Bone, Eye, HeartPulse, Pill, Shield, Droplets } from "lucide-react";
+import PageHero from "@/components/shared/PageHero";
+import heroTreatments from "@/assets/hero-treatments.jpg";
 
 const treatments = [
   { icon: Stethoscope, title: "Constitutional Treatment", desc: "Deep-acting remedies selected based on your unique mental, emotional, and physical characteristics for long-term healing." },
@@ -16,12 +18,12 @@ const treatments = [
 
 const Treatments = () => (
   <div>
-    <section className="page-title-banner">
-      <div className="container mx-auto px-4 text-center">
-        <h1>Treatments</h1>
-        <p>Specialized homeopathic treatments for a wide range of conditions</p>
-      </div>
-    </section>
+    <PageHero
+      title="Treatments"
+      subtitle="Specialized homeopathic treatments for a wide range of conditions"
+      bgImage={heroTreatments}
+      icon={<Stethoscope className="w-7 h-7 text-white" />}
+    />
     <section className="py-16">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

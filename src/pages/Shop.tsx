@@ -77,12 +77,13 @@ const Shop = () => {
 
   return (
     <div>
-      <section className="page-title-banner">
-        <div className="container mx-auto px-4 text-center">
-          <h1>{t.shop.pageTitle}</h1>
-          <p>{t.shop.pageSubtitle}</p>
-        </div>
-      </section>
+      <PageHero
+        title={t.shop.pageTitle}
+        subtitle={t.shop.pageSubtitle}
+        bgImage={heroShop}
+        icon={<ShoppingBag className="w-7 h-7 text-white" />}
+        gradient="from-secondary/85 via-primary/60 to-warning/40"
+      />
 
       <section className="py-8 md:py-12">
         <div className="container mx-auto px-4">
