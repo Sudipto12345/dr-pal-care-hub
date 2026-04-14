@@ -6,6 +6,8 @@ import { ShoppingCart, ArrowLeft, Star, CheckCircle, Truck, ShieldCheck, Package
 import { shopProducts } from "@/data/shopData";
 import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils";
+import PageHero from "@/components/shared/PageHero";
+import heroShop from "@/assets/hero-shop.jpg";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -31,14 +33,7 @@ const ProductDetail = () => {
 
   return (
     <div>
-      <section className="page-title-banner">
-        <div className="container mx-auto px-4">
-          <Link to="/shop" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-2">
-            <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Back to Shop
-          </Link>
-          <h1>{product.name}</h1>
-        </div>
-      </section>
+      <PageHero title={product.name} subtitle={product.category} bgImage={heroShop} icon={<Package className="w-7 h-7 text-white" />} />
 
       <section className="py-8 md:py-12">
         <div className="container mx-auto px-4">

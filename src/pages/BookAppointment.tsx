@@ -8,6 +8,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import PageHero from "@/components/shared/PageHero";
+import heroAppointment from "@/assets/hero-appointment.jpg";
 
 const timeSlots = [
   "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
@@ -67,12 +69,13 @@ const BookAppointment = () => {
 
   return (
     <div>
-      <section className="page-title-banner">
-        <div className="container mx-auto px-4 text-center">
-          <h1>Book an Appointment</h1>
-          <p>Schedule your consultation with Dr. Amit Kumar Pal</p>
-        </div>
-      </section>
+      <PageHero
+        title="Book an Appointment"
+        subtitle="Schedule your consultation with Dr. Amit Kumar Pal"
+        bgImage={heroAppointment}
+        icon={<CalendarIcon className="w-7 h-7 text-white" />}
+        gradient="from-info/80 via-secondary/60 to-primary/50"
+      />
 
       <section className="py-10 md:py-14">
         <div className="container mx-auto px-4 max-w-3xl">

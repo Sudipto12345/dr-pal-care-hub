@@ -9,6 +9,8 @@ import { ArrowLeft, ShieldCheck, Truck, CreditCard } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
+import PageHero from "@/components/shared/PageHero";
+import heroShop from "@/assets/hero-shop.jpg";
 
 const Checkout = () => {
   const { items, totalPrice, totalItems, clearCart } = useCart();
@@ -46,14 +48,7 @@ const Checkout = () => {
 
   return (
     <div>
-      <section className="page-title-banner">
-        <div className="container mx-auto px-4">
-          <Link to="/cart" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-2">
-            <ArrowLeft className="w-3.5 h-3.5 mr-1" /> {t.checkoutPage.backToCart}
-          </Link>
-          <h1>{t.checkoutPage.title}</h1>
-        </div>
-      </section>
+      <PageHero title={t.checkoutPage.title} subtitle="Complete your order" bgImage={heroShop} icon={<CreditCard className="w-7 h-7 text-white" />} />
 
       <section className="py-8 md:py-12">
         <div className="container mx-auto px-4">

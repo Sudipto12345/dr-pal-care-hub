@@ -5,6 +5,8 @@ import { Separator } from "@/components/ui/separator";
 import { ShoppingBag, Minus, Plus, Trash2, ArrowLeft, ArrowRight } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useLanguage } from "@/i18n/LanguageContext";
+import PageHero from "@/components/shared/PageHero";
+import heroShop from "@/assets/hero-shop.jpg";
 
 const CartPage = () => {
   const { items, removeItem, updateQuantity, totalPrice, totalItems } = useCart();
@@ -13,11 +15,7 @@ const CartPage = () => {
   if (items.length === 0) {
     return (
       <div>
-        <section className="page-title-banner">
-          <div className="container mx-auto px-4 text-center">
-            <h1>{t.cart.title}</h1>
-          </div>
-        </section>
+        <PageHero title={t.cart.title} subtitle="Your shopping cart is empty" bgImage={heroShop} icon={<ShoppingBag className="w-7 h-7 text-white" />} />
         <div className="min-h-[50vh] flex flex-col items-center justify-center text-center px-4">
           <ShoppingBag className="w-16 h-16 text-muted-foreground/20 mb-4" />
           <h2 className="font-heading text-xl font-bold text-foreground mb-2">{t.cart.empty}</h2>
@@ -32,12 +30,7 @@ const CartPage = () => {
 
   return (
     <div>
-      <section className="page-title-banner">
-        <div className="container mx-auto px-4 text-center">
-          <h1>{t.cart.title}</h1>
-          <p>{totalItems} {totalItems !== 1 ? t.cart.items : t.cart.item}</p>
-        </div>
-      </section>
+      <PageHero title={t.cart.title} subtitle={`${totalItems} ${totalItems !== 1 ? t.cart.items : t.cart.item}`} bgImage={heroShop} icon={<ShoppingBag className="w-7 h-7 text-white" />} />
 
       <section className="py-8 md:py-12">
         <div className="container mx-auto px-4">

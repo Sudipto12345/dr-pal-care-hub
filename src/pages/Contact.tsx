@@ -3,15 +3,18 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
+import PageHero from "@/components/shared/PageHero";
+import heroContact from "@/assets/hero-contact.jpg";
 
 const Contact = () => (
   <div>
-    <section className="page-title-banner">
-      <div className="container mx-auto px-4 text-center">
-        <h1>Contact Us</h1>
-        <p>Get in touch for appointments and inquiries</p>
-      </div>
-    </section>
+    <PageHero
+      title="Contact Us"
+      subtitle="Get in touch for appointments and inquiries"
+      bgImage={heroContact}
+      icon={<Phone className="w-7 h-7 text-white" />}
+      gradient="from-primary/80 via-secondary/60 to-info/50"
+    />
     <section className="py-16">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12">

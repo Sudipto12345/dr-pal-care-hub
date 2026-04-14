@@ -1,16 +1,19 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 import { mockBlogPosts } from "@/data/mockData";
+import PageHero from "@/components/shared/PageHero";
+import heroBlog from "@/assets/hero-blog.jpg";
 
 const Blog = () => (
   <div>
-    <section className="page-title-banner">
-      <div className="container mx-auto px-4 text-center">
-        <h1>Health Blog</h1>
-        <p>Insights and tips for natural wellness</p>
-      </div>
-    </section>
+    <PageHero
+      title="Health Blog"
+      subtitle="Insights and tips for natural wellness"
+      bgImage={heroBlog}
+      icon={<BookOpen className="w-7 h-7 text-white" />}
+      gradient="from-info/80 via-primary/60 to-secondary/50"
+    />
     <section className="py-16">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
