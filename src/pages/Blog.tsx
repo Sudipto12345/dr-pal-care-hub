@@ -3,7 +3,7 @@ import { ArrowRight, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 import { mockBlogPosts } from "@/data/mockData";
 import PageHero from "@/components/shared/PageHero";
-import heroBlog from "@/assets/hero-blog.jpg";
+import heroBlog from "@/assets/doctor-hero.png";
 
 const Blog = () => (
   <div>
@@ -12,7 +12,7 @@ const Blog = () => (
       subtitle="Insights and tips for natural wellness"
       bgImage={heroBlog}
       icon={<BookOpen className="w-7 h-7 text-white" />}
-      gradient="from-info/80 via-primary/60 to-secondary/50"
+      gradient="from-primary/90 via-secondary/70 to-info/60"
     />
     <section className="py-16">
       <div className="container mx-auto px-4">

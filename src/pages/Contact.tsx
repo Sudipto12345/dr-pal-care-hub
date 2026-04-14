@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
 import PageHero from "@/components/shared/PageHero";
-import heroContact from "@/assets/hero-contact.jpg";
+import heroContact from "@/assets/clinic-exterior.jpg";
 
 const Contact = () => (
   <div>
@@ -13,7 +13,7 @@ const Contact = () => (
       subtitle="Get in touch for appointments and inquiries"
       bgImage={heroContact}
       icon={<Phone className="w-7 h-7 text-white" />}
-      gradient="from-primary/80 via-secondary/60 to-info/50"
+      gradient="from-secondary/90 via-primary/70 to-info/60"
     />
     <section className="py-16">
       <div className="container mx-auto px-4">
