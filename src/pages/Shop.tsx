@@ -8,6 +8,8 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ShoppingCart, Search, ShoppingBag, Star, SlidersHorizontal, X } from "lucide-react";
 import { shopProducts, shopCategories, type Product } from "@/data/shopData";
+import PageHero from "@/components/shared/PageHero";
+import heroShop from "@/assets/hero-shop.jpg";
 import { useCart } from "@/hooks/useCart";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";

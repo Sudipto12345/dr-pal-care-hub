@@ -8,6 +8,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import PageHero from "@/components/shared/PageHero";
+import heroAppointment from "@/assets/hero-appointment.jpg";
 
 const timeSlots = [
   "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
