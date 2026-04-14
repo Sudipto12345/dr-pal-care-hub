@@ -1,11 +1,16 @@
 import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import StatusBadge from "@/components/shared/StatusBadge";
+import NewCaseForm from "@/components/forms/NewCaseForm";
 import { mockCases } from "@/data/mockData";
 
 const AdminCases = () => (
   <div>
-    <PageHeader title="Case Management" description="Track patient cases and progress" />
+    <PageHeader
+      title="Case Management"
+      description="Track patient cases and progress"
+      actions={<NewCaseForm />}
+    />
     <DataTable
       data={mockCases}
       columns={[

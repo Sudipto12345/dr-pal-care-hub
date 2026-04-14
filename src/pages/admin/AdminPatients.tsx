@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import StatusBadge from "@/components/shared/StatusBadge";
+import AddPatientForm from "@/components/forms/AddPatientForm";
 import { mockPatients } from "@/data/mockData";
 
 const AdminPatients = () => (
@@ -10,7 +9,7 @@ const AdminPatients = () => (
     <PageHeader
       title="Patients"
       description="Manage patient records"
-      actions={<Button variant="hero" size="sm"><Plus className="w-4 h-4 mr-1" /> Add Patient</Button>}
+      actions={<AddPatientForm />}
     />
     <DataTable
       data={mockPatients}

@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import StatusBadge from "@/components/shared/StatusBadge";
+import NewAppointmentForm from "@/components/forms/NewAppointmentForm";
 import { mockAppointments } from "@/data/mockData";
 
 const AdminAppointments = () => (
@@ -10,7 +9,7 @@ const AdminAppointments = () => (
     <PageHeader
       title="Appointments"
       description="Manage all appointments"
-      actions={<Button variant="hero" size="sm"><Plus className="w-4 h-4 mr-1" /> New Appointment</Button>}
+      actions={<NewAppointmentForm />}
     />
     <DataTable
       data={mockAppointments}
