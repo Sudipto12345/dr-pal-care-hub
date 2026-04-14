@@ -101,87 +101,149 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ─── DOCTOR PROFILE CARD ─── */}
-      <section className="py-16 md:py-24" style={{ background: "linear-gradient(180deg, hsl(var(--background)) 0%, hsl(100 12% 97%) 100%)" }}>
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <Card className="border-border/40 rounded-2xl overflow-hidden shadow-card">
-              <CardContent className="p-0">
-                <div className="grid md:grid-cols-[280px_1fr]">
-                  <div className="bg-accent/40 flex flex-col items-center justify-center p-8 md:p-6 text-center border-b md:border-b-0 md:border-r border-border/30">
-                    <div className="w-36 h-36 rounded-2xl overflow-hidden shadow-soft mb-4 ring-2 ring-secondary/20" style={{ transform: "rotate(-1deg)" }}>
-                      <img src={doctorProfile} alt={t.doctor.name} className="w-full h-full object-cover" />
-                    </div>
-                    <h3 className="font-heading font-bold text-lg text-foreground">{t.doctor.name}</h3>
-                    <p className="text-xs text-secondary font-medium mt-1">{t.doctor.title}</p>
-                    <p className="text-xs text-muted-foreground">{t.doctor.subtitle}</p>
-                    <div className="flex items-center gap-3 mt-4">
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold bg-secondary/10 text-secondary px-2 py-1 rounded-full">
-                        <Award className="w-3 h-3" /> {t.doctor.goldMedalist}
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold bg-primary/10 text-primary px-2 py-1 rounded-full">
-                        <Globe className="w-3 h-3" /> {t.doctor.ahfMember}
-                      </span>
-                    </div>
+      {/* ─── ABOUT ME ─── */}
+      <section className="py-20 md:py-28 relative overflow-hidden">
+        {/* Subtle background decoration */}
+        <div className="absolute top-0 right-0 w-72 h-72 bg-secondary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-56 h-56 bg-primary/5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4" />
+
+        <div className="container mx-auto px-4 relative z-10">
+          {/* Section header */}
+          <div className="text-center mb-12 md:mb-16">
+            <p className="font-handwritten text-xl text-secondary mb-2">{t.about.sectionTag || "About Me"}</p>
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-[2.75rem] font-bold text-foreground leading-tight">
+              {t.doctor.name}
+            </h2>
+            <p className="text-muted-foreground mt-2 text-sm md:text-base max-w-lg mx-auto">{t.doctor.title}</p>
+          </div>
+
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-8 lg:gap-12 items-start">
+
+              {/* Left: Photo + Quick Info */}
+              <div className="flex flex-col items-center lg:sticky lg:top-28">
+                <div className="relative mb-6">
+                  <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-3xl overflow-hidden shadow-elevated ring-4 ring-background" style={{ transform: "rotate(-2deg)" }}>
+                    <img src={doctorProfile} alt={t.doctor.name} className="w-full h-full object-cover" />
                   </div>
-
-                  <div className="p-6 md:p-8 space-y-5">
-                    <p className="text-muted-foreground text-sm leading-relaxed">{t.doctor.bio}</p>
-
-                    <div className="grid sm:grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="font-heading font-semibold text-foreground text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                          <GraduationCap className="w-3.5 h-3.5 text-secondary" /> {t.doctor.qualifications}
-                        </p>
-                        <ul className="space-y-1 text-muted-foreground text-xs">
-                          <li>{t.doctor.qual1}</li>
-                          <li>{t.doctor.qual2}</li>
-                          <li>{t.doctor.qual3}</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <p className="font-heading font-semibold text-foreground text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                          <Award className="w-3.5 h-3.5 text-secondary" /> {t.doctor.achievements}
-                        </p>
-                        <ul className="space-y-1 text-muted-foreground text-xs">
-                          <li>{t.doctor.ach1}</li>
-                          <li>{t.doctor.ach2}</li>
-                          <li>{t.doctor.ach3}</li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="font-heading font-semibold text-foreground text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                          <Building2 className="w-3.5 h-3.5 text-secondary" /> {t.doctor.chambers}
-                        </p>
-                        <ul className="space-y-1 text-muted-foreground text-xs">
-                          <li>{t.doctor.chamber1}</li>
-                          <li>{t.doctor.chamber2}</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <p className="font-heading font-semibold text-foreground text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                          <Stethoscope className="w-3.5 h-3.5 text-secondary" /> {t.doctor.experience}
-                        </p>
-                        <p className="text-muted-foreground text-xs">{t.doctor.experienceYears}</p>
-                        <p className="text-muted-foreground text-xs mt-1">{t.doctor.consultationType}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                      <Button className="gradient-primary text-primary-foreground rounded-xl text-sm" asChild>
-                        <Link to="/book-appointment"><Calendar className="w-4 h-4 mr-1.5" /> {t.doctor.bookConsultation}</Link>
-                      </Button>
-                      <Button variant="outline" className="rounded-xl text-sm border-border" asChild>
-                        <Link to="/about">{t.doctor.learnMore} <ArrowRight className="w-4 h-4 ml-1" /></Link>
-                      </Button>
-                    </div>
+                  {/* Floating badge */}
+                  <div className="absolute -bottom-3 -right-3 bg-secondary text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
+                    <Award className="w-3.5 h-3.5" /> {t.doctor.goldMedalist}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+
+                {/* Quick stats */}
+                <div className="grid grid-cols-3 gap-3 w-full max-w-xs mb-5">
+                  {[
+                    { value: "10+", label: "Years Exp." },
+                    { value: "5K+", label: "Patients" },
+                    { value: "4.9", label: "Rating" },
+                  ].map((s) => (
+                    <div key={s.label} className="text-center bg-card border border-border/50 rounded-xl py-3 px-2 shadow-soft">
+                      <p className="font-heading font-bold text-lg text-foreground">{s.value}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">{s.label}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Tags */}
+                <div className="flex flex-wrap justify-center gap-2 mb-5">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold bg-secondary/10 text-secondary px-2.5 py-1 rounded-full">
+                    <Award className="w-3 h-3" /> {t.doctor.goldMedalist}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold bg-primary/10 text-primary px-2.5 py-1 rounded-full">
+                    <Globe className="w-3 h-3" /> {t.doctor.ahfMember}
+                  </span>
+                </div>
+
+                {/* CTA buttons - mobile visible, desktop sticky */}
+                <div className="flex flex-col gap-2.5 w-full max-w-xs">
+                  <Button className="gradient-primary text-primary-foreground rounded-xl text-sm w-full" asChild>
+                    <Link to="/book-appointment"><Calendar className="w-4 h-4 mr-1.5" /> {t.doctor.bookConsultation}</Link>
+                  </Button>
+                  <Button variant="outline" className="rounded-xl text-sm border-border w-full" asChild>
+                    <Link to="/about">{t.doctor.learnMore} <ArrowRight className="w-4 h-4 ml-1" /></Link>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Right: Details */}
+              <div className="space-y-6">
+                {/* Bio */}
+                <div className="bg-card border border-border/50 rounded-2xl p-5 md:p-7 shadow-soft">
+                  <p className="text-muted-foreground text-sm md:text-[15px] leading-[1.8]">{t.doctor.bio}</p>
+                </div>
+
+                {/* Info Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Qualifications */}
+                  <div className="bg-card border border-border/50 rounded-2xl p-5 shadow-soft hover-lift transition-all duration-300">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
+                        <GraduationCap className="w-4 h-4 text-secondary" />
+                      </div>
+                      <h4 className="font-heading font-semibold text-sm text-foreground">{t.doctor.qualifications}</h4>
+                    </div>
+                    <ul className="space-y-2">
+                      {[t.doctor.qual1, t.doctor.qual2, t.doctor.qual3].map((q) => (
+                        <li key={q} className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <span className="w-1.5 h-1.5 rounded-full bg-secondary/50 mt-1.5 flex-shrink-0" />
+                          {q}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Achievements */}
+                  <div className="bg-card border border-border/50 rounded-2xl p-5 shadow-soft hover-lift transition-all duration-300">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                        <Award className="w-4 h-4 text-amber-600" />
+                      </div>
+                      <h4 className="font-heading font-semibold text-sm text-foreground">{t.doctor.achievements}</h4>
+                    </div>
+                    <ul className="space-y-2">
+                      {[t.doctor.ach1, t.doctor.ach2, t.doctor.ach3].map((a) => (
+                        <li key={a} className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <Star className="w-3 h-3 text-amber-500 mt-0.5 flex-shrink-0" />
+                          {a}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Chambers */}
+                  <div className="bg-card border border-border/50 rounded-2xl p-5 shadow-soft hover-lift transition-all duration-300">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <Building2 className="w-4 h-4 text-primary" />
+                      </div>
+                      <h4 className="font-heading font-semibold text-sm text-foreground">{t.doctor.chambers}</h4>
+                    </div>
+                    <ul className="space-y-2">
+                      {[t.doctor.chamber1, t.doctor.chamber2].map((c) => (
+                        <li key={c} className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <MapPin className="w-3 h-3 text-primary mt-0.5 flex-shrink-0" />
+                          {c}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Experience */}
+                  <div className="bg-card border border-border/50 rounded-2xl p-5 shadow-soft hover-lift transition-all duration-300">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                        <Stethoscope className="w-4 h-4 text-blue-600" />
+                      </div>
+                      <h4 className="font-heading font-semibold text-sm text-foreground">{t.doctor.experience}</h4>
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-1">{t.doctor.experienceYears}</p>
+                    <p className="text-xs text-muted-foreground">{t.doctor.consultationType}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
