@@ -456,7 +456,7 @@ const Index = () => (
           </div>
           <div>
             <p className="font-handwritten text-xl text-secondary mb-2">Come see us</p>
-            <h2 className="font-heading text-3xl font-bold text-foreground mb-5">Visit Our Clinic</h2>
+            <h2 className="font-heading text-3xl font-bold text-foreground mb-5">Visit Our Chambers</h2>
             <div className="space-y-4 text-muted-foreground text-[15px]">
               <div className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-secondary mt-1 flex-shrink-0" />
