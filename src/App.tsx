@@ -50,8 +50,8 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <CartSheet />
           <BrowserRouter>
+            <CartSheet />
             <Routes>
               <Route element={<PublicLayout />}>
                 <Route path="/" element={<Index />} />
