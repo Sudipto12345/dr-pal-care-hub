@@ -43,70 +43,45 @@ const testimonials = [
 const Index = () => (
   <div className="overflow-x-hidden">
     {/* ─── HERO ─── */}
-    <section className="relative overflow-hidden min-h-[85vh] flex flex-col justify-end" style={{ background: "hsl(152 18% 12%)" }}>
-      {/* Background: blurred medicine/herb element */}
+    <section className="relative overflow-hidden min-h-[90vh] flex flex-col justify-end">
+      {/* Background: user-provided doctor image */}
       <div className="absolute inset-0">
         <img
-          src={featureMedicine}
+          src={doctorHero}
           alt=""
           aria-hidden="true"
-          className="w-full h-full object-cover opacity-[0.12] blur-sm scale-110"
+          className="w-full h-full object-cover object-top"
         />
-        {/* Gradient overlay for text contrast */}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, hsl(152 20% 10% / 0.95) 0%, hsl(152 18% 14% / 0.85) 45%, hsl(152 18% 14% / 0.5) 100%)" }} />
-        {/* Bottom fade to content */}
-        <div className="absolute bottom-0 left-0 right-0 h-40" style={{ background: "linear-gradient(to top, hsl(152 18% 12%), transparent)" }} />
+        {/* Dark gradient overlay — heavier on left for text readability */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(105deg, hsl(152 22% 8% / 0.92) 0%, hsl(152 18% 10% / 0.75) 40%, hsl(152 18% 12% / 0.35) 70%, hsl(152 18% 12% / 0.15) 100%)" }} />
+        {/* Bottom vignette */}
+        <div className="absolute bottom-0 left-0 right-0 h-48" style={{ background: "linear-gradient(to top, hsl(152 20% 8% / 0.9), transparent)" }} />
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 pt-24 pb-12 md:pt-32 md:pb-16 relative z-10">
-        <div className="grid md:grid-cols-[1.15fr_0.85fr] gap-10 lg:gap-16 items-end">
-          {/* Left – Text (visual hierarchy: headline → subtitle → CTA) */}
-          <div className="order-2 md:order-1 pb-4">
-            <div className="inline-flex items-center gap-2 bg-white/8 border border-white/10 rounded-full px-3.5 py-1 text-[13px] text-white/60 font-medium mb-8 backdrop-blur-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
-              Now accepting new patients
-            </div>
-
-            <h1 className="font-heading text-[2.75rem] md:text-[3.25rem] lg:text-[4rem] font-bold leading-[1.08] text-white mb-4 tracking-tight">
-              Natural Healing,<br />
-              <span className="text-white/60">Lasting Wellness</span>
-            </h1>
-
-            <p className="text-white/45 text-base md:text-[17px] mb-10 max-w-[26rem] leading-relaxed">
-              Personalized, root-cause based homeopathic treatment by Dr. Amit Kumar Pal — gentle, safe, and effective care for your whole family.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" className="bg-white text-primary hover:bg-white/90 rounded-xl font-semibold shadow-elevated transition-all duration-300 hover:-translate-y-0.5" asChild>
-                <Link to="/book-appointment"><Calendar className="w-4 h-4 mr-2" /> Book Appointment</Link>
-              </Button>
-              <Button size="lg" variant="outline" className="rounded-xl border-white/20 text-white/80 hover:bg-white/8 transition-all duration-300 backdrop-blur-sm" asChild>
-                <Link to="/contact"><Phone className="w-4 h-4 mr-2" /> WhatsApp Consultation</Link>
-              </Button>
-            </div>
+      <div className="container mx-auto px-4 pt-32 pb-14 md:pt-40 md:pb-20 relative z-10">
+        <div className="max-w-2xl">
+          <div className="inline-flex items-center gap-2 bg-white/8 border border-white/10 rounded-full px-3.5 py-1 text-[13px] text-white/55 font-medium mb-8 backdrop-blur-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
+            Now accepting new patients
           </div>
 
-          {/* Right – Single doctor image, clean */}
-          <div className="order-1 md:order-2 flex justify-center md:justify-end">
-            <div className="relative w-full max-w-[420px]">
-              <img
-                src={doctorHero}
-                alt="Dr. Amit Kumar Pal - Homeopathic Doctor"
-                width={600}
-                height={450}
-                className="rounded-2xl object-cover w-full img-organic"
-                style={{ boxShadow: "0 20px 50px -12px hsl(152 30% 8% / 0.5)" }}
-              />
-              {/* Single subtle badge */}
-              <div
-                className="absolute -bottom-4 left-4 bg-white/10 backdrop-blur-xl border border-white/10 rounded-xl px-4 py-2.5"
-                style={{ transform: "rotate(-1deg)" }}
-              >
-                <p className="text-[10px] text-white/50 tracking-widest uppercase">Experience</p>
-                <p className="font-heading font-bold text-lg text-white leading-none mt-0.5">20+ Years</p>
-              </div>
-            </div>
+          <h1 className="font-heading text-[3rem] md:text-[4rem] lg:text-[5rem] font-bold leading-[1.04] text-white mb-5 tracking-tight">
+            Natural Healing,<br />
+            <span className="text-white/50">Lasting Wellness</span>
+          </h1>
+
+          <p className="text-white/40 text-base md:text-lg mb-10 max-w-[28rem] leading-relaxed">
+            Personalized, root-cause based homeopathic treatment by Dr. Amit Kumar Pal — gentle, safe, and effective care for your whole family.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button size="lg" className="bg-secondary text-white hover:bg-secondary/90 rounded-xl font-semibold shadow-elevated transition-all duration-300 hover:-translate-y-0.5 px-7" asChild>
+              <Link to="/book-appointment"><Calendar className="w-4 h-4 mr-2" /> Book Appointment</Link>
+            </Button>
+            <Button size="lg" variant="outline" className="rounded-xl border-white/15 text-white/70 hover:bg-white/8 hover:text-white transition-all duration-300 backdrop-blur-sm" asChild>
+              <Link to="/contact"><Phone className="w-4 h-4 mr-2" /> WhatsApp Consultation</Link>
+            </Button>
           </div>
         </div>
       </div>
