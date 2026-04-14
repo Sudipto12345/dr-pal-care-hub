@@ -40,50 +40,50 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
     <CartProvider>
-      <Toaster />
-      <Sonner />
-      <CartSheet />
-      <BrowserRouter>
-        <Routes>
-          <Route element={<PublicLayout />}>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/treatments" element={<Treatments />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/book-appointment" element={<BookAppointment />} />
-          </Route>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <CartSheet />
+        <BrowserRouter>
+          <Routes>
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/treatments" element={<Treatments />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/book-appointment" element={<BookAppointment />} />
+            </Route>
 
-          <Route path="/login" element={<Login />} />
-          <Route path="/prescription/:id" element={<PrescriptionPreview />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/prescription/:id" element={<PrescriptionPreview />} />
 
-          <Route element={<PatientLayout />}>
-            <Route path="/patient/dashboard" element={<PatientDashboard />} />
-            <Route path="/patient/appointments" element={<PatientAppointments />} />
-            <Route path="/patient/prescriptions" element={<PatientPrescriptions />} />
-            <Route path="/patient/orders" element={<PatientOrders />} />
-            <Route path="/patient/profile" element={<PatientProfile />} />
-          </Route>
+            <Route element={<PatientLayout />}>
+              <Route path="/patient/dashboard" element={<PatientDashboard />} />
+              <Route path="/patient/appointments" element={<PatientAppointments />} />
+              <Route path="/patient/prescriptions" element={<PatientPrescriptions />} />
+              <Route path="/patient/orders" element={<PatientOrders />} />
+              <Route path="/patient/profile" element={<PatientProfile />} />
+            </Route>
 
-          <Route element={<AdminLayout />}>
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/patients" element={<AdminPatients />} />
-            <Route path="/admin/appointments" element={<AdminAppointments />} />
-            <Route path="/admin/prescriptions" element={<AdminPrescriptions />} />
-            <Route path="/admin/cases" element={<AdminCases />} />
-            <Route path="/admin/products" element={<AdminProducts />} />
-            <Route path="/admin/blog" element={<AdminBlog />} />
-          </Route>
+            <Route element={<AdminLayout />}>
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/patients" element={<AdminPatients />} />
+              <Route path="/admin/appointments" element={<AdminAppointments />} />
+              <Route path="/admin/prescriptions" element={<AdminPrescriptions />} />
+              <Route path="/admin/cases" element={<AdminCases />} />
+              <Route path="/admin/products" element={<AdminProducts />} />
+              <Route path="/admin/blog" element={<AdminBlog />} />
+            </Route>
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
     </CartProvider>
-    </TooltipProvider>
   </QueryClientProvider>
 );
 
