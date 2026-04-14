@@ -111,18 +111,18 @@ const Index = () => (
         </div>
       </div>
 
-      {/* Bottom highlights bar */}
-      <div className="border-t border-border/50 bg-card/50 backdrop-blur-sm">
+      {/* Bottom highlights bar — sits inside dark hero */}
+      <div className="relative z-10 border-t border-white/8">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4">
             {highlights.map((h, i) => (
-              <div key={h.title} className={`flex items-center gap-3 py-5 px-4 ${i > 0 ? "border-l border-border/40" : ""}`}>
-                <div className="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0" style={{ borderRadius: "8px 10px 8px 12px" }}>
-                  <h.icon className="w-4 h-4 text-primary-foreground" />
+              <div key={h.title} className={`flex items-center gap-3 py-5 px-4 ${i > 0 ? "border-l border-white/8" : ""}`}>
+                <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0" style={{ borderRadius: "8px 10px 8px 12px" }}>
+                  <h.icon className="w-4 h-4 text-white/70" />
                 </div>
                 <div>
-                  <p className="font-heading font-semibold text-sm text-foreground leading-tight">{h.title}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">{h.desc}</p>
+                  <p className="font-heading font-semibold text-sm text-white/90 leading-tight">{h.title}</p>
+                  <p className="text-[11px] text-white/40 mt-0.5">{h.desc}</p>
                 </div>
               </div>
             ))}
