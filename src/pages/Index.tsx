@@ -271,10 +271,9 @@ const Index = () => (
             <h2 className="font-heading text-3xl md:text-[2.5rem] font-bold text-foreground mb-3 leading-tight">
               About Dr. Amit Kumar Pal
             </h2>
-            <p className="text-secondary/80 font-medium text-sm mb-4">BHMS, MD (Homeopathy) — 20+ Years of Experience</p>
+            <p className="text-secondary/80 font-medium text-sm mb-4">DHMS (BHB) • BS in Health Science (USA) • Gold Medalist (India)</p>
             <p className="text-muted-foreground mb-6 text-[15px] leading-[1.75]">
-              Dr. Amit Kumar Pal is a renowned homeopathic physician specializing in chronic disease management, skin disorders, and respiratory ailments.
-              With a deep understanding of classical homeopathy, he provides individualized treatment that targets the root cause — not just the symptoms.
+              Dr. Amit Kumar Pal is a highly qualified homeopathic physician and wellness specialist with advanced training from India and the United States. His root-cause based, individualized approach has helped hundreds of patients overcome chronic and lifestyle diseases safely and naturally.
             </p>
             <ul className="space-y-3.5 mb-8">
               {["No side effects — ever", "Safe for all ages, from infants to elderly", "Treats the root cause, not symptoms", "Affordable & accessible healthcare"].map((item, i) => (
@@ -457,18 +456,28 @@ const Index = () => (
           </div>
           <div>
             <p className="font-handwritten text-xl text-secondary mb-2">Come see us</p>
-            <h2 className="font-heading text-3xl font-bold text-foreground mb-5">Visit Our Clinic</h2>
+            <h2 className="font-heading text-3xl font-bold text-foreground mb-5">Visit Our Chambers</h2>
             <div className="space-y-4 text-muted-foreground text-[15px]">
               <div className="flex items-start gap-3">
-                <MapPin className="w-4.5 h-4.5 text-secondary mt-1 flex-shrink-0" />
-                <p>123 Healing Lane, New Delhi 110001, India</p>
+                <MapPin className="w-4 h-4 text-secondary mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-foreground text-sm">Newlife Homeo Hall</p>
+                  <p>Mirpur 11, Dhaka, Bangladesh</p>
+                </div>
               </div>
               <div className="flex items-start gap-3">
-                <Phone className="w-4.5 h-4.5 text-secondary mt-1 flex-shrink-0" />
-                <p>+91 98765 43210</p>
+                <MapPin className="w-4 h-4 text-secondary mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-foreground text-sm">Newlife Homeo Hall</p>
+                  <p>Bagerhat, Bangladesh</p>
+                </div>
               </div>
               <div className="flex items-start gap-3">
-                <Calendar className="w-4.5 h-4.5 text-secondary mt-1 flex-shrink-0" />
+                <Phone className="w-4 h-4 text-secondary mt-1 flex-shrink-0" />
+                <p>Available for Online & Offline Consultation</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <Calendar className="w-4 h-4 text-secondary mt-1 flex-shrink-0" />
                 <div>
                   <p>Mon – Sat: 10:00 AM – 8:00 PM</p>
                   <p className="text-muted-foreground/70">Sunday: By appointment only</p>
