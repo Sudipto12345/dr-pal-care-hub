@@ -35,9 +35,9 @@ const Footer = () => (
         <div>
           <h4 className="font-heading font-semibold mb-4">Contact</h4>
           <div className="flex flex-col gap-3 text-sm text-primary-foreground/70">
-            <div className="flex items-center gap-2"><Phone className="w-4 h-4" /> +91 98765 43210</div>
-            <div className="flex items-center gap-2"><Mail className="w-4 h-4" /> dr.amitpal@clinic.com</div>
-            <div className="flex items-center gap-2"><MapPin className="w-4 h-4" /> New Delhi, India</div>
+            <div className="flex items-start gap-2"><MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" /> Newlife Homeo Hall, Mirpur 11, Dhaka</div>
+            <div className="flex items-start gap-2"><MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" /> Newlife Homeo Hall, Bagerhat</div>
+            <div className="flex items-center gap-2"><Phone className="w-4 h-4" /> Online & Offline</div>
           </div>
         </div>
       </div>
