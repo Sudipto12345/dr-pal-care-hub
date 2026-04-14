@@ -6,7 +6,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Plus, Trash2 } from "lucide-react";
-import { mockPatients } from "@/data/mockData";
+import PatientSelector from "@/components/shared/PatientSelector";
+import ConfirmDialog from "@/components/shared/ConfirmDialog";
 
 interface MedicineRow {
   name: string;
@@ -25,6 +26,7 @@ interface NewPrescriptionFormProps {
 const NewPrescriptionForm = ({ trigger }: NewPrescriptionFormProps) => {
   const [open, setOpen] = useState(false);
   const [patientId, setPatientId] = useState("");
+  const [patientName, setPatientName] = useState("");
   const [diagnosis, setDiagnosis] = useState("");
   const [notes, setNotes] = useState("");
   const [medicines, setMedicines] = useState<MedicineRow[]>([{ ...emptyMedicine }]);
@@ -47,30 +49,45 @@ const NewPrescriptionForm = ({ trigger }: NewPrescriptionFormProps) => {
     if (!patientId) e.patientId = "Select a patient";
     if (!diagnosis.trim()) e.diagnosis = "Diagnosis is required";
     medicines.forEach((m, i) => {
-      if (!m.name.trim()) e[`med_${i}_name`] = "Medicine name required";
-      if (!m.potency.trim()) e[`med_${i}_potency`] = "Potency required";
-      if (!m.dosage.trim()) e[`med_${i}_dosage`] = "Dosage required";
+      if (!m.name.trim()) e[`med_${i}_name`] = "Required";
+      if (!m.potency.trim()) e[`med_${i}_potency`] = "Required";
+      if (!m.dosage.trim()) e[`med_${i}_dosage`] = "Required";
     });
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
+  const resetForm = () => {
+    setPatientId(""); setPatientName(""); setDiagnosis(""); setNotes("");
+    setMedicines([{ ...emptyMedicine }]); setErrors({});
+  };
+
   const handleSubmit = (ev: React.FormEvent) => {
     ev.preventDefault();
-    if (!validate()) return;
-    const patient = mockPatients.find((p) => p.id === patientId);
-    console.log("New Prescription:", { patientId, patientName: patient?.name, diagnosis, notes, medicines });
-    toast.success("Prescription created", { description: `For ${patient?.name} – ${diagnosis}` });
-    setPatientId("");
-    setDiagnosis("");
-    setNotes("");
-    setMedicines([{ ...emptyMedicine }]);
-    setErrors({});
+    if (!validate()) {
+      toast.error("Please fix the errors before submitting");
+      return;
+    }
+    console.log("New Prescription:", { patientId, patientName, diagnosis, notes, medicines });
+    toast.success("Prescription created successfully", {
+      description: `For ${patientName} – ${diagnosis}`,
+      action: { label: "View", onClick: () => console.log("View prescription") },
+    });
+    resetForm();
     setOpen(false);
   };
 
+  const handleOpenChange = (next: boolean) => {
+    if (!next && (patientId || diagnosis || medicines.some((m) => m.name))) {
+      // has unsaved data — handled by the dialog's own close behavior
+      // We let it close but could add a confirm here
+    }
+    if (!next) resetForm();
+    setOpen(next);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {trigger || <Button variant="hero" size="sm"><Plus className="w-4 h-4 mr-1" /> New Prescription</Button>}
       </DialogTrigger>
@@ -82,11 +99,13 @@ const NewPrescriptionForm = ({ trigger }: NewPrescriptionFormProps) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label>Patient *</Label>
-              <select value={patientId} onChange={(e) => { setPatientId(e.target.value); if (errors.patientId) setErrors((er) => ({ ...er, patientId: "" })); }} className="mt-1 w-full h-10 rounded-xl border border-input bg-background px-3 text-sm">
-                <option value="">Select patient</option>
-                {mockPatients.map((p) => <option key={p.id} value={p.id}>{p.name} ({p.id})</option>)}
-              </select>
-              {errors.patientId && <p className="text-xs text-destructive mt-1">{errors.patientId}</p>}
+              <div className="mt-1">
+                <PatientSelector
+                  value={patientId}
+                  onChange={(id, name) => { setPatientId(id); setPatientName(name); if (errors.patientId) setErrors((e) => ({ ...e, patientId: "" })); }}
+                  error={errors.patientId}
+                />
+              </div>
             </div>
             <div>
               <Label>Diagnosis *</Label>
@@ -98,20 +117,29 @@ const NewPrescriptionForm = ({ trigger }: NewPrescriptionFormProps) => {
           {/* Dynamic medicine rows */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <Label className="text-base font-heading font-semibold">Medicines</Label>
+              <Label className="text-base font-heading font-semibold">Medicines ({medicines.length})</Label>
               <Button type="button" variant="outline" size="sm" onClick={addMedicine} className="rounded-xl">
                 <Plus className="w-4 h-4 mr-1" /> Add Medicine
               </Button>
             </div>
             <div className="space-y-4">
               {medicines.map((med, i) => (
-                <div key={i} className="p-4 rounded-xl border border-border bg-muted/30 space-y-3">
+                <div key={i} className="p-4 rounded-xl border border-border bg-muted/30 space-y-3 relative group">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-foreground">Medicine #{i + 1}</span>
                     {medicines.length > 1 && (
-                      <Button type="button" variant="ghost" size="icon" onClick={() => removeMedicine(i)} className="h-8 w-8 text-destructive hover:text-destructive">
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      <ConfirmDialog
+                        trigger={
+                          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive opacity-60 hover:opacity-100 transition-opacity">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        }
+                        title="Remove Medicine"
+                        description={med.name ? `Remove "${med.name}" from this prescription?` : "Remove this medicine entry?"}
+                        confirmLabel="Remove"
+                        variant="destructive"
+                        onConfirm={() => removeMedicine(i)}
+                      />
                     )}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -159,7 +187,7 @@ const NewPrescriptionForm = ({ trigger }: NewPrescriptionFormProps) => {
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} className="rounded-xl">Cancel</Button>
+            <Button type="button" variant="outline" onClick={() => handleOpenChange(false)} className="rounded-xl">Cancel</Button>
             <Button type="submit" variant="hero">Create Prescription</Button>
           </div>
         </form>
