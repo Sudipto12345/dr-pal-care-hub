@@ -1,10 +1,9 @@
 import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import StatusBadge from "@/components/shared/StatusBadge";
-
 import { mockPrescriptions } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
+import { Eye, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const AdminPrescriptions = () => (
@@ -12,7 +11,7 @@ const AdminPrescriptions = () => (
     <PageHeader
       title="Prescriptions"
       description="Manage patient prescriptions"
-      actions={<NewPrescriptionForm />}
+      actions={<Button variant="hero" size="sm" asChild><Link to="/admin/prescriptions/new"><Plus className="w-4 h-4 mr-1" /> New Prescription</Link></Button>}
     />
     <DataTable
       data={mockPrescriptions}
