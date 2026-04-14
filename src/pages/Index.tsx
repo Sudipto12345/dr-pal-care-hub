@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, Stethoscope, Pill, ShieldCheck, Star, ArrowRight, Calendar, Leaf, Phone, MapPin, Quote } from "lucide-react";
+import { Heart, Stethoscope, Pill, ShieldCheck, Star, ArrowRight, Calendar, Leaf, Phone, MapPin, Quote, Award, GraduationCap, Globe, Building2 } from "lucide-react";
 
 import doctorHero from "@/assets/doctor-hero.png";
 import featureConsultation from "@/assets/feature-consultation.jpg";
@@ -14,6 +14,7 @@ import blogNotes from "@/assets/blog-notes.jpg";
 import blogNatural from "@/assets/blog-natural.jpg";
 import ctaPatient from "@/assets/cta-patient.jpg";
 import clinicExterior from "@/assets/clinic-exterior.jpg";
+import doctorProfile from "@/assets/doctor-profile.png";
 
 const features = [
   { img: featureConsultation, title: "Personal Consultation", desc: "One-on-one detailed case taking and personalized treatment plans tailored to your constitution.", rotate: "-0.5deg" },
@@ -102,6 +103,95 @@ const Index = () => (
               </div>
             ))}
           </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ─── DOCTOR PROFILE CARD ─── */}
+    <section className="py-16 md:py-24" style={{ background: "linear-gradient(180deg, hsl(var(--background)) 0%, hsl(100 12% 97%) 100%)" }}>
+      <div className="container mx-auto px-4">
+        <div className="max-w-4xl mx-auto">
+          <Card className="border-border/40 rounded-2xl overflow-hidden shadow-card">
+            <CardContent className="p-0">
+              <div className="grid md:grid-cols-[280px_1fr]">
+                {/* Photo side */}
+                <div className="bg-accent/40 flex flex-col items-center justify-center p-8 md:p-6 text-center border-b md:border-b-0 md:border-r border-border/30">
+                  <div className="w-36 h-36 rounded-2xl overflow-hidden shadow-soft mb-4 ring-2 ring-secondary/20" style={{ transform: "rotate(-1deg)" }}>
+                    <img src={doctorProfile} alt="Dr. Amit Kumar Pal" className="w-full h-full object-cover" />
+                  </div>
+                  <h3 className="font-heading font-bold text-lg text-foreground">Dr. Amit Kumar Pal</h3>
+                  <p className="text-xs text-secondary font-medium mt-1">Homeopathic Consultant</p>
+                  <p className="text-xs text-muted-foreground">Wellness Specialist</p>
+                  <div className="flex items-center gap-3 mt-4">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold bg-secondary/10 text-secondary px-2 py-1 rounded-full">
+                      <Award className="w-3 h-3" /> Gold Medalist
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold bg-primary/10 text-primary px-2 py-1 rounded-full">
+                      <Globe className="w-3 h-3" /> AHF Member
+                    </span>
+                  </div>
+                </div>
+
+                {/* Info side */}
+                <div className="p-6 md:p-8 space-y-5">
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    Providing safe, natural, and effective homeopathic treatment for chronic and lifestyle diseases with a personalized, root-cause based approach.
+                  </p>
+
+                  <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="font-heading font-semibold text-foreground text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <GraduationCap className="w-3.5 h-3.5 text-secondary" /> Qualifications
+                      </p>
+                      <ul className="space-y-1 text-muted-foreground text-xs">
+                        <li>DHMS (BHB), Dhaka</li>
+                        <li>MA in English</li>
+                        <li>BS in Health Science, U.S.A.</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="font-heading font-semibold text-foreground text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <Award className="w-3.5 h-3.5 text-secondary" /> Achievements
+                      </p>
+                      <ul className="space-y-1 text-muted-foreground text-xs">
+                        <li>Gold Medalist (India)</li>
+                        <li>Member, AHF — U.S.A.</li>
+                        <li>Advanced Homeopathy Specialist</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="font-heading font-semibold text-foreground text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <Building2 className="w-3.5 h-3.5 text-secondary" /> Chambers
+                      </p>
+                      <ul className="space-y-1 text-muted-foreground text-xs">
+                        <li>Newlife Homeo Hall, Mirpur 11, Dhaka</li>
+                        <li>Newlife Homeo Hall, Bagerhat</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="font-heading font-semibold text-foreground text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <Stethoscope className="w-3.5 h-3.5 text-secondary" /> Experience
+                      </p>
+                      <p className="text-muted-foreground text-xs">5+ Years of Clinical Practice</p>
+                      <p className="text-muted-foreground text-xs mt-1">Online & Offline Consultation</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                    <Button className="gradient-primary text-primary-foreground rounded-xl text-sm" asChild>
+                      <Link to="/book-appointment"><Calendar className="w-4 h-4 mr-1.5" /> Book Consultation</Link>
+                    </Button>
+                    <Button variant="outline" className="rounded-xl text-sm border-border" asChild>
+                      <Link to="/about">Learn More <ArrowRight className="w-4 h-4 ml-1" /></Link>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </section>
