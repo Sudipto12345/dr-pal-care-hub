@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Plus } from "lucide-react";
-import { mockPatients } from "@/data/mockData";
+import PatientSelector from "@/components/shared/PatientSelector";
 
 interface NewCaseFormProps {
   trigger?: React.ReactNode;
@@ -15,6 +15,7 @@ interface NewCaseFormProps {
 const NewCaseForm = ({ trigger }: NewCaseFormProps) => {
   const [open, setOpen] = useState(false);
   const [patientId, setPatientId] = useState("");
+  const [patientName, setPatientName] = useState("");
   const [condition, setCondition] = useState("");
   const [startDate, setStartDate] = useState("");
   const [symptoms, setSymptoms] = useState("");
@@ -31,19 +32,33 @@ const NewCaseForm = ({ trigger }: NewCaseFormProps) => {
     return Object.keys(e).length === 0;
   };
 
+  const resetForm = () => {
+    setPatientId(""); setPatientName(""); setCondition(""); setStartDate("");
+    setSymptoms(""); setHistory(""); setNotes(""); setErrors({});
+  };
+
   const handleSubmit = (ev: React.FormEvent) => {
     ev.preventDefault();
-    if (!validate()) return;
-    const patient = mockPatients.find((p) => p.id === patientId);
-    console.log("New Case:", { patientId, patientName: patient?.name, condition, startDate, symptoms, history, notes });
-    toast.success("Case created", { description: `${patient?.name} – ${condition}` });
-    setPatientId(""); setCondition(""); setStartDate(""); setSymptoms(""); setHistory(""); setNotes("");
-    setErrors({});
+    if (!validate()) {
+      toast.error("Please fix the errors before submitting");
+      return;
+    }
+    console.log("New Case:", { patientId, patientName, condition, startDate, symptoms, history, notes });
+    toast.success("Case created successfully", {
+      description: `${patientName} – ${condition}`,
+      action: { label: "View", onClick: () => console.log("View case") },
+    });
+    resetForm();
     setOpen(false);
   };
 
+  const handleOpenChange = (next: boolean) => {
+    if (!next) resetForm();
+    setOpen(next);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {trigger || <Button variant="hero" size="sm"><Plus className="w-4 h-4 mr-1" /> New Case</Button>}
       </DialogTrigger>
@@ -54,11 +69,13 @@ const NewCaseForm = ({ trigger }: NewCaseFormProps) => {
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
           <div>
             <Label>Patient *</Label>
-            <select value={patientId} onChange={(e) => { setPatientId(e.target.value); if (errors.patientId) setErrors((er) => ({ ...er, patientId: "" })); }} className="mt-1 w-full h-10 rounded-xl border border-input bg-background px-3 text-sm">
-              <option value="">Select patient</option>
-              {mockPatients.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-            </select>
-            {errors.patientId && <p className="text-xs text-destructive mt-1">{errors.patientId}</p>}
+            <div className="mt-1">
+              <PatientSelector
+                value={patientId}
+                onChange={(id, name) => { setPatientId(id); setPatientName(name); if (errors.patientId) setErrors((e) => ({ ...e, patientId: "" })); }}
+                error={errors.patientId}
+              />
+            </div>
           </div>
           <div>
             <Label>Condition / Diagnosis *</Label>
@@ -83,7 +100,7 @@ const NewCaseForm = ({ trigger }: NewCaseFormProps) => {
             <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Additional observations..." className="mt-1 rounded-xl" />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} className="rounded-xl">Cancel</Button>
+            <Button type="button" variant="outline" onClick={() => handleOpenChange(false)} className="rounded-xl">Cancel</Button>
             <Button type="submit" variant="hero">Create Case</Button>
           </div>
         </form>
