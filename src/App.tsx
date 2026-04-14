@@ -16,6 +16,10 @@ import Services from "./pages/Services";
 import Treatments from "./pages/Treatments";
 import Contact from "./pages/Contact";
 import Shop from "./pages/Shop";
+import ProductDetail from "./pages/ProductDetail";
+import CartPage from "./pages/CartPage";
+import Checkout from "./pages/Checkout";
+import OrderSuccess from "./pages/OrderSuccess";
 import Blog from "./pages/Blog";
 import BookAppointment from "./pages/BookAppointment";
 import Login from "./pages/Login";
@@ -54,6 +58,10 @@ const App = () => (
               <Route path="/treatments" element={<Treatments />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/shop" element={<Shop />} />
+              <Route path="/product/:slug" element={<ProductDetail />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/book-appointment" element={<BookAppointment />} />
             </Route>
