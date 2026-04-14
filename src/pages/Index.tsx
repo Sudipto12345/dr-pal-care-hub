@@ -43,67 +43,68 @@ const testimonials = [
 const Index = () => (
   <div className="overflow-x-hidden">
     {/* ─── HERO ─── */}
-    <section className="relative overflow-hidden" style={{ background: "linear-gradient(165deg, hsl(100 12% 97%), hsl(120 16% 94%) 40%, hsl(90 10% 96%) 100%)" }}>
-      {/* Organic background blobs */}
-      <div className="absolute top-[-15%] left-[-8%] w-[45vw] h-[45vw] max-w-[550px] max-h-[550px] rounded-full opacity-40" style={{ background: "radial-gradient(circle, hsl(148 30% 80% / 0.4), transparent 70%)" }} />
-      <div className="absolute bottom-[-20%] right-[-5%] w-[40vw] h-[40vw] max-w-[480px] max-h-[480px] rounded-full opacity-30" style={{ background: "radial-gradient(circle, hsl(90 20% 85% / 0.3), transparent 70%)" }} />
+    <section className="relative overflow-hidden min-h-[85vh] flex flex-col justify-end" style={{ background: "hsl(152 18% 12%)" }}>
+      {/* Background: blurred medicine/herb element */}
+      <div className="absolute inset-0">
+        <img
+          src={featureMedicine}
+          alt=""
+          aria-hidden="true"
+          className="w-full h-full object-cover opacity-[0.12] blur-sm scale-110"
+        />
+        {/* Gradient overlay for text contrast */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, hsl(152 20% 10% / 0.95) 0%, hsl(152 18% 14% / 0.85) 45%, hsl(152 18% 14% / 0.5) 100%)" }} />
+        {/* Bottom fade to content */}
+        <div className="absolute bottom-0 left-0 right-0 h-40" style={{ background: "linear-gradient(to top, hsl(152 18% 12%), transparent)" }} />
+      </div>
 
-      <div className="container mx-auto px-4 pt-12 pb-16 md:pt-20 md:pb-24 relative z-10">
-        <div className="grid md:grid-cols-[1fr_0.9fr] gap-8 lg:gap-14 items-center">
-          {/* Left – Text */}
-          <div className="order-2 md:order-1">
-            <div className="inline-flex items-center gap-2 bg-secondary/8 border border-secondary/15 rounded-full px-4 py-1.5 text-sm text-secondary font-medium mb-6">
+      {/* Content */}
+      <div className="container mx-auto px-4 pt-24 pb-12 md:pt-32 md:pb-16 relative z-10">
+        <div className="grid md:grid-cols-[1.15fr_0.85fr] gap-10 lg:gap-16 items-end">
+          {/* Left – Text (visual hierarchy: headline → subtitle → CTA) */}
+          <div className="order-2 md:order-1 pb-4">
+            <div className="inline-flex items-center gap-2 bg-white/8 border border-white/10 rounded-full px-3.5 py-1 text-[13px] text-white/60 font-medium mb-8 backdrop-blur-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
               Now accepting new patients
             </div>
 
-            <h1 className="font-heading text-[2.5rem] md:text-5xl lg:text-[3.5rem] font-bold leading-[1.15] text-foreground mb-3 tracking-tight">
-              Dr. Amit Kumar Pal
+            <h1 className="font-heading text-[2.75rem] md:text-[3.25rem] lg:text-[4rem] font-bold leading-[1.08] text-white mb-4 tracking-tight">
+              Natural Healing,<br />
+              <span className="text-white/60">Lasting Wellness</span>
             </h1>
 
-            <p className="font-handwritten text-2xl md:text-3xl text-secondary/80 mb-5" style={{ transform: "rotate(-0.5deg)" }}>
-              Advanced Homeopathic &amp; Wellness Care
-            </p>
-
-            <p className="text-muted-foreground text-base md:text-lg mb-8 max-w-[28rem] leading-relaxed">
-              Personalized, root-cause based homeopathic treatment for long-term healing. Gentle, safe, and effective care for the whole family.
+            <p className="text-white/45 text-base md:text-[17px] mb-10 max-w-[26rem] leading-relaxed">
+              Personalized, root-cause based homeopathic treatment by Dr. Amit Kumar Pal — gentle, safe, and effective care for your whole family.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" className="gradient-primary text-primary-foreground rounded-xl font-semibold shadow-soft hover:shadow-elevated transition-all duration-300 hover:-translate-y-0.5" asChild>
+              <Button size="lg" className="bg-white text-primary hover:bg-white/90 rounded-xl font-semibold shadow-elevated transition-all duration-300 hover:-translate-y-0.5" asChild>
                 <Link to="/book-appointment"><Calendar className="w-4 h-4 mr-2" /> Book Appointment</Link>
               </Button>
-              <Button size="lg" variant="outline" className="rounded-xl border-border text-foreground hover:bg-accent/60 transition-all duration-300" asChild>
+              <Button size="lg" variant="outline" className="rounded-xl border-white/20 text-white/80 hover:bg-white/8 transition-all duration-300 backdrop-blur-sm" asChild>
                 <Link to="/contact"><Phone className="w-4 h-4 mr-2" /> WhatsApp Consultation</Link>
               </Button>
             </div>
           </div>
 
-          {/* Right – Doctor Image */}
-          <div className="order-1 md:order-2 flex justify-center">
-            <div className="relative" style={{ transform: "rotate(0.8deg)" }}>
+          {/* Right – Single doctor image, clean */}
+          <div className="order-1 md:order-2 flex justify-center md:justify-end">
+            <div className="relative w-full max-w-[420px]">
               <img
                 src={doctorHero}
                 alt="Dr. Amit Kumar Pal - Homeopathic Doctor"
                 width={600}
                 height={450}
-                className="rounded-2xl shadow-elevated object-cover w-full max-w-lg img-organic"
+                className="rounded-2xl object-cover w-full img-organic"
+                style={{ boxShadow: "0 20px 50px -12px hsl(152 30% 8% / 0.5)" }}
               />
-              {/* Experience badge */}
+              {/* Single subtle badge */}
               <div
-                className="absolute -bottom-5 -left-3 bg-card/90 backdrop-blur-md border border-border/60 rounded-xl px-4 py-3 shadow-card"
-                style={{ transform: "rotate(-2deg)" }}
+                className="absolute -bottom-4 left-4 bg-white/10 backdrop-blur-xl border border-white/10 rounded-xl px-4 py-2.5"
+                style={{ transform: "rotate(-1deg)" }}
               >
-                <p className="text-[11px] text-muted-foreground tracking-wide uppercase">Experience</p>
-                <p className="font-heading font-bold text-xl text-foreground leading-none mt-0.5">20+ Years</p>
-              </div>
-              {/* Patients badge */}
-              <div
-                className="absolute -top-3 -right-3 bg-card/90 backdrop-blur-md border border-border/60 rounded-xl px-3 py-2 shadow-card hidden md:block"
-                style={{ transform: "rotate(1.5deg)" }}
-              >
-                <p className="font-heading font-bold text-lg text-secondary leading-none">5,000+</p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">Happy Patients</p>
+                <p className="text-[10px] text-white/50 tracking-widest uppercase">Experience</p>
+                <p className="font-heading font-bold text-lg text-white leading-none mt-0.5">20+ Years</p>
               </div>
             </div>
           </div>
