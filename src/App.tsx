@@ -4,12 +4,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-// Layouts
 import PublicLayout from "@/components/layout/PublicLayout";
 import PatientLayout from "@/components/layout/PatientLayout";
 import AdminLayout from "@/components/layout/AdminLayout";
 
-// Public pages
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Services from "./pages/Services";
@@ -20,15 +18,14 @@ import Blog from "./pages/Blog";
 import BookAppointment from "./pages/BookAppointment";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import PrescriptionPreview from "./pages/PrescriptionPreview";
 
-// Patient pages
 import PatientDashboard from "./pages/patient/PatientDashboard";
 import PatientAppointments from "./pages/patient/PatientAppointments";
 import PatientPrescriptions from "./pages/patient/PatientPrescriptions";
 import PatientOrders from "./pages/patient/PatientOrders";
 import PatientProfile from "./pages/patient/PatientProfile";
 
-// Admin pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminPatients from "./pages/admin/AdminPatients";
 import AdminAppointments from "./pages/admin/AdminAppointments";
@@ -46,7 +43,6 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          {/* Public */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
@@ -58,10 +54,9 @@ const App = () => (
             <Route path="/book-appointment" element={<BookAppointment />} />
           </Route>
 
-          {/* Auth */}
           <Route path="/login" element={<Login />} />
+          <Route path="/prescription/:id" element={<PrescriptionPreview />} />
 
-          {/* Patient Portal */}
           <Route element={<PatientLayout />}>
             <Route path="/patient/dashboard" element={<PatientDashboard />} />
             <Route path="/patient/appointments" element={<PatientAppointments />} />
@@ -70,7 +65,6 @@ const App = () => (
             <Route path="/patient/profile" element={<PatientProfile />} />
           </Route>
 
-          {/* Admin Panel */}
           <Route element={<AdminLayout />}>
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/patients" element={<AdminPatients />} />
