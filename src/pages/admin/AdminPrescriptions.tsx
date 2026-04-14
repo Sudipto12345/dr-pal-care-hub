@@ -1,7 +1,7 @@
 import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import StatusBadge from "@/components/shared/StatusBadge";
-import NewPrescriptionForm from "@/components/forms/NewPrescriptionForm";
+
 import { mockPrescriptions } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";

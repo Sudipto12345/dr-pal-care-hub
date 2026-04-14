@@ -40,6 +40,7 @@ import AdminPrescriptions from "./pages/admin/AdminPrescriptions";
 import AdminCases from "./pages/admin/AdminCases";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminBlog from "./pages/admin/AdminBlog";
+import AdminNewPrescription from "./pages/admin/AdminNewPrescription";
 
 const queryClient = new QueryClient();
 
