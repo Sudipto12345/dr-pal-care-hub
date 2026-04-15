@@ -119,7 +119,7 @@ const Navbar = () => {
       </div>
 
       {open && (
-        <div className="lg:hidden bg-card/98 backdrop-blur-xl border-t border-border px-4 pb-4 animate-fade-in">
+        <div className="lg:hidden bg-primary border-t border-white/20 px-4 pb-4 animate-fade-in">
           {navLinks.map((link) => (
             <Link
               key={link.path}
@@ -127,21 +127,21 @@ const Navbar = () => {
               onClick={() => setOpen(false)}
               className={`block py-2.5 px-3 rounded-xl text-sm font-medium transition-colors ${
                 location.pathname === link.path
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-white/20 text-white"
+                  : "text-white/80 hover:text-white hover:bg-white/10"
               }`}
             >
               {link.label}
             </Link>
           ))}
-          <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-border">
-            <Button variant="ghost" size="sm" className="rounded-xl justify-start" asChild>
+          <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-white/20">
+            <Button variant="ghost" size="sm" className="rounded-xl justify-start text-white hover:bg-white/10 hover:text-white" asChild>
               <Link to="/patient/dashboard" onClick={() => setOpen(false)}>{t.nav.patientPortal}</Link>
             </Button>
-            <Button variant="ghost" size="sm" className="rounded-xl justify-start" asChild>
+            <Button variant="ghost" size="sm" className="rounded-xl justify-start text-white hover:bg-white/10 hover:text-white" asChild>
               <Link to="/admin/dashboard" onClick={() => setOpen(false)}>{t.nav.adminPanel}</Link>
             </Button>
-            <Button size="sm" className="rounded-xl gradient-primary text-primary-foreground" asChild>
+            <Button size="sm" className="rounded-xl bg-white/20 text-white hover:bg-white/30 border border-white/30" asChild>
               <Link to="/book-appointment" onClick={() => setOpen(false)}>{t.nav.bookAppointment}</Link>
             </Button>
           </div>

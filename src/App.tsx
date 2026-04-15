@@ -24,6 +24,7 @@ import CartPage from "./pages/CartPage";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import Blog from "./pages/Blog";
+import BlogDetail from "./pages/BlogDetail";
 import BookAppointment from "./pages/BookAppointment";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
@@ -70,6 +71,7 @@ const App = () => (
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/order-success" element={<OrderSuccess />} />
                   <Route path="/blog" element={<Blog />} />
+                  <Route path="/blog/:slug" element={<BlogDetail />} />
                   <Route path="/book-appointment" element={<BookAppointment />} />
                 </Route>
 

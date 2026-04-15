@@ -28,22 +28,27 @@ const Blog = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {(posts || []).map((post: any) => (
-                <Card key={post.id} className="border-border rounded-2xl hover:shadow-card transition-all duration-300 group">
-                  <CardContent className="p-6">
-                    {post.image_url ? (
-                      <img src={post.image_url} alt={post.title} className="w-full h-40 rounded-xl object-cover mb-4" />
-                    ) : (
-                      <div className="w-full h-40 rounded-xl bg-accent/50 flex items-center justify-center mb-4">
-                        <span className="text-3xl">📖</span>
+                <Link to={`/blog/${post.slug || post.id}`} key={post.id} className="block">
+                  <Card className="border-border rounded-2xl hover:shadow-card transition-all duration-300 group h-full">
+                    <CardContent className="p-6">
+                      {post.image_url ? (
+                        <img src={post.image_url} alt={post.title} className="w-full h-40 rounded-xl object-cover mb-4" />
+                      ) : (
+                        <div className="w-full h-40 rounded-xl bg-accent/50 flex items-center justify-center mb-4">
+                          <span className="text-3xl">📖</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-xs text-muted-foreground">{new Date(post.created_at).toLocaleDateString()}</span>
                       </div>
-                    )}
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="text-xs text-muted-foreground">{new Date(post.created_at).toLocaleDateString()}</span>
-                    </div>
-                    <h3 className="font-heading font-bold text-foreground text-lg mb-2 group-hover:text-primary transition-colors">{post.title}</h3>
-                    <p className="text-sm text-muted-foreground line-clamp-3">{post.excerpt || post.content?.substring(0, 120)}</p>
-                  </CardContent>
-                </Card>
+                      <h3 className="font-heading font-bold text-foreground text-lg mb-2 group-hover:text-primary transition-colors">{post.title}</h3>
+                      <p className="text-sm text-muted-foreground line-clamp-3">{post.excerpt || post.content?.substring(0, 120)}</p>
+                      <span className="inline-flex items-center gap-1 text-sm text-primary font-medium mt-3">
+                        Read More <ArrowRight className="w-3 h-3" />
+                      </span>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
           )}
