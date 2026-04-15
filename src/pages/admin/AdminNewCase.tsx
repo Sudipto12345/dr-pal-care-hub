@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,10 +8,10 @@ import { toast } from "sonner";
 import {
   Plus, ArrowLeft, ClipboardList, User, MessageSquare, Brain, Heart,
   Activity, Stethoscope, Search as SearchIcon, Pill, CalendarDays,
-  Trash2, X, Venus, Mars, History, Users, FlaskConical, Lightbulb,
+  Trash2, X, Venus, Mars, History, Users, FlaskConical, Lightbulb, Loader2,
 } from "lucide-react";
 import PatientSelector from "@/components/shared/PatientSelector";
-import { useCreateCase } from "@/hooks/useSupabaseData";
+import { useCreateCase, useCase, useUpdateCase } from "@/hooks/useSupabaseData";
 
 const selectClass = "w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring";
 
