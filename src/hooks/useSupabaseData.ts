@@ -130,6 +130,40 @@ export const useUpdateAppointmentStatus = () => {
   });
 };
 
+export const useDeleteAppointment = () => {
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("appointments").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["appointments"] });
+      qc.invalidateQueries({ queryKey: ["my-appointments"] });
+      toast({ title: "Appointment deleted" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+};
+
+export const useUpdateAppointment = () => {
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: async ({ id, ...updates }: { id: string; date?: string; time_slot?: string; notes?: string; status?: string }) => {
+      const { error } = await supabase.from("appointments").update(updates).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["appointments"] });
+      qc.invalidateQueries({ queryKey: ["my-appointments"] });
+      toast({ title: "Appointment updated" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+};
+
 // ─── PRESCRIPTIONS ───
 export const usePrescriptions = () =>
   useQuery({
@@ -171,6 +205,24 @@ export const useCreatePrescription = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["prescriptions"] });
       toast({ title: "Prescription created" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+};
+
+export const useDeletePrescription = () => {
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      // Delete items first, then prescription
+      await supabase.from("prescription_items").delete().eq("prescription_id", id);
+      const { error } = await supabase.from("prescriptions").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["prescriptions"] });
+      toast({ title: "Prescription deleted" });
     },
     onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
   });
