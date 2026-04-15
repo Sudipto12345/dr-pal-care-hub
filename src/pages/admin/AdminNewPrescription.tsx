@@ -41,6 +41,9 @@ const AdminNewPrescription = () => {
   const [complaint, setComplaint] = useState<string[]>([]);
   const [diagnosis, setDiagnosis] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
+  const [clinicalExam, setClinicalExam] = useState({
+    riskFactors: "", oe: "", pulse: "", bp: "", heart: "", lung: "", others: "",
+  });
   const [medicines, setMedicines] = useState<MedicineRow[]>([{ ...emptyMedicine }]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loaded, setLoaded] = useState(false);
@@ -105,6 +108,13 @@ const AdminNewPrescription = () => {
       setDiagnosis(existingRx.diagnosis ? existingRx.diagnosis.split(", ") : []);
       setNotes(existingRx.advice || "");
       setFollowUpDate(existingRx.follow_up || "");
+      if ((existingRx as any).clinical_exam) {
+        const ce = (existingRx as any).clinical_exam as any;
+        setClinicalExam({
+          riskFactors: ce.riskFactors || "", oe: ce.oe || "", pulse: ce.pulse || "",
+          bp: ce.bp || "", heart: ce.heart || "", lung: ce.lung || "", others: ce.others || "",
+        });
+      }
       const items = (existingRx.prescription_items || []) as any[];
       if (items.length > 0) {
         setMedicines(items.map((item: any) => ({
@@ -162,25 +172,21 @@ const AdminNewPrescription = () => {
       frequency: m.frequency || undefined,
     }));
 
+    const hasExam = Object.values(clinicalExam).some(v => v.trim());
+    const payload: any = {
+      patient_id: patientId,
+      doctor_id: user?.id || "",
+      diagnosis: diagnosis.join(", "),
+      advice: notes,
+      follow_up: followUpDate || undefined,
+      items: itemsPayload,
+      clinical_exam: hasExam ? clinicalExam : undefined,
+    };
+
     if (isEditMode) {
-      updatePrescription.mutate({
-        id: id!,
-        patient_id: patientId,
-        doctor_id: user?.id || "",
-        diagnosis: diagnosis.join(", "),
-        advice: notes,
-        follow_up: followUpDate || undefined,
-        items: itemsPayload,
-      }, { onSuccess: () => navigate("/admin/prescriptions") });
+      updatePrescription.mutate({ id: id!, ...payload }, { onSuccess: () => navigate("/admin/prescriptions") });
     } else {
-      createPrescription.mutate({
-        patient_id: patientId,
-        doctor_id: user?.id || "",
-        diagnosis: diagnosis.join(", "),
-        advice: notes,
-        follow_up: followUpDate || undefined,
-        items: itemsPayload,
-      }, { onSuccess: () => navigate("/admin/prescriptions") });
+      createPrescription.mutate(payload, { onSuccess: () => navigate("/admin/prescriptions") });
     }
   };
 
