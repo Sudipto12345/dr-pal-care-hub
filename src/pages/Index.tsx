@@ -4,10 +4,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Heart, Stethoscope, Pill, ShieldCheck, Star, ArrowRight, Calendar, Leaf, Phone, MapPin,
   Quote, Award, GraduationCap, Globe, Building2, Droplets, TreePine, Sprout, Sun,
+  MessageCircle,
 } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-import heroBanner from "@/assets/doctor-hero-banner.png";
+import heroBanner from "@/assets/hero-doctor-new.jpg";
 import aboutDoctor from "@/assets/about-doctor.jpg";
 import ctaBackground from "@/assets/cta-patient.jpg";
 import featureConsultation from "@/assets/feature-consultation.jpg";
