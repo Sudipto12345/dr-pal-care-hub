@@ -131,9 +131,8 @@ const AdminNewCase = () => {
   const [dose, setDose] = useState("");
   const [repetition, setRepetition] = useState("");
 
-  // Follow-up
-  const [nextVisit, setNextVisit] = useState("");
-  const [followUpNotes, setFollowUpNotes] = useState("");
+  // Follow-ups (multiple)
+  const [followUps, setFollowUps] = useState<FollowUpRow[]>([{ ...emptyFollowUp }]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -199,8 +198,9 @@ const AdminNewCase = () => {
       if (fd.potency) setPotency(fd.potency);
       if (fd.dose) setDose(fd.dose);
       if (fd.repetition) setRepetition(fd.repetition);
-      if (fd.nextVisit) setNextVisit(fd.nextVisit);
-      if (fd.followUpNotes) setFollowUpNotes(fd.followUpNotes);
+      if (fd.followUps) setFollowUps(fd.followUps);
+      // Legacy support
+      else if (fd.nextVisit || fd.followUpNotes) setFollowUps([{ date: fd.nextVisit || "", status: "", improvement: "", medicine: "", notes: fd.followUpNotes || "" }]);
     }
   }, [existingCase]);
 
@@ -218,8 +218,14 @@ const AdminNewCase = () => {
     menstruation, flow, mensPain, leucorrhoea, sexualDesire, maleProblems,
     majorIllness, surgery, medHistory, famDiabetes, famHypertension, famCancer, famOther,
     weight, height, pulse, bp, tongue, skin, investigations,
-    keyRubrics, miasm, medicine, potency, dose, repetition, nextVisit, followUpNotes,
+    keyRubrics, miasm, medicine, potency, dose, repetition, followUps,
   });
+
+  const addFollowUp = () => setFollowUps(f => [...f, { ...emptyFollowUp }]);
+  const removeFollowUp = (i: number) => { if (followUps.length > 1) setFollowUps(f => f.filter((_, idx) => idx !== i)); };
+  const updateFollowUp = (i: number, field: keyof FollowUpRow, value: string) => {
+    setFollowUps(f => f.map((row, idx) => idx === i ? { ...row, [field]: value } : row));
+  };
 
   const handleSubmit = (ev: React.FormEvent) => {
     ev.preventDefault();
@@ -230,7 +236,7 @@ const AdminNewCase = () => {
     
     const symptomsText = complaints.map(c => c.complaint).filter(Boolean).join("; ");
     const historyText = [majorIllness, surgery, medHistory].filter(Boolean).join("; ");
-    const notesText = [keyRubrics, miasm, medicine, followUpNotes].filter(Boolean).join(" | ");
+    const notesText = [keyRubrics, miasm, medicine, ...followUps.map(f => f.notes).filter(Boolean)].filter(Boolean).join(" | ");
     const form_data = buildFormData();
     
     if (isEdit) {
