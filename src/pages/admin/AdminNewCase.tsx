@@ -448,7 +448,16 @@ const AdminNewCase = () => {
               <SectionHeader number={2} icon={MessageSquare} title="Chief Complaints" color="destructive" />
               <div className="mb-4">
                 <Label className="text-xs text-muted-foreground mb-1 block">Chief Complaints (multi-select)</Label>
-                <ComplaintCombo multi value={chiefComplaintsSummary} onChange={setChiefComplaintsSummary} />
+                <ComplaintCombo multi value={chiefComplaintsSummary} onChange={(newValues) => {
+                  const removed = chiefComplaintsSummary.filter(v => !newValues.includes(v));
+                  if (removed.length > 0) {
+                    setComplaints(prev => {
+                      const filtered = prev.filter(c => !removed.includes(c.complaint));
+                      return filtered.length > 0 ? filtered : [{ ...emptyComplaint }];
+                    });
+                  }
+                  setChiefComplaintsSummary(newValues);
+                }} />
               </div>
               <Label className="text-xs text-muted-foreground mb-2 block">Detailed Complaints</Label>
               {complaints.map((c, i) => (
