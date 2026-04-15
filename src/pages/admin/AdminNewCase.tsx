@@ -11,7 +11,7 @@ import {
   Trash2, X, Venus, Mars, History, Users, FlaskConical, Lightbulb, Loader2,
 } from "lucide-react";
 import PatientSelector from "@/components/shared/PatientSelector";
-import { useCreateCase, useCase, useUpdateCase } from "@/hooks/useSupabaseData";
+import { useCreateCase, useCase, useUpdateCase, usePatients } from "@/hooks/useSupabaseData";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
