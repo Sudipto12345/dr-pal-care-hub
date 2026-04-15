@@ -69,13 +69,13 @@ const Index = () => {
       {/* ─── HERO ─── */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         {/* Background image */}
-        <img src={heroBanner} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={heroBanner} alt="Dr. Amit Kumar Pal - Homeopathic Doctor" className="absolute inset-0 w-full h-full object-cover object-right-top" />
         
-        {/* Gradient overlay - left side clear for content, right side image visible */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent lg:from-white/90 lg:via-white/60 lg:to-transparent" />
+        {/* Gradient overlay - left side for content readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-transparent" />
         
-        {/* Nature accent gradient on right */}
-        <div className="absolute inset-0 bg-gradient-to-l from-primary/10 to-transparent" />
+        {/* Mobile overlay for readability */}
+        <div className="absolute inset-0 bg-white/60 lg:bg-transparent" />
 
         {/* Floating particles */}
         {[...Array(6)].map((_, i) => (
@@ -91,14 +91,13 @@ const Index = () => {
           />
         ))}
 
-        {/* Floating leaf SVGs */}
         <FloatingLeaf className="absolute top-20 left-10 w-16 h-16 text-primary/20 animate-float-leaf" />
         <FloatingLeaf className="absolute bottom-32 right-16 w-12 h-12 text-primary/15 animate-float-leaf" style={{ animationDelay: "2s" }} />
 
-        {/* Content - Right aligned on large screens, stacked on mobile */}
+        {/* Content - Left aligned */}
         <div className="container mx-auto px-4 relative z-10 w-full pt-20 lg:pt-0">
-          <div className="flex flex-col lg:flex-row lg:justify-end items-center lg:items-center min-h-[calc(100vh-5rem)]">
-            <div className="max-w-xl lg:max-w-lg xl:max-w-xl text-center lg:text-left lg:ml-auto lg:mr-0">
+          <div className="flex flex-col justify-center items-start min-h-[calc(100vh-5rem)]">
+            <div className="max-w-xl lg:max-w-lg xl:max-w-xl text-left">
               {/* Badge */}
               <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 text-sm text-primary font-medium mb-6 shadow-soft border border-primary/20">
                 <Leaf className="w-4 h-4" />
@@ -115,12 +114,12 @@ const Index = () => {
               </h2>
 
               {/* Subtitle */}
-              <p className="text-muted-foreground text-base md:text-lg mb-8 leading-relaxed max-w-md mx-auto lg:mx-0">
+              <p className="text-muted-foreground text-base md:text-lg mb-8 leading-relaxed max-w-md">
                 Personalized, root-cause based homeopathic treatment for long-term healing
               </p>
 
               {/* Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button size="lg" className="gradient-primary text-primary-foreground rounded-2xl font-semibold shadow-glow hover-scale px-8 text-base h-14" asChild>
                   <Link to="/book-appointment"><Calendar className="w-5 h-5 mr-2" /> Book Appointment</Link>
                 </Button>
