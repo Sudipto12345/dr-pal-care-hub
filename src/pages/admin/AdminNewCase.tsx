@@ -239,6 +239,7 @@ const AdminNewCase = () => {
       if (fd.dose) setDose(fd.dose);
       if (fd.repetition) setRepetition(fd.repetition);
       if (fd.advice) setAdvice(fd.advice);
+      if (fd.diagnosis) setDiagnosis(fd.diagnosis);
       if (fd.followUps) setFollowUps(fd.followUps.map((fu: any) => ({ ...fu, medicines: fu.medicines || [{ ...emptyFollowUpMedicine }] })));
       // Legacy support
       else if (fd.nextVisit || fd.followUpNotes) setFollowUps([{ date: fd.nextVisit || "", status: "", improvement: "", medicine: "", notes: fd.followUpNotes || "", medicines: [{ ...emptyFollowUpMedicine }] }]);
@@ -259,7 +260,7 @@ const AdminNewCase = () => {
     menstruation, flow, mensPain, leucorrhoea, sexualDesire, maleProblems,
     majorIllness, surgery, medHistory, famDiabetes, famHypertension, famCancer, famOther,
     weight, height, pulse, bp, tongue, skin, investigations,
-    keyRubrics, miasm, medicine, potency, dose, repetition, advice, followUps,
+    keyRubrics, miasm, medicine, potency, dose, repetition, advice, diagnosis, followUps,
   });
 
   const addFollowUp = () => setFollowUps(f => [...f, { ...emptyFollowUp, medicines: [{ ...emptyFollowUpMedicine }] }]);
