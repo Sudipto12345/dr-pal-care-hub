@@ -100,6 +100,7 @@ const AdminNewCase = () => {
   const [address, setAddress] = useState("");
 
   // Chief complaints
+  const [chiefComplaintsSummary, setChiefComplaintsSummary] = useState<string[]>([]);
   const [complaints, setComplaints] = useState<ComplaintRow[]>([{ ...emptyComplaint }]);
 
   // Mental
@@ -189,6 +190,7 @@ const AdminNewCase = () => {
       if (fd.occupation) setOccupation(fd.occupation);
       if (fd.phone) setPhone(fd.phone);
       if (fd.address) setAddress(fd.address);
+      if (fd.chiefComplaintsSummary) setChiefComplaintsSummary(fd.chiefComplaintsSummary);
       if (fd.complaints) setComplaints(fd.complaints);
       if (fd.temperament) setTemperament(fd.temperament);
       if (fd.fears) setFears(fd.fears);
@@ -254,7 +256,7 @@ const AdminNewCase = () => {
 
   const buildFormData = () => ({
     age, ageUnit, sex, maritalStatus, occupation, phone, address,
-    complaints, temperament, fears, anger, memory, confidence, stressHistory, company,
+    complaints, chiefComplaintsSummary, temperament, fears, anger, memory, confidence, stressHistory, company,
     appetite, thirst, desireSweet, desireSalt, desireSour, desireSpicy, desireMeat, aversion,
     sweatQty, sweatOdor, sleep, dreams, sleepPosition, thermalType, weatherEffect,
     menstruation, flow, mensPain, leucorrhoea, sexualDesire, maleProblems,
@@ -285,7 +287,7 @@ const AdminNewCase = () => {
     setErrors(e);
     if (Object.keys(e).length) { toast.error("Please fix errors"); return; }
     
-    const symptomsText = complaints.map(c => c.complaint).filter(Boolean).join("; ");
+    const symptomsText = [chiefComplaintsSummary.join(", "), ...complaints.map(c => c.complaint).filter(Boolean)].filter(Boolean).join("; ");
     const historyText = [majorIllness, surgery, medHistory].filter(Boolean).join("; ");
     const notesText = [keyRubrics, miasm, medicine, ...followUps.map(f => f.notes).filter(Boolean)].filter(Boolean).join(" | ");
     const form_data = buildFormData();
@@ -434,6 +436,11 @@ const AdminNewCase = () => {
             {/* 2. Chief Complaints */}
             <div className="bg-card rounded-2xl border border-border p-6">
               <SectionHeader number={2} icon={MessageSquare} title="Chief Complaints" color="destructive" />
+              <div className="mb-4">
+                <Label className="text-xs text-muted-foreground mb-1 block">Chief Complaints (multi-select)</Label>
+                <ComplaintCombo multi value={chiefComplaintsSummary} onChange={setChiefComplaintsSummary} />
+              </div>
+              <Label className="text-xs text-muted-foreground mb-2 block">Detailed Complaints</Label>
               {complaints.map((c, i) => (
                 <div key={i} className="p-4 rounded-xl border border-border bg-muted/20 mb-4 relative">
                   {complaints.length > 1 && (
