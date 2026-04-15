@@ -164,7 +164,17 @@ const AdminCases = () => {
 
     return { patientName, html: `
     <div class="header">
+      <div class="logo-area">
+        <svg class="logo-icon" viewBox="0 0 48 48" width="48" height="48">
+          <circle cx="24" cy="24" r="22" fill="#166534" opacity="0.1" stroke="#166534" stroke-width="2"/>
+          <path d="M24 8 C20 16, 14 20, 14 28 C14 34, 18 38, 24 38 C30 38, 34 34, 34 28 C34 20, 28 16, 24 8Z" fill="#166534" opacity="0.3"/>
+          <line x1="24" y1="14" x2="24" y2="34" stroke="#166534" stroke-width="2"/>
+          <line x1="18" y1="20" x2="24" y2="26" stroke="#166534" stroke-width="1.5"/>
+          <line x1="30" y1="22" x2="24" y2="28" stroke="#166534" stroke-width="1.5"/>
+        </svg>
+      </div>
       <h1>Newlife Homeo Hall</h1>
+      <p class="clinic-tagline">Holistic Homeopathic Care</p>
       <p>Rampal, Bagerhat · +880 1911 734 726</p>
       <p style="margin-top:8px;font-size:14px;font-weight:600;">Case Record — ${patientName}</p>
       <p>Date: ${date}</p>
@@ -196,7 +206,22 @@ const AdminCases = () => {
     </div>
     ${followUpsHtml ? `<div class="section full-width" style="margin-top:4px;"><h3>Follow-Up Visits (${fd.followUps.length})</h3>${followUpsHtml}</div>` : ""}
     ${!fd || !Object.keys(fd).length ? `<div class="grid"><div class="section">${row("Symptoms", c.symptoms)}${row("History", c.history)}${row("Notes", c.notes)}</div></div>` : ""}
-    <div class="footer">Printed on ${new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })} · Newlife Homeo Hall</div>
+    
+    <div class="signature-area">
+      <div class="signature-left">
+        <div class="sig-line"></div>
+        <p>Patient / Guardian Signature</p>
+      </div>
+      <div class="signature-right">
+        <div class="sig-line"></div>
+        <p>Doctor's Signature & Seal</p>
+        <p class="doctor-name">Dr. [Name]</p>
+        <p class="doctor-qual">BHMS / DHMS</p>
+        <p class="doctor-qual">Newlife Homeo Hall</p>
+      </div>
+    </div>
+
+    <div class="footer">Printed on ${new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })} · Newlife Homeo Hall · This is a confidential medical document</div>
     `};
   };
 
@@ -204,7 +229,10 @@ const AdminCases = () => {
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; color: #1a1a1a; font-size: 13px; line-height: 1.5; }
     .header { text-align: center; border-bottom: 2px solid #166534; padding-bottom: 15px; margin-bottom: 20px; }
-    .header h1 { font-size: 20px; color: #166534; margin-bottom: 2px; }
+    .logo-area { display: flex; justify-content: center; margin-bottom: 8px; }
+    .logo-icon { width: 48px; height: 48px; }
+    .header h1 { font-size: 22px; color: #166534; margin-bottom: 0; letter-spacing: 0.5px; }
+    .clinic-tagline { font-size: 11px; color: #166534; font-style: italic; margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
     .header p { color: #666; font-size: 12px; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
     .section { border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; break-inside: avoid; }
@@ -222,8 +250,14 @@ const AdminCases = () => {
     .med-table td { padding: 4px 8px; border: 1px solid #d1d5db; }
     .prescription-box { background: #f0fdf4; border: 1px solid #166534; border-radius: 8px; padding: 12px; }
     .prescription-box h3 { color: #166534; border-bottom: 1px solid #bbf7d0; }
+    .signature-area { display: flex; justify-content: space-between; margin-top: 40px; padding: 0 20px; }
+    .signature-left, .signature-right { text-align: center; width: 40%; }
+    .sig-line { border-top: 1px solid #333; margin-bottom: 6px; margin-top: 50px; }
+    .signature-area p { font-size: 11px; color: #555; margin: 0; }
+    .doctor-name { font-weight: 600; color: #166534 !important; font-size: 12px !important; margin-top: 4px !important; }
+    .doctor-qual { font-size: 10px !important; color: #777 !important; }
     .footer { text-align: center; margin-top: 30px; padding-top: 10px; border-top: 1px solid #ccc; color: #999; font-size: 10px; }
-    @media print { body { padding: 15px; } .section { break-inside: avoid; } }
+    @media print { body { padding: 15px; } .section { break-inside: avoid; } .signature-area { break-inside: avoid; } }
   `;
 
   const handlePrint = (c: any) => {
