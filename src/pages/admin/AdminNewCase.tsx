@@ -251,7 +251,17 @@ const AdminNewCase = () => {
   const addComplaint = () => setComplaints((c) => [...c, { ...emptyComplaint }]);
   const removeComplaint = (i: number) => { if (complaints.length > 1) setComplaints((c) => c.filter((_, idx) => idx !== i)); };
   const updateComplaint = (i: number, field: keyof ComplaintRow, value: string) => {
-    setComplaints((c) => c.map((row, idx) => (idx === i ? { ...row, [field]: value } : row)));
+    setComplaints((c) => {
+      const updated = c.map((row, idx) => (idx === i ? { ...row, [field]: value } : row));
+      if (field === "complaint") {
+        const names = updated.map(r => r.complaint).filter(Boolean);
+        setChiefComplaintsSummary(prev => {
+          const merged = new Set([...prev, ...names]);
+          return Array.from(merged);
+        });
+      }
+      return updated;
+    });
   };
 
   const buildFormData = () => ({
