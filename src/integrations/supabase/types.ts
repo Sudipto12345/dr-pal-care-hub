@@ -356,6 +356,7 @@ export type Database = {
       prescriptions: {
         Row: {
           advice: string | null
+          clinical_exam: Json | null
           created_at: string
           diagnosis: string | null
           doctor_id: string | null
@@ -366,6 +367,7 @@ export type Database = {
         }
         Insert: {
           advice?: string | null
+          clinical_exam?: Json | null
           created_at?: string
           diagnosis?: string | null
           doctor_id?: string | null
@@ -376,6 +378,7 @@ export type Database = {
         }
         Update: {
           advice?: string | null
+          clinical_exam?: Json | null
           created_at?: string
           diagnosis?: string | null
           doctor_id?: string | null
