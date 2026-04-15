@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { useTestimonials, useCreateTestimonial, useUpdateTestimonial, useDeleteTestimonial } from "@/hooks/useTestimonials";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import DataTable from "@/components/shared/DataTable";
@@ -60,9 +59,7 @@ const AdminTestimonials = () => {
           <Button variant="ghost" size="icon" onClick={() => updateTestimonial.mutate({ id: row.id, is_active: !row.is_active })}>
             {row.is_active ? "🔴" : "🟢"}
           </Button>
-          <ConfirmDialog title="Delete testimonial?" description="This action cannot be undone." onConfirm={() => deleteTestimonial.mutate(row.id)}>
-            <Button variant="ghost" size="icon"><Trash2 className="w-4 h-4 text-destructive" /></Button>
-          </ConfirmDialog>
+          <ConfirmDialog trigger={<Button variant="ghost" size="icon"><Trash2 className="w-4 h-4 text-destructive" /></Button>} title="Delete testimonial?" description="This action cannot be undone." onConfirm={() => deleteTestimonial.mutate(row.id)} />
         </div>
       ),
     },
@@ -70,26 +67,30 @@ const AdminTestimonials = () => {
 
   return (
     <div>
-      <PageHeader title="Testimonials" description="Manage patient testimonials">
-        <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) resetForm(); }}>
-          <DialogTrigger asChild>
-            <Button><Plus className="w-4 h-4 mr-1" /> Add Testimonial</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader><DialogTitle>{editItem ? "Edit" : "Add"} Testimonial</DialogTitle></DialogHeader>
-            <div className="space-y-3 mt-2">
-              <div><Label>Name</Label><Input value={name} onChange={(e) => setName(e.target.value)} /></div>
-              <div><Label>Location</Label><Input value={location} onChange={(e) => setLocation(e.target.value)} /></div>
-              <div><Label>Review Text</Label><Textarea value={text} onChange={(e) => setText(e.target.value)} rows={4} /></div>
-              <div><Label>Rating (1-5)</Label><Input type="number" min={1} max={5} value={rating} onChange={(e) => setRating(Number(e.target.value))} /></div>
-              <Button onClick={handleSubmit} className="w-full" disabled={createTestimonial.isPending || updateTestimonial.isPending}>
-                {(createTestimonial.isPending || updateTestimonial.isPending) && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
-                {editItem ? "Update" : "Add"} Testimonial
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </PageHeader>
+      <PageHeader
+        title="Testimonials"
+        description="Manage patient testimonials"
+        actions={
+          <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) resetForm(); }}>
+            <DialogTrigger asChild>
+              <Button><Plus className="w-4 h-4 mr-1" /> Add Testimonial</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader><DialogTitle>{editItem ? "Edit" : "Add"} Testimonial</DialogTitle></DialogHeader>
+              <div className="space-y-3 mt-2">
+                <div><Label>Name</Label><Input value={name} onChange={(e) => setName(e.target.value)} /></div>
+                <div><Label>Location</Label><Input value={location} onChange={(e) => setLocation(e.target.value)} /></div>
+                <div><Label>Review Text</Label><Textarea value={text} onChange={(e) => setText(e.target.value)} rows={4} /></div>
+                <div><Label>Rating (1-5)</Label><Input type="number" min={1} max={5} value={rating} onChange={(e) => setRating(Number(e.target.value))} /></div>
+                <Button onClick={handleSubmit} className="w-full" disabled={createTestimonial.isPending || updateTestimonial.isPending}>
+                  {(createTestimonial.isPending || updateTestimonial.isPending) && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
+                  {editItem ? "Update" : "Add"} Testimonial
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        }
+      />
       <DataTable columns={columns} data={testimonials || []} searchPlaceholder="Search testimonials..." />
     </div>
   );

@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useYoutubeVideos, useCreateYoutubeVideo, useUpdateYoutubeVideo, useDeleteYoutubeVideo } from "@/hooks/useYoutubeVideos";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import DataTable from "@/components/shared/DataTable";
-import { Loader2, Trash2, Pencil, Plus, Youtube, ExternalLink } from "lucide-react";
+import { Loader2, Trash2, Pencil, Plus, ExternalLink } from "lucide-react";
 import StatusBadge from "@/components/shared/StatusBadge";
 
 const AdminYoutubeVideos = () => {
@@ -26,7 +26,6 @@ const AdminYoutubeVideos = () => {
 
   const resetForm = () => { setTitle(""); setYoutubeId(""); setDescription(""); setSortOrder(0); setEditItem(null); };
 
-  // Extract YouTube ID from URL or use raw ID
   const extractYoutubeId = (input: string) => {
     const match = input.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
     return match ? match[1] : input.trim();
@@ -72,9 +71,7 @@ const AdminYoutubeVideos = () => {
           <Button variant="ghost" size="icon" onClick={() => updateVideo.mutate({ id: row.id, is_active: !row.is_active })}>
             {row.is_active ? "🔴" : "🟢"}
           </Button>
-          <ConfirmDialog title="Delete video?" description="This action cannot be undone." onConfirm={() => deleteVideo.mutate(row.id)}>
-            <Button variant="ghost" size="icon"><Trash2 className="w-4 h-4 text-destructive" /></Button>
-          </ConfirmDialog>
+          <ConfirmDialog trigger={<Button variant="ghost" size="icon"><Trash2 className="w-4 h-4 text-destructive" /></Button>} title="Delete video?" description="This action cannot be undone." onConfirm={() => deleteVideo.mutate(row.id)} />
         </div>
       ),
     },
@@ -82,26 +79,30 @@ const AdminYoutubeVideos = () => {
 
   return (
     <div>
-      <PageHeader title="YouTube Videos" description="Manage YouTube video showcase">
-        <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) resetForm(); }}>
-          <DialogTrigger asChild>
-            <Button><Plus className="w-4 h-4 mr-1" /> Add Video</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader><DialogTitle>{editItem ? "Edit" : "Add"} Video</DialogTitle></DialogHeader>
-            <div className="space-y-3 mt-2">
-              <div><Label>Title</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} /></div>
-              <div><Label>YouTube URL or Video ID</Label><Input value={youtubeId} onChange={(e) => setYoutubeId(e.target.value)} placeholder="https://youtube.com/watch?v=..." /></div>
-              <div><Label>Description</Label><Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} /></div>
-              <div><Label>Sort Order</Label><Input type="number" value={sortOrder} onChange={(e) => setSortOrder(Number(e.target.value))} /></div>
-              <Button onClick={handleSubmit} className="w-full" disabled={createVideo.isPending || updateVideo.isPending}>
-                {(createVideo.isPending || updateVideo.isPending) && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
-                {editItem ? "Update" : "Add"} Video
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </PageHeader>
+      <PageHeader
+        title="YouTube Videos"
+        description="Manage YouTube video showcase"
+        actions={
+          <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) resetForm(); }}>
+            <DialogTrigger asChild>
+              <Button><Plus className="w-4 h-4 mr-1" /> Add Video</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader><DialogTitle>{editItem ? "Edit" : "Add"} Video</DialogTitle></DialogHeader>
+              <div className="space-y-3 mt-2">
+                <div><Label>Title</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} /></div>
+                <div><Label>YouTube URL or Video ID</Label><Input value={youtubeId} onChange={(e) => setYoutubeId(e.target.value)} placeholder="https://youtube.com/watch?v=..." /></div>
+                <div><Label>Description</Label><Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} /></div>
+                <div><Label>Sort Order</Label><Input type="number" value={sortOrder} onChange={(e) => setSortOrder(Number(e.target.value))} /></div>
+                <Button onClick={handleSubmit} className="w-full" disabled={createVideo.isPending || updateVideo.isPending}>
+                  {(createVideo.isPending || updateVideo.isPending) && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
+                  {editItem ? "Update" : "Add"} Video
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        }
+      />
       <DataTable columns={columns} data={videos || []} searchPlaceholder="Search videos..." />
     </div>
   );
