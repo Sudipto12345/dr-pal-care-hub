@@ -17,7 +17,6 @@ const AdminCases = () => {
 
   const [viewCase, setViewCase] = useState<any>(null);
   const [editCase, setEditCase] = useState<any>(null);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const [editSymptoms, setEditSymptoms] = useState("");
   const [editHistory, setEditHistory] = useState("");
@@ -35,11 +34,6 @@ const AdminCases = () => {
     updateCase.mutate({ id: editCase.id, symptoms: editSymptoms, history: editHistory, notes: editNotes }, {
       onSuccess: () => setEditCase(null),
     });
-  };
-
-  const handleDelete = () => {
-    if (!deleteId) return;
-    deleteCase.mutate(deleteId, { onSuccess: () => setDeleteId(null) });
   };
 
   if (isLoading) return <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
@@ -65,7 +59,14 @@ const AdminCases = () => {
               <div className="flex gap-1">
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setViewCase(row)}><Eye className="w-3.5 h-3.5" /></Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(row)}><Pencil className="w-3.5 h-3.5" /></Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setDeleteId(row.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                <ConfirmDialog
+                  trigger={<Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="w-3.5 h-3.5" /></Button>}
+                  title="Delete Case"
+                  description="Are you sure? This cannot be undone."
+                  confirmLabel="Delete"
+                  variant="destructive"
+                  onConfirm={() => deleteCase.mutate(row.id)}
+                />
               </div>
             ),
           },
@@ -106,16 +107,6 @@ const AdminCases = () => {
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Delete Confirm */}
-      <ConfirmDialog
-        open={!!deleteId}
-        onOpenChange={() => setDeleteId(null)}
-        title="Delete Case"
-        description="Are you sure you want to delete this case? This action cannot be undone."
-        onConfirm={handleDelete}
-        loading={deleteCase.isPending}
-      />
     </div>
   );
 };
