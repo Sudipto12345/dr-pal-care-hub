@@ -26,6 +26,7 @@ const AdminLayout = () => {
   const { t, lang, toggleLang } = useLanguage();
   const location = useLocation();
   const pageTitle = pageTitles[location.pathname] || "Admin";
+  const [rxOpen, setRxOpen] = useState(false);
 
   const bottomNavItems = [
     { label: t.admin.dashboard, url: "/admin/dashboard", icon: LayoutDashboard },
