@@ -38,8 +38,8 @@ const AdminNewPrescription = () => {
   const [patientId, setPatientId] = useState("");
   const [patientName, setPatientName] = useState("");
   const [followUpDate, setFollowUpDate] = useState("");
-  const [complaint, setComplaint] = useState("");
-  const [diagnosis, setDiagnosis] = useState("");
+  const [complaint, setComplaint] = useState<string[]>([]);
+  const [diagnosis, setDiagnosis] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
   const [medicines, setMedicines] = useState<MedicineRow[]>([{ ...emptyMedicine }]);
   const [errors, setErrors] = useState<Record<string, string>>({});
