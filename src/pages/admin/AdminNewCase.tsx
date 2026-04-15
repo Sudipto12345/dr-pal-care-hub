@@ -649,9 +649,9 @@ const AdminNewCase = () => {
                   <div className="mt-4 pt-3 border-t border-border">
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-xs font-semibold text-secondary flex items-center gap-1"><Pill className="w-3.5 h-3.5" /> Prescription</p>
-                      <span className="text-[10px] text-muted-foreground">{fu.medicines.length} medicine{fu.medicines.length !== 1 ? "s" : ""}</span>
+                      <span className="text-[10px] text-muted-foreground">{(fu.medicines || []).length} medicine{(fu.medicines || []).length !== 1 ? "s" : ""}</span>
                     </div>
-                    {fu.medicines.map((med, mi) => (
+                    {(fu.medicines || []).map((med, mi) => (
                       <div key={mi} className="flex gap-2 mb-2 items-start">
                         <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-2">
                           <Input value={med.name} onChange={(e) => updateFollowUpMedicine(i, mi, "name", e.target.value)} placeholder="Medicine" className="rounded-lg text-xs h-8" />
