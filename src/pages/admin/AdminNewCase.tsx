@@ -338,35 +338,16 @@ const AdminNewCase = () => {
             {/* 1. Patient Information */}
             <div className="bg-card rounded-2xl border border-border p-6">
               <SectionHeader number={1} icon={User} title="Patient Information" />
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div>
                   <Label className="text-xs text-muted-foreground mb-1.5 block">Patient *</Label>
-                  <PatientSelector value={patientId} onChange={(id, name) => { setPatientId(id); setPatientName(name); setSelectedPrescriptionId(""); }} error={errors.patientId} />
+                  <PatientSelector value={patientId} onChange={(id, name) => {
+                    setPatientId(id); setPatientName(name); setSelectedPrescriptionId("");
+                    // Auto-fill from patient record
+                    const patients = patientPrescriptions; // will update on next render
+                    // We'll use a separate effect for auto-fill from patient data
+                  }} error={errors.patientId} />
                 </div>
-                {patientId && patientPrescriptions.length > 0 && (
-                  <div>
-                    <Label className="text-xs text-muted-foreground mb-1.5 block">Link Prescription</Label>
-                    <div className="flex gap-2">
-                      <Select value={selectedPrescriptionId} onValueChange={setSelectedPrescriptionId}>
-                        <SelectTrigger className="rounded-xl flex-1">
-                          <SelectValue placeholder="Select prescription..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {patientPrescriptions.map((p: any) => (
-                            <SelectItem key={p.id} value={p.id}>
-                              {new Date(p.created_at).toLocaleDateString()} — {p.diagnosis || "No diagnosis"} ({p.prescription_items?.length || 0} medicines)
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {selectedPrescriptionId && (
-                        <Button type="button" variant="outline" size="icon" className="rounded-xl h-10 w-10 shrink-0" onClick={() => setViewPrescription(patientPrescriptions.find((p: any) => p.id === selectedPrescriptionId))} title="View Prescription">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                )}
                 <div>
                   <Label className="text-xs text-muted-foreground mb-1.5 block">Age</Label>
                   <div className="flex gap-2">
@@ -376,14 +357,44 @@ const AdminNewCase = () => {
                     </select>
                   </div>
                 </div>
-                <SelectField label="Sex" value={sex} onChange={setSex} options={["Male", "Female", "Other"]} />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                <SelectField label="Sex" value={sex} onChange={setSex} options={["Male", "Female", "Other"]} />
                 <SelectField label="Marital Status" value={maritalStatus} onChange={setMaritalStatus} options={["Single", "Married", "Divorced", "Widowed"]} />
                 <TextField label="Occupation" value={occupation} onChange={setOccupation} placeholder="e.g., Teacher, Farmer" />
-                <TextField label="Phone" value={phone} onChange={setPhone} placeholder="01XXXXXXXXX" />
               </div>
-              <TextField label="Address" value={address} onChange={setAddress} placeholder="Village, Upazila, District, Country" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <TextField label="Phone" value={phone} onChange={setPhone} placeholder="01XXXXXXXXX" />
+                <TextField label="Address" value={address} onChange={setAddress} placeholder="Village, Upazila, District, Country" />
+              </div>
+
+              {/* Link Prescription - shown after patient selected */}
+              {patientId && patientPrescriptions.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-border">
+                  <Label className="text-xs text-muted-foreground mb-1.5 flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5 text-secondary" /> Link Prescription
+                  </Label>
+                  <div className="flex gap-2">
+                    <Select value={selectedPrescriptionId} onValueChange={setSelectedPrescriptionId}>
+                      <SelectTrigger className="rounded-xl flex-1">
+                        <SelectValue placeholder="Select a prescription to link..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {patientPrescriptions.map((p: any) => (
+                          <SelectItem key={p.id} value={p.id}>
+                            {new Date(p.created_at).toLocaleDateString()} — {p.diagnosis || "No diagnosis"} ({p.prescription_items?.length || 0} medicines)
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {selectedPrescriptionId && (
+                      <Button type="button" variant="outline" size="icon" className="rounded-xl h-10 w-10 shrink-0" onClick={() => setViewPrescription(patientPrescriptions.find((p: any) => p.id === selectedPrescriptionId))} title="View Prescription">
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* 2. Chief Complaints */}
