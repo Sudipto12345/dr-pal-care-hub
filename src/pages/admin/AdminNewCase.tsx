@@ -64,6 +64,7 @@ const AdminNewCase = () => {
   const createCase = useCreateCase();
   const updateCase = useUpdateCase();
   const { data: existingCase, isLoading: loadingCase } = useCase(editId || "");
+  const { data: allPatients } = usePatients();
   const [patientId, setPatientId] = useState("");
   const [patientName, setPatientName] = useState("");
   const [selectedPrescriptionId, setSelectedPrescriptionId] = useState("");
