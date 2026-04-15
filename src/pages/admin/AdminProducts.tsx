@@ -20,6 +20,12 @@ const AdminProducts = () => {
         data={products || []}
         searchPlaceholder="Search products..."
         columns={[
+          {
+            header: "Image",
+            accessor: (row: any) => row.image_url ? (
+              <img src={row.image_url} alt={row.name} className="w-12 h-12 rounded-xl object-cover" />
+            ) : <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center text-[10px] text-muted-foreground">No img</div>,
+          },
           { header: "Name", accessor: "name" },
           { header: "Category", accessor: (row: any) => row.category || "—" },
           { header: "Price", accessor: (row: any) => `৳${row.price}` },
