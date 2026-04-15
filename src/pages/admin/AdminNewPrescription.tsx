@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Plus, Trash2, ArrowLeft, ClipboardPlus, User, Stethoscope, Pill, MessageSquare, Eye, Calendar } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, ClipboardPlus, User, Stethoscope, Pill, MessageSquare, Eye, Calendar, Loader2 } from "lucide-react";
 import PatientSelector from "@/components/shared/PatientSelector";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
+import { useCreatePrescription } from "@/hooks/useSupabaseData";
+import { useAuth } from "@/hooks/useAuth";
 
 interface MedicineRow {
   name: string;
