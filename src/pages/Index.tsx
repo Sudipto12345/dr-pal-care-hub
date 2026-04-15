@@ -128,7 +128,7 @@ const Index = () => {
                   <Link to="/book-appointment"><Calendar className="w-5 h-5 mr-2" /> Book Appointment</Link>
                 </Button>
                 <Button size="lg" variant="outline" className="rounded-2xl border-2 border-primary text-primary bg-white/80 hover:bg-primary/5 hover:text-primary font-semibold text-base h-14 px-8 backdrop-blur-sm" asChild>
-                  <Link to="https://wa.me/your-number" target="_blank"><MessageCircle className="w-5 h-5 mr-2" /> WhatsApp Consultation</Link>
+                  <Link to="https://wa.me/8801911734726" target="_blank"><MessageCircle className="w-5 h-5 mr-2" /> WhatsApp Consultation</Link>
                 </Button>
               </div>
             </div>
