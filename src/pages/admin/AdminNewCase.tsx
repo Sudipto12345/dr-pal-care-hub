@@ -345,8 +345,13 @@ const AdminNewCase = () => {
                   <PatientSelector value={patientId} onChange={(id, name) => {
                     setPatientId(id); setPatientName(name); setSelectedPrescriptionId("");
                     // Auto-fill from patient record
-                    const patients = patientPrescriptions; // will update on next render
-                    // We'll use a separate effect for auto-fill from patient data
+                    const pt = (allPatients || []).find((p: any) => p.id === id);
+                    if (pt && !isEdit) {
+                      if (pt.age) setAge(pt.age.toString());
+                      if (pt.gender) setSex(pt.gender);
+                      if (pt.phone) setPhone(pt.phone);
+                      if (pt.address) setAddress(pt.address);
+                    }
                   }} error={errors.patientId} />
                 </div>
                 <div>
