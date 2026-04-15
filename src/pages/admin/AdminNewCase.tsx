@@ -12,6 +12,11 @@ import {
 } from "lucide-react";
 import PatientSelector from "@/components/shared/PatientSelector";
 import { useCreateCase, useCase, useUpdateCase } from "@/hooks/useSupabaseData";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FileText, Eye } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const selectClass = "w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring";
 
