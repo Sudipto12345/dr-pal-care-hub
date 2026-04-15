@@ -229,7 +229,10 @@ const AdminCases = () => {
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; color: #1a1a1a; font-size: 13px; line-height: 1.5; }
     .header { text-align: center; border-bottom: 2px solid #166534; padding-bottom: 15px; margin-bottom: 20px; }
-    .header h1 { font-size: 20px; color: #166534; margin-bottom: 2px; }
+    .logo-area { display: flex; justify-content: center; margin-bottom: 8px; }
+    .logo-icon { width: 48px; height: 48px; }
+    .header h1 { font-size: 22px; color: #166534; margin-bottom: 0; letter-spacing: 0.5px; }
+    .clinic-tagline { font-size: 11px; color: #166534; font-style: italic; margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
     .header p { color: #666; font-size: 12px; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
     .section { border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; break-inside: avoid; }
@@ -247,8 +250,14 @@ const AdminCases = () => {
     .med-table td { padding: 4px 8px; border: 1px solid #d1d5db; }
     .prescription-box { background: #f0fdf4; border: 1px solid #166534; border-radius: 8px; padding: 12px; }
     .prescription-box h3 { color: #166534; border-bottom: 1px solid #bbf7d0; }
+    .signature-area { display: flex; justify-content: space-between; margin-top: 40px; padding: 0 20px; }
+    .signature-left, .signature-right { text-align: center; width: 40%; }
+    .sig-line { border-top: 1px solid #333; margin-bottom: 6px; margin-top: 50px; }
+    .signature-area p { font-size: 11px; color: #555; margin: 0; }
+    .doctor-name { font-weight: 600; color: #166534 !important; font-size: 12px !important; margin-top: 4px !important; }
+    .doctor-qual { font-size: 10px !important; color: #777 !important; }
     .footer { text-align: center; margin-top: 30px; padding-top: 10px; border-top: 1px solid #ccc; color: #999; font-size: 10px; }
-    @media print { body { padding: 15px; } .section { break-inside: avoid; } }
+    @media print { body { padding: 15px; } .section { break-inside: avoid; } .signature-area { break-inside: avoid; } }
   `;
 
   const handlePrint = (c: any) => {
