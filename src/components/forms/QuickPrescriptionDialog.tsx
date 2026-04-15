@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2, ClipboardPlus, Loader2 } from "lucide-react";
+import { Plus, Trash2, ClipboardPlus, Loader2, Activity } from "lucide-react";
 import MedicineCombo from "@/components/shared/MedicineCombo";
 import DiagnosisCombo from "@/components/shared/DiagnosisCombo";
 import PatientSelector from "@/components/shared/PatientSelector";
@@ -35,6 +35,9 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
   const [diagnosis, setDiagnosis] = useState<string[]>([]);
   const [advice, setAdvice] = useState("");
   const [followUp, setFollowUp] = useState("");
+  const [clinicalExam, setClinicalExam] = useState({
+    riskFactors: "", oe: "", pulse: "", bp: "", heart: "", lung: "", others: "",
+  });
   const [medicines, setMedicines] = useState<MedicineRow[]>([{ ...emptyMedicine }]);
 
   const reset = () => {
@@ -42,6 +45,7 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
     setDiagnosis([]);
     setAdvice("");
     setFollowUp("");
+    setClinicalExam({ riskFactors: "", oe: "", pulse: "", bp: "", heart: "", lung: "", others: "" });
     setMedicines([{ ...emptyMedicine }]);
   };
 
@@ -50,12 +54,14 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
     if (diagnosis.length === 0) { toast.error("Diagnosis is required"); return; }
     if (!medicines.some(m => m.name.trim())) { toast.error("Add at least one medicine"); return; }
 
+    const hasExam = Object.values(clinicalExam).some(v => v.trim());
     createPrescription.mutate({
       patient_id: patientId,
       doctor_id: user?.id || "",
       diagnosis: diagnosis.join(", "),
       advice: advice || undefined,
       follow_up: followUp || undefined,
+      clinical_exam: hasExam ? clinicalExam : undefined,
       items: medicines.filter(m => m.name.trim()).map(m => ({
         medicine_name: m.name,
         potency: m.potency || undefined,
