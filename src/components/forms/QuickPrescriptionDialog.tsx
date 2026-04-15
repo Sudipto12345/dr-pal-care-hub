@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2, ClipboardPlus, Loader2 } from "lucide-react";
+import MedicineCombo from "@/components/shared/MedicineCombo";
+import DiagnosisCombo from "@/components/shared/DiagnosisCombo";
 import PatientSelector from "@/components/shared/PatientSelector";
 import { useCreatePrescription } from "@/hooks/useSupabaseData";
 import { useAuth } from "@/hooks/useAuth";
@@ -96,7 +98,7 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
           {/* Diagnosis */}
           <div>
             <Label className="text-xs text-muted-foreground mb-1 block">Diagnosis *</Label>
-            <Textarea value={diagnosis} onChange={e => setDiagnosis(e.target.value)} placeholder="Your diagnosis..." className="rounded-xl min-h-[60px]" />
+            <DiagnosisCombo value={diagnosis} onChange={setDiagnosis} />
           </div>
 
           {/* Medicines */}
@@ -111,7 +113,17 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
               {medicines.map((med, i) => (
                 <div key={i} className="flex gap-2 items-start p-2.5 rounded-xl border border-border bg-muted/20">
                   <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    <Input value={med.name} onChange={e => updateMedicine(i, "name", e.target.value)} placeholder="Medicine *" className="rounded-lg h-8 text-xs" />
+                    <MedicineCombo
+                      value={med.name}
+                      onChange={(name, defaults) => {
+                        updateMedicine(i, "name", name);
+                        if (defaults?.potency && !med.potency) updateMedicine(i, "potency", defaults.potency);
+                        if (defaults?.dose && !med.dose) updateMedicine(i, "dose", defaults.dose);
+                        if (defaults?.frequency && !med.frequency) updateMedicine(i, "frequency", defaults.frequency);
+                      }}
+                      placeholder="Medicine *"
+                      className="h-8 text-xs"
+                    />
                     <select value={med.potency} onChange={e => updateMedicine(i, "potency", e.target.value)}
                       className="h-8 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-2 focus:ring-ring">
                       <option value="">Potency</option>
