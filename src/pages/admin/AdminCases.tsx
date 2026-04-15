@@ -380,6 +380,9 @@ const AdminCases = () => {
             accessor: (row: any) => (
               <div className="flex gap-1">
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setViewCase(row)} title="View"><Eye className="w-3.5 h-3.5" /></Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7" asChild title="Create Prescription">
+                  <Link to={`/admin/prescriptions/new?patient=${row.patient_id}`}><ClipboardPlus className="w-3.5 h-3.5 text-secondary" /></Link>
+                </Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7" asChild title="Edit"><Link to={`/admin/cases/${row.id}/edit`}><Pencil className="w-3.5 h-3.5" /></Link></Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleCopy(row)} title="Copy"><Copy className="w-3.5 h-3.5" /></Button>
                 <ConfirmDialog
