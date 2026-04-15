@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Printer, ArrowLeft, Download, Loader2, Eye, EyeOff } from "lucide-react";
+import { Printer, ArrowLeft, Download, Loader2 } from "lucide-react";
 import { usePrescription } from "@/hooks/useSupabaseData";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -29,7 +29,6 @@ const PrescriptionPreview = () => {
             <ArrowLeft className="w-4 h-4" /> Back to Prescriptions
           </Link>
           <div className="flex items-center gap-3">
-            {/* Header/Footer toggles */}
             <div className="flex items-center gap-4 border-r border-border pr-3">
               <div className="flex items-center gap-1.5">
                 <Switch id="show-header" checked={showHeader} onCheckedChange={setShowHeader} className="h-4 w-7" />
@@ -50,121 +49,219 @@ const PrescriptionPreview = () => {
         </div>
       </div>
 
-      {/* Prescription Content */}
-      <div className="container mx-auto max-w-4xl py-8 px-4">
-        <div className="bg-white rounded-2xl shadow-elevated p-8 print:shadow-none print:rounded-none print:p-6">
-          {/* Header - maintains space when hidden */}
-          <div className="border-b-2 border-primary/20 pb-6 mb-6">
+      {/* Prescription Pad */}
+      <div className="container mx-auto max-w-[210mm] py-8 px-4 print:py-0 print:px-0">
+        <div className="bg-white shadow-elevated print:shadow-none" style={{ minHeight: "297mm", padding: "12mm 15mm", fontFamily: "'Times New Roman', serif", color: "#1a1a1a", position: "relative" }}>
+
+          {/* ===== HEADER ===== */}
+          <div style={{ borderBottom: "2px solid #333", paddingBottom: "12px", marginBottom: "10px", minHeight: "120px" }}>
             {showHeader ? (
-              <div className="text-center">
-                <h1 className="text-2xl font-heading font-bold text-foreground">Dr. Amit Kumar Pal</h1>
-                <p className="text-sm text-primary font-medium">BHMS (Gold Medalist) | Advanced Homeopathic Practitioner</p>
-                <p className="text-xs text-muted-foreground mt-1">Reg. No: WBHMC/12345</p>
-                <p className="text-xs text-muted-foreground mt-0.5">📞 +91 98765 43210 | ✉ dr.amitpal@clinic.com</p>
-                <p className="text-xs text-muted-foreground">📍 123 Healing Lane, New Delhi, India 110001</p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                {/* Left - Bengali + English */}
+                <div style={{ flex: 1 }}>
+                  <h1 className="font-bangla" style={{ fontSize: "28px", fontWeight: 700, color: "#1a237e", margin: 0, lineHeight: 1.2 }}>
+                    ডাঃ অমিত কুমার পাল
+                  </h1>
+                  <p className="font-bangla" style={{ fontSize: "13px", margin: "2px 0", color: "#333" }}>
+                    বিএইচএমএস (গোল্ড মেডেলিস্ট)
+                  </p>
+                  <p className="font-bangla" style={{ fontSize: "13px", margin: "2px 0", color: "#333" }}>
+                    উন্নত হোমিওপ্যাথিক চিকিৎসক
+                  </p>
+                  <p className="font-bangla" style={{ fontSize: "12px", margin: "4px 0 0", color: "#c62828", fontWeight: 600 }}>
+                    হোমিওপ্যাথি বিশেষজ্ঞ
+                  </p>
+                  <p className="font-bangla" style={{ fontSize: "11px", margin: "2px 0", color: "#555" }}>
+                    ক্লিনিক: ১২৩ হিলিং লেন, নিউ দিল্লি
+                  </p>
+                </div>
+
+                {/* Right - English */}
+                <div style={{ textAlign: "right", flex: 1 }}>
+                  <h2 style={{ fontSize: "24px", fontWeight: 700, color: "#1a237e", margin: 0, lineHeight: 1.2 }}>
+                    Dr. Amit Kumar Pal
+                  </h2>
+                  <p style={{ fontSize: "13px", margin: "2px 0", color: "#333" }}>
+                    BHMS (Gold Medalist)
+                  </p>
+                  <p style={{ fontSize: "13px", margin: "2px 0", color: "#333" }}>
+                    Advanced Homeopathic Practitioner
+                  </p>
+                  <p style={{ fontSize: "12px", margin: "4px 0 0", color: "#c62828", fontWeight: 600 }}>
+                    Intervention Homeopath
+                  </p>
+                  <p style={{ fontSize: "12px", margin: "2px 0", color: "#c62828", fontWeight: 600 }}>
+                    and Medicine Specialist
+                  </p>
+                  <p style={{ fontSize: "12px", margin: "4px 0 0", color: "#1565c0", fontWeight: 600 }}>
+                    Healing Lane Clinic
+                  </p>
+                  <p style={{ fontSize: "11px", margin: "2px 0", color: "#333" }}>
+                    Reg. No: WBHMC/12345
+                  </p>
+                  <p style={{ fontSize: "11px", margin: "2px 0", color: "#333" }}>
+                    Contact: +91 98765 43210
+                  </p>
+                </div>
               </div>
             ) : (
-              <div className="h-[88px]" /> /* blank space preserving layout */
+              <div style={{ height: "108px" }} />
             )}
           </div>
 
-          {/* Patient Info */}
-          <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-muted/30 rounded-xl">
-            <div>
-              <p className="text-xs text-muted-foreground">Patient Name</p>
-              <p className="text-sm font-semibold text-foreground">{patient?.name || "N/A"}</p>
+          {/* ===== PATIENT INFO ROW ===== */}
+          <div style={{ display: "flex", borderBottom: "1px solid #999", paddingBottom: "8px", marginBottom: "12px", fontSize: "14px", gap: "8px" }}>
+            <div style={{ flex: 2 }}>
+              <span style={{ fontWeight: 600 }}>Name: </span>
+              <span style={{ borderBottom: "1px dotted #999", paddingBottom: "2px" }}>{patient?.name || "________________"}</span>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Age / Gender</p>
-              <p className="text-sm font-semibold text-foreground">{patient?.age || "—"}y / {patient?.gender || "—"}</p>
+            <div style={{ flex: 1 }}>
+              <span style={{ fontWeight: 600 }}>Age: </span>
+              <span>{patient?.age || "___"}y</span>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Phone</p>
-              <p className="text-sm text-foreground">{patient?.phone || "—"}</p>
+            <div style={{ flex: 1 }}>
+              <span style={{ fontWeight: 600 }}>Gender: </span>
+              <span>{patient?.gender || "___"}</span>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Date</p>
-              <p className="text-sm text-foreground">{new Date(prescription.created_at).toLocaleDateString()}</p>
+            <div style={{ flex: 1.5 }}>
+              <span style={{ fontWeight: 600 }}>Date: </span>
+              <span>{new Date(prescription.created_at).toLocaleDateString()}</span>
             </div>
           </div>
 
-          {/* Diagnosis */}
-          {prescription.diagnosis && (
-            <div className="mb-6">
-              <h3 className="text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">Diagnosis</h3>
-              <p className="text-sm text-muted-foreground">{prescription.diagnosis}</p>
-            </div>
-          )}
+          {/* ===== TWO COLUMN BODY ===== */}
+          <div style={{ display: "flex", gap: "0", minHeight: "500px" }}>
+            {/* LEFT COLUMN - Diagnosis & Clinical Info */}
+            <div style={{ width: "45%", paddingRight: "16px", borderRight: "1px solid #ccc" }}>
+              {/* Dx */}
+              <div style={{ marginBottom: "16px" }}>
+                <p style={{ fontSize: "14px", fontWeight: 700, margin: "0 0 4px" }}>Dx-</p>
+                <p style={{ fontSize: "13px", color: "#333", minHeight: "20px" }}>{prescription.diagnosis || ""}</p>
+              </div>
 
-          {/* Rx Symbol */}
-          <div className="mb-4">
-            <span className="text-3xl font-serif text-primary font-bold">℞</span>
-          </div>
+              {/* Clinical Complaints / Advice */}
+              <div style={{ marginBottom: "16px" }}>
+                <p style={{ fontSize: "14px", fontWeight: 700, margin: "0 0 4px" }}>Clinical Complaints:</p>
+                <p style={{ fontSize: "13px", color: "#333", whiteSpace: "pre-line", minHeight: "60px" }}>{prescription.advice || ""}</p>
+              </div>
 
-          {/* Medicines Table */}
-          <div className="mb-6">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b-2 border-foreground/10">
-                  <th className="text-left py-2 text-xs uppercase tracking-wide text-muted-foreground">#</th>
-                  <th className="text-left py-2 text-xs uppercase tracking-wide text-muted-foreground">Medicine</th>
-                  <th className="text-left py-2 text-xs uppercase tracking-wide text-muted-foreground">Potency</th>
-                  <th className="text-left py-2 text-xs uppercase tracking-wide text-muted-foreground">Dose</th>
-                  <th className="text-left py-2 text-xs uppercase tracking-wide text-muted-foreground">Frequency</th>
-                </tr>
-              </thead>
-              <tbody>
-                {medicines.map((m: any, i: number) => (
-                  <tr key={m.id || i} className="border-b border-border/50">
-                    <td className="py-3 text-muted-foreground">{i + 1}</td>
-                    <td className="py-3 font-medium text-foreground">{m.medicine_name}</td>
-                    <td className="py-3 text-muted-foreground">{m.potency || "—"}</td>
-                    <td className="py-3 text-muted-foreground">{m.dose || "—"}</td>
-                    <td className="py-3 text-muted-foreground">{m.frequency || "—"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Advice */}
-          {prescription.advice && (
-            <div className="mb-6 p-4 bg-primary/5 rounded-xl">
-              <h3 className="text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">Advice & Instructions</h3>
-              <p className="text-sm text-muted-foreground whitespace-pre-line">{prescription.advice}</p>
-            </div>
-          )}
-
-          {/* Follow-up */}
-          {prescription.follow_up && (
-            <div className="mb-6">
-              <p className="text-sm"><span className="font-semibold text-foreground">Follow-up: </span><span className="text-muted-foreground">{new Date(prescription.follow_up).toLocaleDateString()}</span></p>
-            </div>
-          )}
-
-          {/* Footer - maintains space when hidden */}
-          <div className="pt-8 border-t border-border/50">
-            {showFooter ? (
-              <div className="flex justify-between items-end">
-                <div className="text-xs text-muted-foreground">
-                  <p>This is a computer-generated prescription.</p>
-                  <p className="mt-0.5">📞 +91 98765 43210 | 📍 123 Healing Lane, New Delhi</p>
+              {/* Follow-up */}
+              {prescription.follow_up && (
+                <div style={{ marginBottom: "16px" }}>
+                  <p style={{ fontSize: "14px", fontWeight: 700, margin: "0 0 4px" }}>Follow-up:</p>
+                  <p style={{ fontSize: "13px", color: "#333" }}>{new Date(prescription.follow_up).toLocaleDateString()}</p>
                 </div>
-                <div className="text-right">
-                  <div className="w-40 border-t border-foreground/30 pt-1">
-                    <p className="text-sm font-semibold text-foreground">Dr. Amit Kumar Pal</p>
-                    <p className="text-xs text-muted-foreground">BHMS (Gold Medalist)</p>
+              )}
+            </div>
+
+            {/* RIGHT COLUMN - Rx & Medicine Grid Table */}
+            <div style={{ width: "55%", paddingLeft: "16px" }}>
+              {/* Rx Symbol */}
+              <div style={{ marginBottom: "8px" }}>
+                <span style={{ fontSize: "36px", fontWeight: 700, color: "#1a237e", fontFamily: "serif" }}>℞</span>
+              </div>
+
+              {/* Medicine Grid Table */}
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
+                <thead>
+                  <tr>
+                    <th style={{ ...thStyle, textAlign: "left", width: "5%" }}>#</th>
+                    <th style={{ ...thStyle, textAlign: "left", width: "35%" }}>Medicine</th>
+                    <th style={{ ...thStyle, width: "12%" }}>Potency</th>
+                    <th style={thStyle} className="font-bangla">সকাল</th>
+                    <th style={thStyle} className="font-bangla">দুপুর</th>
+                    <th style={thStyle} className="font-bangla">রাত</th>
+                    <th style={thStyle} className="font-bangla">সময়</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {medicines.map((m: any, i: number) => {
+                    const freq = (m.frequency || "").toLowerCase();
+                    const morning = freq.includes("thrice") || freq.includes("twice") || freq.includes("once") || freq.includes("morning") ? m.dose || "✓" : "";
+                    const noon = freq.includes("thrice") || freq.includes("twice") ? m.dose || "✓" : "";
+                    const night = freq.includes("thrice") || freq.includes("night") || freq.includes("once") ? m.dose || "✓" : "";
+
+                    return (
+                      <tr key={m.id || i}>
+                        <td style={tdStyle}>{i + 1}</td>
+                        <td style={{ ...tdStyle, fontWeight: 600, textAlign: "left" }}>{m.medicine_name}</td>
+                        <td style={{ ...tdStyle, textAlign: "center" }}>{m.potency || "—"}</td>
+                        <td style={tdStyle}>{morning}</td>
+                        <td style={tdStyle}>{noon}</td>
+                        <td style={tdStyle}>{night}</td>
+                        <td style={tdStyle}>{m.frequency || "—"}</td>
+                      </tr>
+                    );
+                  })}
+                  {/* Empty rows to fill space like a real pad */}
+                  {Array.from({ length: Math.max(0, 8 - medicines.length) }).map((_, i) => (
+                    <tr key={`empty-${i}`}>
+                      <td style={tdStyle}>&nbsp;</td>
+                      <td style={tdStyle}>&nbsp;</td>
+                      <td style={tdStyle}>&nbsp;</td>
+                      <td style={tdStyle}>&nbsp;</td>
+                      <td style={tdStyle}>&nbsp;</td>
+                      <td style={tdStyle}>&nbsp;</td>
+                      <td style={tdStyle}>&nbsp;</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* ===== FOOTER ===== */}
+          <div style={{ position: "absolute", bottom: "12mm", left: "15mm", right: "15mm", borderTop: "2px solid #333", paddingTop: "10px", minHeight: "70px" }}>
+            {showFooter ? (
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", fontSize: "12px" }}>
+                {/* Left clinic */}
+                <div>
+                  <p className="font-bangla" style={{ margin: "0 0 2px", fontWeight: 600, color: "#333" }}>
+                    প্রতিদিন সকাল ৯টা থেকে রাত ৯টা
+                  </p>
+                  <p style={{ margin: "0 0 2px", color: "#555" }}>
+                    123 Healing Lane, New Delhi, India
+                  </p>
+                  <p className="font-bangla" style={{ margin: "0", fontWeight: 700, color: "#c62828", fontSize: "14px" }}>
+                    ০১৯৮৭-৬৫৪৩২১
+                  </p>
+                </div>
+
+                {/* Right - Signature */}
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ width: "180px", borderTop: "1px solid #333", paddingTop: "4px", marginLeft: "auto" }}>
+                    <p style={{ fontSize: "14px", fontWeight: 700, margin: 0, color: "#1a237e" }}>Dr. Amit Kumar Pal</p>
+                    <p style={{ fontSize: "11px", margin: 0, color: "#555" }}>BHMS (Gold Medalist)</p>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="h-[52px]" /> /* blank space preserving layout */
+              <div style={{ height: "58px" }} />
             )}
           </div>
+
         </div>
       </div>
     </div>
   );
+};
+
+// Table cell styles
+const thStyle: React.CSSProperties = {
+  border: "1px solid #999",
+  padding: "6px 4px",
+  textAlign: "center",
+  fontWeight: 700,
+  backgroundColor: "#f5f5f5",
+  fontSize: "11px",
+};
+
+const tdStyle: React.CSSProperties = {
+  border: "1px solid #ccc",
+  padding: "6px 4px",
+  textAlign: "center",
+  verticalAlign: "middle",
+  minHeight: "28px",
 };
 
 export default PrescriptionPreview;
