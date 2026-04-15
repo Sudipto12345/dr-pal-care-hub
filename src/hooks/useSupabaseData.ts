@@ -191,7 +191,7 @@ export const useCreateCase = () => {
   const qc = useQueryClient();
   const { toast } = useToast();
   return useMutation({
-    mutationFn: async (caseData: { patient_id: string; symptoms?: string; history?: string; notes?: string }) => {
+    mutationFn: async (caseData: { patient_id: string; symptoms?: string; history?: string; notes?: string; form_data?: any }) => {
       const { data, error } = await supabase.from("cases").insert(caseData).select().single();
       if (error) throw error;
       return data;
@@ -219,7 +219,7 @@ export const useUpdateCase = () => {
   const qc = useQueryClient();
   const { toast } = useToast();
   return useMutation({
-    mutationFn: async ({ id, ...updates }: { id: string; symptoms?: string; history?: string; notes?: string }) => {
+    mutationFn: async ({ id, ...updates }: { id: string; symptoms?: string; history?: string; notes?: string; form_data?: any }) => {
       const { data, error } = await supabase.from("cases").update(updates).eq("id", id).select().single();
       if (error) throw error;
       return data;
