@@ -3,7 +3,7 @@ import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import { useCases, useDeleteCase } from "@/hooks/useSupabaseData";
 import { Button } from "@/components/ui/button";
-import { Plus, Loader2, Eye, Pencil, Trash2, Copy, User, MessageSquare, Brain, Activity, Stethoscope, History, Users, FlaskConical, Lightbulb, Pill, CalendarDays, Venus, Mars, Printer } from "lucide-react";
+import { Plus, Loader2, Eye, Pencil, Trash2, Copy, User, MessageSquare, Brain, Activity, Stethoscope, History, Users, FlaskConical, Lightbulb, Pill, CalendarDays, Venus, Mars, Printer, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
@@ -124,7 +124,7 @@ const AdminCases = () => {
     toast.success("Case copied to clipboard!");
   };
 
-  const handlePrint = (c: any) => {
+  const buildCaseHtml = (c: any) => {
     const fd = c.form_data || {};
     const patientName = c.patients?.name || "Unknown";
     const date = new Date(c.created_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
@@ -162,32 +162,7 @@ const AdminCases = () => {
       }).join("");
     }
 
-    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Case - ${patientName}</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; color: #1a1a1a; font-size: 13px; line-height: 1.5; }
-      .header { text-align: center; border-bottom: 2px solid #166534; padding-bottom: 15px; margin-bottom: 20px; }
-      .header h1 { font-size: 20px; color: #166534; margin-bottom: 2px; }
-      .header p { color: #666; font-size: 12px; }
-      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
-      .section { border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; break-inside: avoid; }
-      .section h3 { font-size: 13px; color: #166534; border-bottom: 1px solid #e8e8e8; padding-bottom: 5px; margin-bottom: 8px; }
-      .row { font-size: 12px; margin-bottom: 3px; }
-      .label { font-weight: 600; color: #555; }
-      .full-width { grid-column: 1 / -1; }
-      .complaint { background: #f9f9f9; padding: 6px 8px; border-radius: 5px; margin-bottom: 5px; font-size: 12px; }
-      .complaint .sub { color: #777; font-size: 11px; }
-      .followup { border: 1px solid #e4e4e4; border-radius: 8px; padding: 10px; margin-bottom: 10px; }
-      .fu-header { font-size: 13px; margin-bottom: 6px; }
-      .badge { background: #166534; color: white; padding: 1px 8px; border-radius: 10px; font-size: 10px; margin-left: 8px; }
-      .med-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px; }
-      .med-table th { background: #f0fdf4; text-align: left; padding: 4px 8px; border: 1px solid #d1d5db; font-weight: 600; }
-      .med-table td { padding: 4px 8px; border: 1px solid #d1d5db; }
-      .prescription-box { background: #f0fdf4; border: 1px solid #166534; border-radius: 8px; padding: 12px; }
-      .prescription-box h3 { color: #166534; border-bottom: 1px solid #bbf7d0; }
-      .footer { text-align: center; margin-top: 30px; padding-top: 10px; border-top: 1px solid #ccc; color: #999; font-size: 10px; }
-      @media print { body { padding: 15px; } .section { break-inside: avoid; } }
-    </style></head><body>
+    return { patientName, html: `
     <div class="header">
       <h1>Newlife Homeo Hall</h1>
       <p>Rampal, Bagerhat · +880 1911 734 726</p>
@@ -222,13 +197,76 @@ const AdminCases = () => {
     ${followUpsHtml ? `<div class="section full-width" style="margin-top:4px;"><h3>Follow-Up Visits (${fd.followUps.length})</h3>${followUpsHtml}</div>` : ""}
     ${!fd || !Object.keys(fd).length ? `<div class="grid"><div class="section">${row("Symptoms", c.symptoms)}${row("History", c.history)}${row("Notes", c.notes)}</div></div>` : ""}
     <div class="footer">Printed on ${new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })} · Newlife Homeo Hall</div>
-    </body></html>`;
+    `};
+  };
 
+  const caseStyles = `
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; color: #1a1a1a; font-size: 13px; line-height: 1.5; }
+    .header { text-align: center; border-bottom: 2px solid #166534; padding-bottom: 15px; margin-bottom: 20px; }
+    .header h1 { font-size: 20px; color: #166534; margin-bottom: 2px; }
+    .header p { color: #666; font-size: 12px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+    .section { border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; break-inside: avoid; }
+    .section h3 { font-size: 13px; color: #166534; border-bottom: 1px solid #e8e8e8; padding-bottom: 5px; margin-bottom: 8px; }
+    .row { font-size: 12px; margin-bottom: 3px; }
+    .label { font-weight: 600; color: #555; }
+    .full-width { grid-column: 1 / -1; }
+    .complaint { background: #f9f9f9; padding: 6px 8px; border-radius: 5px; margin-bottom: 5px; font-size: 12px; }
+    .complaint .sub { color: #777; font-size: 11px; }
+    .followup { border: 1px solid #e4e4e4; border-radius: 8px; padding: 10px; margin-bottom: 10px; }
+    .fu-header { font-size: 13px; margin-bottom: 6px; }
+    .badge { background: #166534; color: white; padding: 1px 8px; border-radius: 10px; font-size: 10px; margin-left: 8px; }
+    .med-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px; }
+    .med-table th { background: #f0fdf4; text-align: left; padding: 4px 8px; border: 1px solid #d1d5db; font-weight: 600; }
+    .med-table td { padding: 4px 8px; border: 1px solid #d1d5db; }
+    .prescription-box { background: #f0fdf4; border: 1px solid #166534; border-radius: 8px; padding: 12px; }
+    .prescription-box h3 { color: #166534; border-bottom: 1px solid #bbf7d0; }
+    .footer { text-align: center; margin-top: 30px; padding-top: 10px; border-top: 1px solid #ccc; color: #999; font-size: 10px; }
+    @media print { body { padding: 15px; } .section { break-inside: avoid; } }
+  `;
+
+  const handlePrint = (c: any) => {
+    const { patientName, html: bodyHtml } = buildCaseHtml(c);
+    const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Case - ${patientName}</title><style>${caseStyles}</style></head><body>${bodyHtml}</body></html>`;
     const printWindow = window.open("", "_blank");
     if (printWindow) {
-      printWindow.document.write(html);
+      printWindow.document.write(fullHtml);
       printWindow.document.close();
       printWindow.onload = () => printWindow.print();
+    }
+  };
+
+  const handleDownloadPdf = async (c: any) => {
+    const { patientName, html: bodyHtml } = buildCaseHtml(c);
+    toast.info("Generating PDF...");
+
+    const container = document.createElement("div");
+    container.innerHTML = bodyHtml;
+    container.style.cssText = "font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; color: #1a1a1a; font-size: 13px; line-height: 1.5; width: 794px;";
+
+    // Add styles inline for html2pdf
+    const styleEl = document.createElement("style");
+    styleEl.textContent = caseStyles;
+    container.prepend(styleEl);
+
+    document.body.appendChild(container);
+
+    try {
+      const html2pdf = (await import("html2pdf.js")).default;
+      await html2pdf().set({
+        margin: [10, 10, 10, 10],
+        filename: `Case-${patientName.replace(/\s+/g, "-")}-${new Date().toISOString().split("T")[0]}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      }).from(container).save();
+      toast.success("PDF downloaded successfully!");
+    } catch (err) {
+      console.error("PDF generation error:", err);
+      toast.error("Failed to generate PDF. Try the Print option instead.");
+    } finally {
+      document.body.removeChild(container);
     }
   };
 
@@ -520,6 +558,9 @@ const AdminCases = () => {
 
           {/* Bottom actions */}
           <div className="flex justify-end gap-2 pt-2 border-t border-border">
+            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleDownloadPdf(viewCase)}>
+              <Download className="w-3.5 h-3.5 mr-1" /> PDF
+            </Button>
             <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handlePrint(viewCase)}>
               <Printer className="w-3.5 h-3.5 mr-1" /> Print
             </Button>
