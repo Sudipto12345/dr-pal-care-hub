@@ -3,11 +3,13 @@ import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import { useCases, useDeleteCase } from "@/hooks/useSupabaseData";
 import { Button } from "@/components/ui/button";
-import { Plus, Loader2, Eye, Pencil, Trash2, Copy, User, MessageSquare, Brain, Activity, Stethoscope, History, Users, FlaskConical, Lightbulb, Pill, CalendarDays, Venus, Mars, Printer, Download } from "lucide-react";
+import { Plus, Loader2, Eye, Pencil, Trash2, Copy, User, MessageSquare, Brain, Activity, Stethoscope, History, Users, FlaskConical, Lightbulb, Pill, CalendarDays, Venus, Mars, Printer, Download, ClipboardPlus, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 const InfoRow = ({ label, value }: { label: string; value: string | undefined }) => {
   if (!value) return null;
