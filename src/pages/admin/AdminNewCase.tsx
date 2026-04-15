@@ -230,9 +230,9 @@ const AdminNewCase = () => {
       if (fd.potency) setPotency(fd.potency);
       if (fd.dose) setDose(fd.dose);
       if (fd.repetition) setRepetition(fd.repetition);
-      if (fd.followUps) setFollowUps(fd.followUps);
+      if (fd.followUps) setFollowUps(fd.followUps.map((fu: any) => ({ ...fu, medicines: fu.medicines || [{ ...emptyFollowUpMedicine }] })));
       // Legacy support
-      else if (fd.nextVisit || fd.followUpNotes) setFollowUps([{ date: fd.nextVisit || "", status: "", improvement: "", medicine: "", notes: fd.followUpNotes || "" }]);
+      else if (fd.nextVisit || fd.followUpNotes) setFollowUps([{ date: fd.nextVisit || "", status: "", improvement: "", medicine: "", notes: fd.followUpNotes || "", medicines: [{ ...emptyFollowUpMedicine }] }]);
     }
   }, [existingCase]);
 
