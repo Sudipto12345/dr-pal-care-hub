@@ -526,17 +526,65 @@ const AdminNewCase = () => {
               </div>
             </div>
 
-            {/* 13. Follow-Up */}
+            {/* 13. Follow-Ups */}
             <div className="bg-card rounded-2xl border-2 border-blue-200 p-5">
-              <SectionHeader number={13} icon={CalendarDays} title="Follow-Up" color="info" />
-              <div className="mb-3">
-                <Label className="text-xs text-muted-foreground mb-1.5 block">Next Visit</Label>
-                <Input type="date" value={nextVisit} onChange={(e) => setNextVisit(e.target.value)} className="rounded-xl" />
+              <div className="flex items-center justify-between mb-4">
+                <SectionHeader number={13} icon={CalendarDays} title="Follow-Up Visits" color="info" />
+                <span className="text-xs font-medium text-info">{followUps.length} visit{followUps.length !== 1 ? "s" : ""}</span>
               </div>
-              <div>
-                <Label className="text-xs text-muted-foreground mb-1.5 block">Changes / Notes</Label>
-                <Textarea value={followUpNotes} onChange={(e) => setFollowUpNotes(e.target.value)} placeholder="e.g., Improvement noted, reduce dose" className="rounded-xl min-h-[70px]" />
-              </div>
+              {followUps.map((fu, i) => (
+                <div key={i} className="p-4 rounded-xl border border-border bg-muted/20 mb-3 relative">
+                  {followUps.length > 1 && (
+                    <Button type="button" variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7 text-destructive" onClick={() => removeFollowUp(i)}>
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  )}
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-6 h-6 rounded-full bg-info text-white text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                    <span className="text-sm font-semibold text-foreground">Follow-Up #{i + 1}</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                    <div>
+                      <Label className="text-xs text-muted-foreground mb-1 block">Visit Date</Label>
+                      <Input type="date" value={fu.date} onChange={(e) => updateFollowUp(i, "date", e.target.value)} className="rounded-xl" />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-muted-foreground mb-1 block">Patient Status</Label>
+                      <select value={fu.status} onChange={(e) => updateFollowUp(i, "status", e.target.value)}
+                        className="w-full h-10 rounded-xl border border-input bg-background px-3 text-sm">
+                        <option value="">Select</option>
+                        <option value="Improved">✅ Improved</option>
+                        <option value="Same">➡️ Same / No Change</option>
+                        <option value="Worse">❌ Worse</option>
+                        <option value="Partially Improved">🔄 Partially Improved</option>
+                        <option value="New Symptoms">⚠️ New Symptoms Appeared</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="mb-3">
+                    <Label className="text-xs text-muted-foreground mb-1 block">Improvement / Deterioration Details</Label>
+                    <Textarea value={fu.improvement} onChange={(e) => updateFollowUp(i, "improvement", e.target.value)}
+                      placeholder="e.g., Joint pain reduced 50%, sleep improved, appetite better..."
+                      className="rounded-xl min-h-[60px]" />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <Label className="text-xs text-muted-foreground mb-1 block">Medicine Change (if any)</Label>
+                      <Input value={fu.medicine} onChange={(e) => updateFollowUp(i, "medicine", e.target.value)}
+                        placeholder="e.g., Continue same / Changed to Bryonia 200C" className="rounded-xl" />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-muted-foreground mb-1 block">Doctor's Notes</Label>
+                      <Input value={fu.notes} onChange={(e) => updateFollowUp(i, "notes", e.target.value)}
+                        placeholder="e.g., Reduce dose, next visit after 15 days" className="rounded-xl" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <Button type="button" variant="outline" size="sm" onClick={addFollowUp}
+                className="rounded-xl text-info border-info/30 hover:bg-info/5">
+                <Plus className="w-4 h-4 mr-1" /> Add Another Follow-Up
+              </Button>
             </div>
           </div>
         </div>
