@@ -12,6 +12,11 @@ import {
 } from "lucide-react";
 import PatientSelector from "@/components/shared/PatientSelector";
 import { useCreateCase, useCase, useUpdateCase } from "@/hooks/useSupabaseData";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FileText, Eye } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const selectClass = "w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring";
 
@@ -52,6 +57,24 @@ const AdminNewCase = () => {
   const { data: existingCase, isLoading: loadingCase } = useCase(editId || "");
   const [patientId, setPatientId] = useState("");
   const [patientName, setPatientName] = useState("");
+  const [selectedPrescriptionId, setSelectedPrescriptionId] = useState("");
+  const [viewPrescription, setViewPrescription] = useState<any>(null);
+
+  // Fetch prescriptions for selected patient
+  const { data: patientPrescriptions = [] } = useQuery({
+    queryKey: ["patient-prescriptions", patientId],
+    queryFn: async () => {
+      if (!patientId) return [];
+      const { data, error } = await supabase
+        .from("prescriptions")
+        .select("*, patients(name), prescription_items(*)")
+        .eq("patient_id", patientId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!patientId,
+  });
   const [age, setAge] = useState("");
   const [ageUnit, setAgeUnit] = useState("Years");
   const [sex, setSex] = useState("");
@@ -300,8 +323,32 @@ const AdminNewCase = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                 <div>
                   <Label className="text-xs text-muted-foreground mb-1.5 block">Patient *</Label>
-                  <PatientSelector value={patientId} onChange={(id, name) => { setPatientId(id); setPatientName(name); }} error={errors.patientId} />
+                  <PatientSelector value={patientId} onChange={(id, name) => { setPatientId(id); setPatientName(name); setSelectedPrescriptionId(""); }} error={errors.patientId} />
                 </div>
+                {patientId && patientPrescriptions.length > 0 && (
+                  <div>
+                    <Label className="text-xs text-muted-foreground mb-1.5 block">Link Prescription</Label>
+                    <div className="flex gap-2">
+                      <Select value={selectedPrescriptionId} onValueChange={setSelectedPrescriptionId}>
+                        <SelectTrigger className="rounded-xl flex-1">
+                          <SelectValue placeholder="Select prescription..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {patientPrescriptions.map((p: any) => (
+                            <SelectItem key={p.id} value={p.id}>
+                              {new Date(p.created_at).toLocaleDateString()} — {p.diagnosis || "No diagnosis"} ({p.prescription_items?.length || 0} medicines)
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {selectedPrescriptionId && (
+                        <Button type="button" variant="outline" size="icon" className="rounded-xl h-10 w-10 shrink-0" onClick={() => setViewPrescription(patientPrescriptions.find((p: any) => p.id === selectedPrescriptionId))} title="View Prescription">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                )}
                 <div>
                   <Label className="text-xs text-muted-foreground mb-1.5 block">Age</Label>
                   <div className="flex gap-2">
@@ -596,6 +643,114 @@ const AdminNewCase = () => {
           </Button>
         </div>
       </form>
+
+      {/* Linked Prescription Summary Card */}
+      {selectedPrescriptionId && (() => {
+        const rx = patientPrescriptions.find((p: any) => p.id === selectedPrescriptionId);
+        if (!rx) return null;
+        return (
+          <div className="mt-6 bg-card rounded-2xl border border-border p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <FileText className="w-5 h-5 text-primary" />
+                <h3 className="font-heading font-semibold text-base">Linked Prescription</h3>
+              </div>
+              <Button variant="outline" size="sm" className="rounded-xl" onClick={() => setViewPrescription(rx)}>
+                <Eye className="w-4 h-4 mr-1" /> View Full
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm mb-4">
+              <div><span className="text-muted-foreground">Date:</span> <span className="font-medium">{new Date(rx.created_at).toLocaleDateString()}</span></div>
+              <div><span className="text-muted-foreground">Diagnosis:</span> <span className="font-medium">{rx.diagnosis || "—"}</span></div>
+              <div><span className="text-muted-foreground">Follow-up:</span> <span className="font-medium">{rx.follow_up ? new Date(rx.follow_up).toLocaleDateString() : "—"}</span></div>
+              <div><span className="text-muted-foreground">Medicines:</span> <span className="font-medium">{rx.prescription_items?.length || 0}</span></div>
+            </div>
+            {rx.prescription_items?.length > 0 && (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border border-border rounded-xl overflow-hidden">
+                  <thead className="bg-muted/50">
+                    <tr>
+                      <th className="text-left px-3 py-2 font-medium">#</th>
+                      <th className="text-left px-3 py-2 font-medium">Medicine</th>
+                      <th className="text-left px-3 py-2 font-medium">Potency</th>
+                      <th className="text-left px-3 py-2 font-medium">Dose</th>
+                      <th className="text-left px-3 py-2 font-medium">Frequency</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rx.prescription_items.map((item: any, i: number) => (
+                      <tr key={item.id} className="border-t border-border">
+                        <td className="px-3 py-2">{i + 1}</td>
+                        <td className="px-3 py-2 font-medium">{item.medicine_name}</td>
+                        <td className="px-3 py-2">{item.potency || "—"}</td>
+                        <td className="px-3 py-2">{item.dose || "—"}</td>
+                        <td className="px-3 py-2">{item.frequency || "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {rx.advice && <p className="mt-3 text-sm"><span className="text-muted-foreground">Advice:</span> {rx.advice}</p>}
+          </div>
+        );
+      })()}
+
+      {/* Full Prescription View Dialog */}
+      <Dialog open={!!viewPrescription} onOpenChange={(open) => !open && setViewPrescription(null)}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-heading flex items-center gap-2">
+              <FileText className="w-5 h-5 text-primary" /> Prescription Details
+            </DialogTitle>
+          </DialogHeader>
+          {viewPrescription && (
+            <div className="space-y-4 mt-2">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div><span className="text-muted-foreground">Patient:</span> <span className="font-medium">{viewPrescription.patients?.name || patientName}</span></div>
+                <div><span className="text-muted-foreground">Date:</span> <span className="font-medium">{new Date(viewPrescription.created_at).toLocaleDateString()}</span></div>
+                <div><span className="text-muted-foreground">Diagnosis:</span> <span className="font-medium">{viewPrescription.diagnosis || "—"}</span></div>
+                <div><span className="text-muted-foreground">Follow-up:</span> <span className="font-medium">{viewPrescription.follow_up ? new Date(viewPrescription.follow_up).toLocaleDateString() : "—"}</span></div>
+              </div>
+
+              {viewPrescription.prescription_items?.length > 0 && (
+                <div>
+                  <h4 className="font-semibold text-sm mb-2 flex items-center gap-1"><Pill className="w-4 h-4 text-secondary" /> Medicines</h4>
+                  <table className="w-full text-sm border border-border rounded-xl overflow-hidden">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="text-left px-3 py-2 font-medium">#</th>
+                        <th className="text-left px-3 py-2 font-medium">Medicine</th>
+                        <th className="text-left px-3 py-2 font-medium">Potency</th>
+                        <th className="text-left px-3 py-2 font-medium">Dose</th>
+                        <th className="text-left px-3 py-2 font-medium">Frequency</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {viewPrescription.prescription_items.map((item: any, i: number) => (
+                        <tr key={item.id} className="border-t border-border">
+                          <td className="px-3 py-2">{i + 1}</td>
+                          <td className="px-3 py-2 font-medium">{item.medicine_name}</td>
+                          <td className="px-3 py-2">{item.potency || "—"}</td>
+                          <td className="px-3 py-2">{item.dose || "—"}</td>
+                          <td className="px-3 py-2">{item.frequency || "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {viewPrescription.advice && (
+                <div>
+                  <h4 className="font-semibold text-sm mb-1">Advice</h4>
+                  <p className="text-sm text-muted-foreground bg-muted/30 rounded-xl p-3">{viewPrescription.advice}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
