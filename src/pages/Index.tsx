@@ -67,15 +67,21 @@ const Index = () => {
   return (
     <div className="overflow-x-hidden">
       {/* ─── HERO ─── */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center overflow-hidden">
+        {/* Background image */}
         <img src={heroBanner} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60" />
+        
+        {/* Gradient overlay - left side clear for content, right side image visible */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent lg:from-white/90 lg:via-white/60 lg:to-transparent" />
+        
+        {/* Nature accent gradient on right */}
+        <div className="absolute inset-0 bg-gradient-to-l from-primary/10 to-transparent" />
 
         {/* Floating particles */}
         {[...Array(6)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-2 h-2 rounded-full bg-white/20 animate-float-particle"
+            className="absolute w-2 h-2 rounded-full bg-primary/30 animate-float-particle"
             style={{
               left: `${15 + i * 14}%`,
               top: `${20 + (i % 3) * 25}%`,
@@ -86,34 +92,43 @@ const Index = () => {
         ))}
 
         {/* Floating leaf SVGs */}
-        <FloatingLeaf className="absolute top-20 left-10 w-16 h-16 text-white/10 animate-float-leaf" />
-        <FloatingLeaf className="absolute bottom-32 right-16 w-12 h-12 text-white/8 animate-float-leaf" style={{ animationDelay: "2s" }} />
+        <FloatingLeaf className="absolute top-20 left-10 w-16 h-16 text-primary/20 animate-float-leaf" />
+        <FloatingLeaf className="absolute bottom-32 right-16 w-12 h-12 text-primary/15 animate-float-leaf" style={{ animationDelay: "2s" }} />
 
-        <div className="container mx-auto px-4 relative z-10 text-center pt-16">
-          <div className="inline-flex items-center gap-2 glass-dark rounded-full px-4 py-2 text-sm text-white/80 font-medium mb-8">
-            <Leaf className="w-4 h-4 text-nature-400" />
-            {t.hero.badge}
-          </div>
+        {/* Content - Right aligned on large screens, stacked on mobile */}
+        <div className="container mx-auto px-4 relative z-10 w-full pt-20 lg:pt-0">
+          <div className="flex flex-col lg:flex-row lg:justify-end items-center lg:items-center min-h-[calc(100vh-5rem)]">
+            <div className="max-w-xl lg:max-w-lg xl:max-w-xl text-center lg:text-left lg:ml-auto lg:mr-0">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 text-sm text-primary font-medium mb-6 shadow-soft border border-primary/20">
+                <Leaf className="w-4 h-4" />
+                Natural & Holistic Healing
+              </div>
 
-          <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-[1.08] tracking-tight max-w-4xl mx-auto">
-            {t.hero.title1}
-            <br />
-            <span className="bg-gradient-to-r from-nature-300 via-nature-400 to-mint-300 bg-clip-text text-transparent">
-              {t.hero.title2}
-            </span>
-          </h1>
+              {/* Title */}
+              <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-foreground mb-4 leading-tight tracking-tight">
+                Dr. Amit Kumar Pal
+              </h1>
+              
+              <h2 className="font-heading text-xl sm:text-2xl md:text-[1.65rem] font-semibold text-primary mb-5">
+                Advanced Homeopathic & Wellness Care
+              </h2>
 
-          <p className="text-white/60 text-base md:text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-            {t.hero.subtitle}
-          </p>
+              {/* Subtitle */}
+              <p className="text-muted-foreground text-base md:text-lg mb-8 leading-relaxed max-w-md mx-auto lg:mx-0">
+                Personalized, root-cause based homeopathic treatment for long-term healing
+              </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button size="lg" className="gradient-primary text-primary-foreground rounded-2xl font-semibold shadow-glow hover-scale px-8 text-base" asChild>
-              <Link to="/book-appointment"><Calendar className="w-5 h-5 mr-2" /> {t.hero.bookBtn}</Link>
-            </Button>
-            <Button size="lg" variant="outline" className="rounded-2xl border-white/25 text-white bg-white/10 hover:bg-white/20 hover:text-white backdrop-blur-sm text-base" asChild>
-              <Link to="/about"><ArrowRight className="w-5 h-5 mr-2" /> Explore More</Link>
-            </Button>
+              {/* Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                <Button size="lg" className="gradient-primary text-primary-foreground rounded-2xl font-semibold shadow-glow hover-scale px-8 text-base h-14" asChild>
+                  <Link to="/book-appointment"><Calendar className="w-5 h-5 mr-2" /> Book Appointment</Link>
+                </Button>
+                <Button size="lg" variant="outline" className="rounded-2xl border-2 border-primary text-primary bg-white/80 hover:bg-primary/5 hover:text-primary font-semibold text-base h-14 px-8 backdrop-blur-sm" asChild>
+                  <Link to="https://wa.me/your-number" target="_blank"><MessageCircle className="w-5 h-5 mr-2" /> WhatsApp Consultation</Link>
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
 
