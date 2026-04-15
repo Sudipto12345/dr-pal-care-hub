@@ -37,8 +37,11 @@ const SectionHeader = ({ number, icon: Icon, title, color = "primary" }: { numbe
 
 const AdminNewCase = () => {
   const navigate = useNavigate();
+  const { id: editId } = useParams();
+  const isEdit = !!editId;
   const createCase = useCreateCase();
-  // Patient info
+  const updateCase = useUpdateCase();
+  const { data: existingCase, isLoading: loadingCase } = useCase(editId || "");
   const [patientId, setPatientId] = useState("");
   const [patientName, setPatientName] = useState("");
   const [age, setAge] = useState("");
