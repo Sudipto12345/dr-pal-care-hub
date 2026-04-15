@@ -4,9 +4,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Heart, Stethoscope, Pill, ShieldCheck, Star, ArrowRight, Calendar, Leaf, Phone, MapPin,
   Quote, Award, GraduationCap, Globe, Building2, Droplets, TreePine, Sprout, Sun,
-  MessageCircle,
+  MessageCircle, Play,
 } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useTestimonials } from "@/hooks/useTestimonials";
+import { useYoutubeVideos } from "@/hooks/useYoutubeVideos";
 
 import heroBanner from "@/assets/hero-doctor-new.jpg";
 import aboutDoctor from "@/assets/about-doctor.jpg";
@@ -38,6 +40,8 @@ const WaveDivider = ({ flip = false }: { flip?: boolean }) => (
 
 const Index = () => {
   const { t } = useLanguage();
+  const { data: dbTestimonials } = useTestimonials(true);
+  const { data: youtubeVideos } = useYoutubeVideos(true);
 
   const highlights = [
     { icon: Leaf, title: t.highlights.holisticHealing, desc: t.highlights.holisticDesc },
@@ -52,10 +56,10 @@ const Index = () => {
     { icon: Globe, title: t.services.onlineConsultation, desc: t.services.onlineConsultationDesc, img: featureOnline, color: "from-info/20 to-info/5" },
   ];
 
-  const testimonials = [
-    { name: "Priya Sharma", location: "New Delhi", text: "Dr. Pal's treatment completely cured my chronic allergies after 3 months. I wish I had found homeopathy sooner.", rating: 5 },
+  const testimonials = dbTestimonials?.length ? dbTestimonials : [
+    { name: "Priya Sharma", location: "New Delhi", text: "Dr. Pal's treatment completely cured my chronic allergies after 3 months.", rating: 5 },
     { name: "Rajesh Kumar", location: "Kolkata", text: "After years of conventional medicine, homeopathy finally gave me lasting relief from migraines.", rating: 5 },
-    { name: "Anita Desai", location: "Mumbai", text: "The holistic approach and genuine caring nature of Dr. Pal is truly commendable. My whole family trusts him.", rating: 5 },
+    { name: "Anita Desai", location: "Mumbai", text: "The holistic approach and genuine caring nature of Dr. Pal is truly commendable.", rating: 5 },
   ];
 
   const blogs = [
@@ -341,6 +345,48 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* ─── YOUTUBE VIDEOS ─── */}
+      {youtubeVideos && youtubeVideos.length > 0 && (
+        <section className="py-20 md:py-28" style={{ background: "linear-gradient(180deg, hsl(140 25% 96%), hsl(120 20% 98%))" }}>
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-14">
+              <span className="inline-flex items-center gap-1.5 text-primary font-medium text-sm mb-3">
+                <Play className="w-4 h-4" /> আমাদের ভিডিও
+              </span>
+              <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-3">YouTube Video Gallery</h2>
+              <p className="text-muted-foreground max-w-lg mx-auto">স্বাস্থ্য বিষয়ক তথ্যবহুল ভিডিও দেখুন আমাদের YouTube চ্যানেলে</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {youtubeVideos.map((video) => (
+                <Card key={video.id} className="overflow-hidden border-border/40 rounded-3xl hover-lift hover-glow bg-card shadow-soft group">
+                  <div className="aspect-video relative">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${video.youtube_id}`}
+                      title={video.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                      loading="lazy"
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="font-heading font-semibold text-foreground text-sm leading-snug line-clamp-2">{video.title}</h3>
+                    {video.description && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{video.description}</p>}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <div className="text-center mt-8">
+              <Button variant="outline" className="rounded-full" asChild>
+                <a href="https://youtube.com/@dramitbd" target="_blank" rel="noopener">
+                  <Play className="w-4 h-4 mr-1" /> Visit YouTube Channel <ArrowRight className="w-4 h-4 ml-1" />
+                </a>
+              </Button>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ─── BLOG ─── */}
       <section className="py-20 md:py-28" style={{ background: "linear-gradient(180deg, hsl(140 25% 96%), hsl(120 20% 98%))" }}>

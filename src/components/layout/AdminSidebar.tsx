@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, FileText, FolderOpen, CalendarDays, Package, PenSquare, LogOut, Leaf, ChevronDown } from "lucide-react";
+import { LayoutDashboard, Users, FileText, FolderOpen, CalendarDays, Package, PenSquare, LogOut, Leaf, ChevronDown, MessageSquareQuote, Play } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, Link } from "react-router-dom";
 import {
@@ -25,6 +25,8 @@ const AdminSidebar = () => {
   const manageItems = [
     { title: t.admin.products, url: "/admin/products", icon: Package },
     { title: t.admin.blog, url: "/admin/blog", icon: PenSquare },
+    { title: "Testimonials", url: "/admin/testimonials", icon: MessageSquareQuote },
+    { title: "YouTube Videos", url: "/admin/youtube", icon: Play },
   ];
 
   const renderItem = (item: typeof mainItems[0]) => {

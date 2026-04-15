@@ -45,6 +45,8 @@ import AdminProducts from "./pages/admin/AdminProducts";
 import AdminBlog from "./pages/admin/AdminBlog";
 import AdminNewPrescription from "./pages/admin/AdminNewPrescription";
 import AdminNewCase from "./pages/admin/AdminNewCase";
+import AdminTestimonials from "./pages/admin/AdminTestimonials";
+import AdminYoutubeVideos from "./pages/admin/AdminYoutubeVideos";
 
 const queryClient = new QueryClient();
 
@@ -96,6 +98,8 @@ const App = () => (
                   <Route path="/admin/cases/new" element={<AdminNewCase />} />
                   <Route path="/admin/products" element={<AdminProducts />} />
                   <Route path="/admin/blog" element={<AdminBlog />} />
+                  <Route path="/admin/testimonials" element={<AdminTestimonials />} />
+                  <Route path="/admin/youtube" element={<AdminYoutubeVideos />} />
                 </Route>
 
                 <Route path="*" element={<NotFound />} />
