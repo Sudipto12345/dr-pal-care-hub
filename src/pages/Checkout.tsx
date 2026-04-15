@@ -5,18 +5,22 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, ShieldCheck, Truck, CreditCard } from "lucide-react";
+import { ArrowLeft, ShieldCheck, Truck, CreditCard, Loader2 } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
 import PageHero from "@/components/shared/PageHero";
 import heroShop from "@/assets/hero-shop.jpg";
+import { useCreateOrder } from "@/hooks/useSupabaseData";
+import { useAuth } from "@/hooks/useAuth";
 
 const Checkout = () => {
   const { items, totalPrice, totalItems, clearCart } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { user } = useAuth();
+  const createOrder = useCreateOrder();
   const [form, setForm] = useState({ name: "", phone: "", address: "", city: "", notes: "" });
   const [submitting, setSubmitting] = useState(false);
 
@@ -32,18 +36,41 @@ const Checkout = () => {
     );
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.phone || !form.address || !form.city) {
       toast({ title: t.checkoutPage.fillRequired, variant: "destructive" });
       return;
     }
     setSubmitting(true);
-    const orderId = `ORD-${Date.now().toString(36).toUpperCase()}`;
-    setTimeout(() => {
+    
+    if (user) {
+      // Save to database for logged-in users
+      createOrder.mutate({
+        user_id: user.id,
+        total,
+        address: `${form.address}, ${form.city}`,
+        phone: form.phone,
+        customer_name: form.name,
+        customer_email: user.email || "",
+        items: items.map((item) => ({
+          product_id: item.id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      }, {
+        onSuccess: () => {
+          clearCart();
+          navigate(`/order-success?total=${total}&city=${encodeURIComponent(form.city)}`);
+        },
+        onError: () => setSubmitting(false),
+      });
+    } else {
+      // Guest checkout - just clear cart and redirect
+      const orderId = `ORD-${Date.now().toString(36).toUpperCase()}`;
       clearCart();
       navigate(`/order-success?id=${orderId}&total=${total}&city=${encodeURIComponent(form.city)}`);
-    }, 1200);
+    }
   };
 
   return (

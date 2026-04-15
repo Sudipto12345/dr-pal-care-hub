@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,6 +11,7 @@ import {
   Trash2, X, Venus, Mars, History, Users, FlaskConical, Lightbulb,
 } from "lucide-react";
 import PatientSelector from "@/components/shared/PatientSelector";
+import { useCreateCase } from "@/hooks/useSupabaseData";
 
 const selectClass = "w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring";
 
@@ -35,6 +36,8 @@ const SectionHeader = ({ number, icon: Icon, title, color = "primary" }: { numbe
 );
 
 const AdminNewCase = () => {
+  const navigate = useNavigate();
+  const createCase = useCreateCase();
   // Patient info
   const [patientId, setPatientId] = useState("");
   const [patientName, setPatientName] = useState("");
@@ -135,7 +138,15 @@ const AdminNewCase = () => {
     if (!patientId) e.patientId = "Required";
     setErrors(e);
     if (Object.keys(e).length) { toast.error("Please fix errors"); return; }
-    toast.success("Case created successfully", { description: `For ${patientName}` });
+    
+    const symptomsText = complaints.map(c => c.complaint).filter(Boolean).join("; ");
+    const historyText = [majorIllness, surgery, medHistory].filter(Boolean).join("; ");
+    const notesText = [keyRubrics, miasm, medicine, followUpNotes].filter(Boolean).join(" | ");
+    
+    createCase.mutate(
+      { patient_id: patientId, symptoms: symptomsText, history: historyText, notes: notesText },
+      { onSuccess: () => navigate("/admin/cases") }
+    );
   };
 
   const SelectField = ({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: string[] }) => (

@@ -5,7 +5,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/hooks/useCart";
 import { LanguageProvider } from "@/i18n/LanguageContext";
+import { AuthProvider } from "@/hooks/useAuth";
 import CartSheet from "@/components/shop/CartSheet";
+import ProtectedRoute from "@/components/layout/ProtectedRoute";
 
 import PublicLayout from "@/components/layout/PublicLayout";
 import PatientLayout from "@/components/layout/PatientLayout";
@@ -48,56 +50,58 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <LanguageProvider>
-      <CartProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <CartSheet />
-            <Routes>
-              <Route element={<PublicLayout />}>
-                <Route path="/" element={<Index />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/services" element={<Services />} />
-                <Route path="/treatments" element={<Treatments />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/shop" element={<Shop />} />
-                <Route path="/product/:slug" element={<ProductDetail />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/order-success" element={<OrderSuccess />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/book-appointment" element={<BookAppointment />} />
-              </Route>
+      <AuthProvider>
+        <CartProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <CartSheet />
+              <Routes>
+                <Route element={<PublicLayout />}>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/services" element={<Services />} />
+                  <Route path="/treatments" element={<Treatments />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/shop" element={<Shop />} />
+                  <Route path="/product/:slug" element={<ProductDetail />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/order-success" element={<OrderSuccess />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/book-appointment" element={<BookAppointment />} />
+                </Route>
 
-              <Route path="/login" element={<Login />} />
-              <Route path="/prescription/:id" element={<PrescriptionPreview />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/prescription/:id" element={<PrescriptionPreview />} />
 
-              <Route element={<PatientLayout />}>
-                <Route path="/patient/dashboard" element={<PatientDashboard />} />
-                <Route path="/patient/appointments" element={<PatientAppointments />} />
-                <Route path="/patient/prescriptions" element={<PatientPrescriptions />} />
-                <Route path="/patient/orders" element={<PatientOrders />} />
-                <Route path="/patient/profile" element={<PatientProfile />} />
-              </Route>
+                <Route element={<ProtectedRoute><PatientLayout /></ProtectedRoute>}>
+                  <Route path="/patient/dashboard" element={<PatientDashboard />} />
+                  <Route path="/patient/appointments" element={<PatientAppointments />} />
+                  <Route path="/patient/prescriptions" element={<PatientPrescriptions />} />
+                  <Route path="/patient/orders" element={<PatientOrders />} />
+                  <Route path="/patient/profile" element={<PatientProfile />} />
+                </Route>
 
-              <Route element={<AdminLayout />}>
-                <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                <Route path="/admin/patients" element={<AdminPatients />} />
-                <Route path="/admin/appointments" element={<AdminAppointments />} />
-                <Route path="/admin/prescriptions" element={<AdminPrescriptions />} />
-                <Route path="/admin/prescriptions/new" element={<AdminNewPrescription />} />
-                <Route path="/admin/cases" element={<AdminCases />} />
-                <Route path="/admin/cases/new" element={<AdminNewCase />} />
-                <Route path="/admin/products" element={<AdminProducts />} />
-                <Route path="/admin/blog" element={<AdminBlog />} />
-              </Route>
+                <Route element={<ProtectedRoute requiredRole="admin"><AdminLayout /></ProtectedRoute>}>
+                  <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                  <Route path="/admin/patients" element={<AdminPatients />} />
+                  <Route path="/admin/appointments" element={<AdminAppointments />} />
+                  <Route path="/admin/prescriptions" element={<AdminPrescriptions />} />
+                  <Route path="/admin/prescriptions/new" element={<AdminNewPrescription />} />
+                  <Route path="/admin/cases" element={<AdminCases />} />
+                  <Route path="/admin/cases/new" element={<AdminNewCase />} />
+                  <Route path="/admin/products" element={<AdminProducts />} />
+                  <Route path="/admin/blog" element={<AdminBlog />} />
+                </Route>
 
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </CartProvider>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </CartProvider>
+      </AuthProvider>
     </LanguageProvider>
   </QueryClientProvider>
 );

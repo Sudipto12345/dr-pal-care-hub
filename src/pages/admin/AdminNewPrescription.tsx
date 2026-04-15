@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Plus, Trash2, ArrowLeft, ClipboardPlus, User, Stethoscope, Pill, MessageSquare, Eye, Calendar } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, ClipboardPlus, User, Stethoscope, Pill, MessageSquare, Eye, Calendar, Loader2 } from "lucide-react";
 import PatientSelector from "@/components/shared/PatientSelector";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
+import { useCreatePrescription } from "@/hooks/useSupabaseData";
+import { useAuth } from "@/hooks/useAuth";
 
 interface MedicineRow {
   name: string;
@@ -21,6 +23,9 @@ const emptyMedicine: MedicineRow = { name: "", potency: "", dose: "", frequency:
 const potencyOptions = ["3X", "6X", "12X", "30C", "200C", "1M", "10M", "50M", "CM", "Q (Mother Tincture)"];
 
 const AdminNewPrescription = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const createPrescription = useCreatePrescription();
   const [patientId, setPatientId] = useState("");
   const [patientName, setPatientName] = useState("");
   const [followUpDate, setFollowUpDate] = useState("");
@@ -59,9 +64,22 @@ const AdminNewPrescription = () => {
       toast.error("Please fix the errors before submitting");
       return;
     }
-    toast.success("Prescription created successfully", {
-      description: `For ${patientName} – ${diagnosis}`,
-    });
+    createPrescription.mutate(
+      {
+        patient_id: patientId,
+        doctor_id: user?.id || "",
+        diagnosis,
+        advice: notes,
+        follow_up: followUpDate || undefined,
+        items: medicines.filter((m) => m.name.trim()).map((m) => ({
+          medicine_name: m.name,
+          potency: m.potency || undefined,
+          dose: m.dose || undefined,
+          frequency: m.frequency || undefined,
+        })),
+      },
+      { onSuccess: () => navigate("/admin/prescriptions") }
+    );
   };
 
   const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
