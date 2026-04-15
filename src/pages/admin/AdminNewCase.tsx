@@ -138,7 +138,15 @@ const AdminNewCase = () => {
     if (!patientId) e.patientId = "Required";
     setErrors(e);
     if (Object.keys(e).length) { toast.error("Please fix errors"); return; }
-    toast.success("Case created successfully", { description: `For ${patientName}` });
+    
+    const symptomsText = complaints.map(c => c.complaint).filter(Boolean).join("; ");
+    const historyText = [majorIllness, surgery, medHistory].filter(Boolean).join("; ");
+    const notesText = [keyRubrics, miasm, medicine, followUpNotes].filter(Boolean).join(" | ");
+    
+    createCase.mutate(
+      { patient_id: patientId, symptoms: symptomsText, history: historyText, notes: notesText },
+      { onSuccess: () => navigate("/admin/cases") }
+    );
   };
 
   const SelectField = ({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: string[] }) => (
