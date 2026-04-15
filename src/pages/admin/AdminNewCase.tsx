@@ -163,6 +163,7 @@ const AdminNewCase = () => {
   const [potency, setPotency] = useState("");
   const [dose, setDose] = useState("");
   const [repetition, setRepetition] = useState("");
+  const [advice, setAdvice] = useState("");
 
   // Follow-ups (multiple)
   const [followUps, setFollowUps] = useState<FollowUpRow[]>([{ ...emptyFollowUp }]);
@@ -231,6 +232,7 @@ const AdminNewCase = () => {
       if (fd.potency) setPotency(fd.potency);
       if (fd.dose) setDose(fd.dose);
       if (fd.repetition) setRepetition(fd.repetition);
+      if (fd.advice) setAdvice(fd.advice);
       if (fd.followUps) setFollowUps(fd.followUps.map((fu: any) => ({ ...fu, medicines: fu.medicines || [{ ...emptyFollowUpMedicine }] })));
       // Legacy support
       else if (fd.nextVisit || fd.followUpNotes) setFollowUps([{ date: fd.nextVisit || "", status: "", improvement: "", medicine: "", notes: fd.followUpNotes || "", medicines: [{ ...emptyFollowUpMedicine }] }]);
@@ -251,7 +253,7 @@ const AdminNewCase = () => {
     menstruation, flow, mensPain, leucorrhoea, sexualDesire, maleProblems,
     majorIllness, surgery, medHistory, famDiabetes, famHypertension, famCancer, famOther,
     weight, height, pulse, bp, tongue, skin, investigations,
-    keyRubrics, miasm, medicine, potency, dose, repetition, followUps,
+    keyRubrics, miasm, medicine, potency, dose, repetition, advice, followUps,
   });
 
   const addFollowUp = () => setFollowUps(f => [...f, { ...emptyFollowUp, medicines: [{ ...emptyFollowUpMedicine }] }]);
@@ -392,6 +394,7 @@ const AdminNewCase = () => {
                         if (first.dose) setDose(prev => prev || first.dose);
                         if (first.frequency) setRepetition(prev => prev || first.frequency);
                       }
+                      if (rx?.advice) setAdvice(prev => prev || rx.advice);
                     }}>
                       <SelectTrigger className="rounded-xl flex-1">
                         <SelectValue placeholder="Select a prescription to link..." />
@@ -616,6 +619,10 @@ const AdminNewCase = () => {
                   <TextField label="Dose" value={dose} onChange={setDose} placeholder="e.g., 4 pills" />
                 </div>
                 <TextField label="Repetition" value={repetition} onChange={setRepetition} placeholder="e.g., Once daily x 5 days" />
+                <div>
+                  <Label className="text-xs text-muted-foreground mb-1.5 block">Advice</Label>
+                  <Textarea value={advice} onChange={(e) => setAdvice(e.target.value)} placeholder="e.g., Avoid cold water, take rest..." className="rounded-xl min-h-[60px]" />
+                </div>
               </div>
             </div>
 
