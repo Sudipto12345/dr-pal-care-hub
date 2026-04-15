@@ -124,6 +124,114 @@ const AdminCases = () => {
     toast.success("Case copied to clipboard!");
   };
 
+  const handlePrint = (c: any) => {
+    const fd = c.form_data || {};
+    const patientName = c.patients?.name || "Unknown";
+    const date = new Date(c.created_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+
+    const section = (title: string, content: string) => content ? `<div class="section"><h3>${title}</h3>${content}</div>` : "";
+    const row = (label: string, value: string | undefined) => value ? `<div class="row"><span class="label">${label}:</span> <span>${value}</span></div>` : "";
+
+    const desires = [fd.desireSweet && "Sweet", fd.desireSalt && "Salt", fd.desireSour && "Sour", fd.desireSpicy && "Spicy", fd.desireMeat && "Meat"].filter(Boolean).join(", ");
+
+    let complaintsHtml = "";
+    if (fd.complaints?.length) {
+      complaintsHtml = fd.complaints.filter((c: any) => c.complaint).map((c: any, i: number) =>
+        `<div class="complaint"><strong>${i + 1}. ${c.complaint}</strong><br/>
+        <span class="sub">${[c.duration && `Duration: ${c.duration}`, c.location && `Location: ${c.location}`, c.sensation && `Sensation: ${c.sensation}`, c.betterBy && `Better: ${c.betterBy}`, c.worseBy && `Worse: ${c.worseBy}`].filter(Boolean).join(" · ")}</span></div>`
+      ).join("");
+    }
+
+    let followUpsHtml = "";
+    if (fd.followUps?.length) {
+      followUpsHtml = fd.followUps.map((fu: any, i: number) => {
+        const medsHtml = (fu.medicines || []).filter((m: any) => m.name?.trim()).map((m: any, mi: number) =>
+          `<tr><td>${mi + 1}</td><td>${m.name}</td><td>${m.potency || "—"}</td><td>${m.dose || "—"}</td><td>${m.frequency || "—"}</td></tr>`
+        ).join("");
+
+        return `<div class="followup">
+          <div class="fu-header">
+            <strong>Visit #${i + 1}</strong> — ${fu.date || "No date"}
+            ${fu.status ? `<span class="badge">${fu.status}</span>` : ""}
+          </div>
+          ${fu.improvement ? `<div class="row"><span class="label">Improvement:</span> ${fu.improvement}</div>` : ""}
+          ${fu.medicine ? `<div class="row"><span class="label">Medicine:</span> ${fu.medicine}</div>` : ""}
+          ${fu.notes ? `<div class="row"><span class="label">Notes:</span> ${fu.notes}</div>` : ""}
+          ${medsHtml ? `<table class="med-table"><thead><tr><th>#</th><th>Medicine</th><th>Potency</th><th>Dose</th><th>Frequency</th></tr></thead><tbody>${medsHtml}</tbody></table>` : ""}
+        </div>`;
+      }).join("");
+    }
+
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Case - ${patientName}</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; color: #1a1a1a; font-size: 13px; line-height: 1.5; }
+      .header { text-align: center; border-bottom: 2px solid #166534; padding-bottom: 15px; margin-bottom: 20px; }
+      .header h1 { font-size: 20px; color: #166534; margin-bottom: 2px; }
+      .header p { color: #666; font-size: 12px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+      .section { border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; break-inside: avoid; }
+      .section h3 { font-size: 13px; color: #166534; border-bottom: 1px solid #e8e8e8; padding-bottom: 5px; margin-bottom: 8px; }
+      .row { font-size: 12px; margin-bottom: 3px; }
+      .label { font-weight: 600; color: #555; }
+      .full-width { grid-column: 1 / -1; }
+      .complaint { background: #f9f9f9; padding: 6px 8px; border-radius: 5px; margin-bottom: 5px; font-size: 12px; }
+      .complaint .sub { color: #777; font-size: 11px; }
+      .followup { border: 1px solid #e4e4e4; border-radius: 8px; padding: 10px; margin-bottom: 10px; }
+      .fu-header { font-size: 13px; margin-bottom: 6px; }
+      .badge { background: #166534; color: white; padding: 1px 8px; border-radius: 10px; font-size: 10px; margin-left: 8px; }
+      .med-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px; }
+      .med-table th { background: #f0fdf4; text-align: left; padding: 4px 8px; border: 1px solid #d1d5db; font-weight: 600; }
+      .med-table td { padding: 4px 8px; border: 1px solid #d1d5db; }
+      .prescription-box { background: #f0fdf4; border: 1px solid #166534; border-radius: 8px; padding: 12px; }
+      .prescription-box h3 { color: #166534; border-bottom: 1px solid #bbf7d0; }
+      .footer { text-align: center; margin-top: 30px; padding-top: 10px; border-top: 1px solid #ccc; color: #999; font-size: 10px; }
+      @media print { body { padding: 15px; } .section { break-inside: avoid; } }
+    </style></head><body>
+    <div class="header">
+      <h1>Newlife Homeo Hall</h1>
+      <p>Rampal, Bagerhat · +880 1911 734 726</p>
+      <p style="margin-top:8px;font-size:14px;font-weight:600;">Case Record — ${patientName}</p>
+      <p>Date: ${date}</p>
+    </div>
+    <div class="grid">
+      ${section("Patient Information", [
+        row("Age", fd.age ? `${fd.age} ${fd.ageUnit || ""}` : undefined),
+        row("Sex", fd.sex), row("Marital Status", fd.maritalStatus),
+        row("Occupation", fd.occupation), row("Phone", fd.phone), row("Address", fd.address),
+      ].join(""))}
+      ${complaintsHtml ? `<div class="section"><h3>Chief Complaints</h3>${complaintsHtml}</div>` : ""}
+      ${section("Mental & Emotional", [
+        row("Temperament", fd.temperament), row("Fears", fd.fears), row("Anger", fd.anger),
+        row("Memory", fd.memory), row("Confidence", fd.confidence), row("Stress", fd.stressHistory), row("Company", fd.company),
+      ].join(""))}
+      ${section("Physical Generals", [
+        row("Appetite", fd.appetite), row("Thirst", fd.thirst), desires ? row("Desires", desires) : "",
+        row("Aversion", fd.aversion), row("Sweat", fd.sweatQty), row("Sleep", fd.sleep),
+        row("Dreams", fd.dreams), row("Thermal", fd.thermalType), row("Weather", fd.weatherEffect),
+      ].join(""))}
+      ${fd.menstruation ? section("Female Section", [row("Menstruation", fd.menstruation), row("Flow", fd.flow), row("Pain", fd.mensPain), row("Leucorrhoea", fd.leucorrhoea)].join("")) : ""}
+      ${fd.sexualDesire ? section("Male Section", [row("Sexual Desire", fd.sexualDesire), row("Problems", fd.maleProblems)].join("")) : ""}
+      ${section("Past History", [row("Major Illness", fd.majorIllness), row("Surgery", fd.surgery), row("Medications", fd.medHistory)].join(""))}
+      ${section("Family History", [row("Diabetes", fd.famDiabetes), row("Hypertension", fd.famHypertension), row("Cancer", fd.famCancer), row("Other", fd.famOther)].join(""))}
+      ${section("Physical Examination", [row("Weight", fd.weight ? `${fd.weight} kg` : undefined), row("Height", fd.height), row("Pulse", fd.pulse), row("BP", fd.bp), row("Tongue", fd.tongue), row("Skin", fd.skin)].join(""))}
+      ${fd.investigations ? section("Investigations", `<p style="font-size:12px;white-space:pre-wrap;">${fd.investigations}</p>`) : ""}
+      ${fd.keyRubrics || fd.miasm ? section("Totality & Analysis", [row("Key Rubrics", fd.keyRubrics), row("Miasm", fd.miasm)].join("")) : ""}
+      ${fd.medicine ? `<div class="section prescription-box"><h3>Prescription</h3>${[row("Medicine", fd.medicine), row("Potency", fd.potency), row("Dose", fd.dose), row("Repetition", fd.repetition)].join("")}</div>` : ""}
+    </div>
+    ${followUpsHtml ? `<div class="section full-width" style="margin-top:4px;"><h3>Follow-Up Visits (${fd.followUps.length})</h3>${followUpsHtml}</div>` : ""}
+    ${!fd || !Object.keys(fd).length ? `<div class="grid"><div class="section">${row("Symptoms", c.symptoms)}${row("History", c.history)}${row("Notes", c.notes)}</div></div>` : ""}
+    <div class="footer">Printed on ${new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })} · Newlife Homeo Hall</div>
+    </body></html>`;
+
+    const printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.write(html);
+      printWindow.document.close();
+      printWindow.onload = () => printWindow.print();
+    }
+  };
+
   if (isLoading) return <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
 
   return (
