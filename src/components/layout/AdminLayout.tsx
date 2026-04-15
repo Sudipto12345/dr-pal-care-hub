@@ -2,11 +2,12 @@ import { Outlet, useLocation } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AdminSidebar from "./AdminSidebar";
 import MobileBottomNav from "./MobileBottomNav";
-import { Leaf, LayoutDashboard, Users, CalendarDays, FileText, Package, Globe, Bell, Search } from "lucide-react";
+import { Leaf, LayoutDashboard, Users, CalendarDays, FileText, Package, Globe, Bell, Search, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const pageTitles: Record<string, string> = {
