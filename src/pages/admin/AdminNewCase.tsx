@@ -253,10 +253,19 @@ const AdminNewCase = () => {
     keyRubrics, miasm, medicine, potency, dose, repetition, followUps,
   });
 
-  const addFollowUp = () => setFollowUps(f => [...f, { ...emptyFollowUp }]);
+  const addFollowUp = () => setFollowUps(f => [...f, { ...emptyFollowUp, medicines: [{ ...emptyFollowUpMedicine }] }]);
   const removeFollowUp = (i: number) => { if (followUps.length > 1) setFollowUps(f => f.filter((_, idx) => idx !== i)); };
   const updateFollowUp = (i: number, field: keyof FollowUpRow, value: string) => {
     setFollowUps(f => f.map((row, idx) => idx === i ? { ...row, [field]: value } : row));
+  };
+  const addFollowUpMedicine = (fuIdx: number) => {
+    setFollowUps(f => f.map((row, idx) => idx === fuIdx ? { ...row, medicines: [...row.medicines, { ...emptyFollowUpMedicine }] } : row));
+  };
+  const removeFollowUpMedicine = (fuIdx: number, medIdx: number) => {
+    setFollowUps(f => f.map((row, idx) => idx === fuIdx ? { ...row, medicines: row.medicines.length > 1 ? row.medicines.filter((_, mi) => mi !== medIdx) : row.medicines } : row));
+  };
+  const updateFollowUpMedicine = (fuIdx: number, medIdx: number, field: keyof FollowUpMedicine, value: string) => {
+    setFollowUps(f => f.map((row, idx) => idx === fuIdx ? { ...row, medicines: row.medicines.map((m, mi) => mi === medIdx ? { ...m, [field]: value } : m) } : row));
   };
 
   const handleSubmit = (ev: React.FormEvent) => {
