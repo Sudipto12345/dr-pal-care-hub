@@ -266,8 +266,8 @@ const AdminNewCase = () => {
             <ClipboardList className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-xl font-heading font-bold">Homeopathic Case Taking Form</h1>
-            <p className="text-white/70 text-sm">Complete case analysis for constitutional treatment</p>
+            <h1 className="text-xl font-heading font-bold">{isEdit ? "Edit Case" : "Homeopathic Case Taking Form"}</h1>
+            <p className="text-white/70 text-sm">{isEdit ? "Update case details" : "Complete case analysis for constitutional treatment"}</p>
           </div>
         </div>
         <Button variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10 rounded-xl" asChild>
@@ -529,8 +529,8 @@ const AdminNewCase = () => {
 
         {/* Submit */}
         <div className="flex justify-center mt-8 mb-4">
-          <Button type="submit" variant="hero" size="lg" className="rounded-xl px-12">
-            <ClipboardList className="w-5 h-5 mr-2" /> Submit Case
+          <Button type="submit" variant="hero" size="lg" className="rounded-xl px-12" disabled={createCase.isPending || updateCase.isPending}>
+            <ClipboardList className="w-5 h-5 mr-2" /> {isEdit ? "Update Case" : "Submit Case"}
           </Button>
         </div>
       </form>
