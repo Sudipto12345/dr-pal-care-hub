@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,6 +11,7 @@ import {
   Trash2, X, Venus, Mars, History, Users, FlaskConical, Lightbulb,
 } from "lucide-react";
 import PatientSelector from "@/components/shared/PatientSelector";
+import { useCreateCase } from "@/hooks/useSupabaseData";
 
 const selectClass = "w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring";
 
