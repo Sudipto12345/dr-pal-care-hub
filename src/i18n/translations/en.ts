@@ -58,8 +58,9 @@ const en = {
     ach1: "Gold Medalist (India)",
     ach2: "Member, AHF — U.S.A.",
     ach3: "Advanced Homeopathy Specialist",
-    chamber1: "Newlife Homeo Hall, Mirpur 11, Dhaka",
-    chamber2: "Newlife Homeo Hall, Bagerhat",
+    chamber1: "Newlife Homeo Hall, Rampal, Bagerhat",
+    chamber2: "WhatsApp: 01911734726",
+    phone: "+880 1911 734 726",
   },
 
   // Features / Services

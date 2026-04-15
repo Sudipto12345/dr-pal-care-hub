@@ -176,7 +176,7 @@ const BookAppointment = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="text-xs font-medium text-foreground flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 text-secondary" /> Phone *</label>
-                    <Input placeholder="+91 98765 43210" className="rounded-xl" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required />
+                    <Input placeholder="+880 1911 734 726" className="rounded-xl" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required />
                   </div>
                   <div className="space-y-1">
                     <label className="text-xs font-medium text-foreground flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-secondary" /> Email</label>
