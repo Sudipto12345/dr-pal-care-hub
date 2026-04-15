@@ -17,6 +17,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileText, Eye } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import MedicineCombo from "@/components/shared/MedicineCombo";
+import ComplaintCombo from "@/components/shared/ComplaintCombo";
 
 const selectClass = "w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring";
 
@@ -429,7 +431,9 @@ const AdminNewCase = () => {
                   )}
                   <div className="mb-3">
                     <Label className="text-xs text-muted-foreground">Complaint (in patient's own words)</Label>
-                    <Textarea value={c.complaint} onChange={(e) => updateComplaint(i, "complaint", e.target.value)} placeholder="e.g., Joint pain (knee & shoulder)" className="mt-1 rounded-xl min-h-[70px]" />
+                    <div className="mt-1">
+                      <ComplaintCombo value={c.complaint} onChange={(v) => updateComplaint(i, "complaint", v)} />
+                    </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                     <TextField label="Duration" value={c.duration} onChange={(v) => updateComplaint(i, "duration", v)} placeholder="e.g., 2 Years" />
@@ -613,7 +617,17 @@ const AdminNewCase = () => {
             <div className="bg-card rounded-2xl border-2 border-green-200 p-5">
               <SectionHeader number={12} icon={Pill} title="Prescription" color="secondary" />
               <div className="space-y-3">
-                <TextField label="Medicine" value={medicine} onChange={setMedicine} placeholder="e.g., Rhus Toxicodendron" />
+                <div className="mt-1">
+                  <MedicineCombo
+                    value={medicine}
+                    onChange={(name, defaults) => {
+                      setMedicine(name);
+                      if (defaults?.potency && !potency) setPotency(defaults.potency);
+                      if (defaults?.dose && !dose) setDose(defaults.dose);
+                      if (defaults?.frequency && !repetition) setRepetition(defaults.frequency);
+                    }}
+                  />
+                </div>
                 <div className="grid grid-cols-2 gap-3">
                   <TextField label="Potency" value={potency} onChange={setPotency} placeholder="e.g., 200C" />
                   <TextField label="Dose" value={dose} onChange={setDose} placeholder="e.g., 4 pills" />
@@ -689,7 +703,17 @@ const AdminNewCase = () => {
                     {(fu.medicines || []).map((med, mi) => (
                       <div key={mi} className="flex gap-2 mb-2 items-start">
                         <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-2">
-                          <Input value={med.name} onChange={(e) => updateFollowUpMedicine(i, mi, "name", e.target.value)} placeholder="Medicine" className="rounded-lg text-xs h-8" />
+                          <MedicineCombo
+                            value={med.name}
+                            onChange={(name, defaults) => {
+                              updateFollowUpMedicine(i, mi, "name", name);
+                              if (defaults?.potency && !med.potency) updateFollowUpMedicine(i, mi, "potency", defaults.potency);
+                              if (defaults?.dose && !med.dose) updateFollowUpMedicine(i, mi, "dose", defaults.dose);
+                              if (defaults?.frequency && !med.frequency) updateFollowUpMedicine(i, mi, "frequency", defaults.frequency);
+                            }}
+                            placeholder="Medicine"
+                            className="text-xs h-8"
+                          />
                           <Input value={med.potency} onChange={(e) => updateFollowUpMedicine(i, mi, "potency", e.target.value)} placeholder="Potency" className="rounded-lg text-xs h-8" />
                           <Input value={med.dose} onChange={(e) => updateFollowUpMedicine(i, mi, "dose", e.target.value)} placeholder="Dose" className="rounded-lg text-xs h-8" />
                           <Input value={med.frequency} onChange={(e) => updateFollowUpMedicine(i, mi, "frequency", e.target.value)} placeholder="Frequency" className="rounded-lg text-xs h-8" />
