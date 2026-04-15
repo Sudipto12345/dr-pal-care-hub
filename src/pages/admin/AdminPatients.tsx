@@ -6,7 +6,7 @@ import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import AddPatientForm from "@/components/forms/AddPatientForm";
 import { usePatients, useDeletePatient, useUpdatePatient } from "@/hooks/useSupabaseData";
 import { Button } from "@/components/ui/button";
-import { Trash2, Loader2, Eye, Pencil, Save, X } from "lucide-react";
+import { Trash2, Loader2, Eye, Pencil, Save, X, Clock } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
