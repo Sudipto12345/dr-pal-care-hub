@@ -132,7 +132,7 @@ const PrescriptionPreview = () => {
           {/* ===== TWO COLUMN BODY ===== */}
           <div style={{ display: "flex", gap: "0", minHeight: "500px" }}>
             {/* LEFT COLUMN - Diagnosis & Clinical Info */}
-            <div style={{ width: "45%", paddingRight: "16px", borderRight: "1px solid #ccc" }}>
+            <div style={{ width: "35%", paddingRight: "16px", borderRight: "1px solid #ccc" }}>
               {/* Dx */}
               <div style={{ marginBottom: "16px" }}>
                 <p style={{ fontSize: "14px", fontWeight: 700, margin: "0 0 4px" }}>Dx-</p>
@@ -155,7 +155,7 @@ const PrescriptionPreview = () => {
             </div>
 
             {/* RIGHT COLUMN - Rx & Medicine Grid Table */}
-            <div style={{ width: "55%", paddingLeft: "16px" }}>
+            <div style={{ width: "65%", paddingLeft: "16px" }}>
               {/* Rx Symbol */}
               <div style={{ marginBottom: "8px" }}>
                 <span style={{ fontSize: "36px", fontWeight: 700, color: "#1a237e", fontFamily: "serif" }}>℞</span>
