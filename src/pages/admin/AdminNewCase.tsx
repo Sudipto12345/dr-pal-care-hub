@@ -643,6 +643,114 @@ const AdminNewCase = () => {
           </Button>
         </div>
       </form>
+
+      {/* Linked Prescription Summary Card */}
+      {selectedPrescriptionId && (() => {
+        const rx = patientPrescriptions.find((p: any) => p.id === selectedPrescriptionId);
+        if (!rx) return null;
+        return (
+          <div className="mt-6 bg-card rounded-2xl border border-border p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <FileText className="w-5 h-5 text-primary" />
+                <h3 className="font-heading font-semibold text-base">Linked Prescription</h3>
+              </div>
+              <Button variant="outline" size="sm" className="rounded-xl" onClick={() => setViewPrescription(rx)}>
+                <Eye className="w-4 h-4 mr-1" /> View Full
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm mb-4">
+              <div><span className="text-muted-foreground">Date:</span> <span className="font-medium">{new Date(rx.created_at).toLocaleDateString()}</span></div>
+              <div><span className="text-muted-foreground">Diagnosis:</span> <span className="font-medium">{rx.diagnosis || "—"}</span></div>
+              <div><span className="text-muted-foreground">Follow-up:</span> <span className="font-medium">{rx.follow_up ? new Date(rx.follow_up).toLocaleDateString() : "—"}</span></div>
+              <div><span className="text-muted-foreground">Medicines:</span> <span className="font-medium">{rx.prescription_items?.length || 0}</span></div>
+            </div>
+            {rx.prescription_items?.length > 0 && (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border border-border rounded-xl overflow-hidden">
+                  <thead className="bg-muted/50">
+                    <tr>
+                      <th className="text-left px-3 py-2 font-medium">#</th>
+                      <th className="text-left px-3 py-2 font-medium">Medicine</th>
+                      <th className="text-left px-3 py-2 font-medium">Potency</th>
+                      <th className="text-left px-3 py-2 font-medium">Dose</th>
+                      <th className="text-left px-3 py-2 font-medium">Frequency</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rx.prescription_items.map((item: any, i: number) => (
+                      <tr key={item.id} className="border-t border-border">
+                        <td className="px-3 py-2">{i + 1}</td>
+                        <td className="px-3 py-2 font-medium">{item.medicine_name}</td>
+                        <td className="px-3 py-2">{item.potency || "—"}</td>
+                        <td className="px-3 py-2">{item.dose || "—"}</td>
+                        <td className="px-3 py-2">{item.frequency || "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {rx.advice && <p className="mt-3 text-sm"><span className="text-muted-foreground">Advice:</span> {rx.advice}</p>}
+          </div>
+        );
+      })()}
+
+      {/* Full Prescription View Dialog */}
+      <Dialog open={!!viewPrescription} onOpenChange={(open) => !open && setViewPrescription(null)}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-heading flex items-center gap-2">
+              <FileText className="w-5 h-5 text-primary" /> Prescription Details
+            </DialogTitle>
+          </DialogHeader>
+          {viewPrescription && (
+            <div className="space-y-4 mt-2">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div><span className="text-muted-foreground">Patient:</span> <span className="font-medium">{viewPrescription.patients?.name || patientName}</span></div>
+                <div><span className="text-muted-foreground">Date:</span> <span className="font-medium">{new Date(viewPrescription.created_at).toLocaleDateString()}</span></div>
+                <div><span className="text-muted-foreground">Diagnosis:</span> <span className="font-medium">{viewPrescription.diagnosis || "—"}</span></div>
+                <div><span className="text-muted-foreground">Follow-up:</span> <span className="font-medium">{viewPrescription.follow_up ? new Date(viewPrescription.follow_up).toLocaleDateString() : "—"}</span></div>
+              </div>
+
+              {viewPrescription.prescription_items?.length > 0 && (
+                <div>
+                  <h4 className="font-semibold text-sm mb-2 flex items-center gap-1"><Pill className="w-4 h-4 text-secondary" /> Medicines</h4>
+                  <table className="w-full text-sm border border-border rounded-xl overflow-hidden">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="text-left px-3 py-2 font-medium">#</th>
+                        <th className="text-left px-3 py-2 font-medium">Medicine</th>
+                        <th className="text-left px-3 py-2 font-medium">Potency</th>
+                        <th className="text-left px-3 py-2 font-medium">Dose</th>
+                        <th className="text-left px-3 py-2 font-medium">Frequency</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {viewPrescription.prescription_items.map((item: any, i: number) => (
+                        <tr key={item.id} className="border-t border-border">
+                          <td className="px-3 py-2">{i + 1}</td>
+                          <td className="px-3 py-2 font-medium">{item.medicine_name}</td>
+                          <td className="px-3 py-2">{item.potency || "—"}</td>
+                          <td className="px-3 py-2">{item.dose || "—"}</td>
+                          <td className="px-3 py-2">{item.frequency || "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {viewPrescription.advice && (
+                <div>
+                  <h4 className="font-semibold text-sm mb-1">Advice</h4>
+                  <p className="text-sm text-muted-foreground bg-muted/30 rounded-xl p-3">{viewPrescription.advice}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
