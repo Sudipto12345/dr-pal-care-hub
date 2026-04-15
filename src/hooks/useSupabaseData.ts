@@ -247,7 +247,7 @@ export const useUpdateProduct = () => {
   const qc = useQueryClient();
   const { toast } = useToast();
   return useMutation({
-    mutationFn: async ({ id, ...updates }: { id: string; [key: string]: any }) => {
+    mutationFn: async ({ id, ...updates }: { id: string; name?: string; price?: number; description?: string; image_url?: string; stock?: number; category?: string; is_active?: boolean; slug?: string }) => {
       const { data, error } = await supabase.from("products").update(updates).eq("id", id).select().single();
       if (error) throw error;
       return data;
