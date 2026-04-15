@@ -381,7 +381,18 @@ const AdminNewCase = () => {
                     <FileText className="w-3.5 h-3.5 text-secondary" /> Link Prescription
                   </Label>
                   <div className="flex gap-2">
-                    <Select value={selectedPrescriptionId} onValueChange={setSelectedPrescriptionId}>
+                    <Select value={selectedPrescriptionId} onValueChange={(val) => {
+                      setSelectedPrescriptionId(val);
+                      const rx = patientPrescriptions.find((p: any) => p.id === val);
+                      if (rx?.diagnosis) setKeyRubrics(prev => prev || rx.diagnosis);
+                      if (rx?.prescription_items?.length) {
+                        const first = rx.prescription_items[0];
+                        if (first.medicine_name) setMedicine(prev => prev || first.medicine_name);
+                        if (first.potency) setPotency(prev => prev || first.potency);
+                        if (first.dose) setDose(prev => prev || first.dose);
+                        if (first.frequency) setRepetition(prev => prev || first.frequency);
+                      }
+                    }}>
                       <SelectTrigger className="rounded-xl flex-1">
                         <SelectValue placeholder="Select a prescription to link..." />
                       </SelectTrigger>
