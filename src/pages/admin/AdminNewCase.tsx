@@ -25,6 +25,14 @@ interface ComplaintRow {
 }
 const emptyComplaint: ComplaintRow = { complaint: "", duration: "", location: "", sensation: "", betterBy: "", worseBy: "" };
 
+interface FollowUpRow {
+  date: string;
+  status: string;
+  improvement: string;
+  medicine: string;
+  notes: string;
+}
+const emptyFollowUp: FollowUpRow = { date: "", status: "", improvement: "", medicine: "", notes: "" };
 const SectionHeader = ({ number, icon: Icon, title, color = "primary" }: { number: number; icon: any; title: string; color?: string }) => (
   <div className="flex items-center gap-2 mb-5">
     <span className={`w-7 h-7 rounded-full bg-${color} text-white text-xs font-bold flex items-center justify-center`}>{number}</span>
