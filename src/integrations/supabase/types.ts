@@ -138,6 +138,69 @@ export type Database = {
           },
         ]
       }
+      chief_complaints: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      diagnoses: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      medicines: {
+        Row: {
+          created_at: string
+          default_dose: string | null
+          default_frequency: string | null
+          default_potency: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          default_dose?: string | null
+          default_frequency?: string | null
+          default_potency?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          default_dose?: string | null
+          default_frequency?: string | null
+          default_potency?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           id: string
