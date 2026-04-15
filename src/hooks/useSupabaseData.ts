@@ -371,7 +371,7 @@ export const useUpdateBlogPost = () => {
   const qc = useQueryClient();
   const { toast } = useToast();
   return useMutation({
-    mutationFn: async ({ id, ...updates }: { id: string; [key: string]: any }) => {
+    mutationFn: async ({ id, ...updates }: { id: string; title?: string; slug?: string; content?: string; excerpt?: string; image_url?: string; published?: boolean; author_id?: string }) => {
       const { data, error } = await supabase.from("blog_posts").update(updates).eq("id", id).select().single();
       if (error) throw error;
       return data;
