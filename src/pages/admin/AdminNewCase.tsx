@@ -19,6 +19,8 @@ import { FileText, Eye } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import MedicineCombo from "@/components/shared/MedicineCombo";
 import ComplaintCombo from "@/components/shared/ComplaintCombo";
+import DiagnosisCombo from "@/components/shared/DiagnosisCombo";
+import QuickPrescriptionDialog from "@/components/forms/QuickPrescriptionDialog";
 
 const selectClass = "w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring";
 
@@ -70,6 +72,8 @@ const AdminNewCase = () => {
   const [patientId, setPatientId] = useState("");
   const [patientName, setPatientName] = useState("");
   const [selectedPrescriptionId, setSelectedPrescriptionId] = useState("");
+  const [showQuickRx, setShowQuickRx] = useState(false);
+  const [diagnosis, setDiagnosis] = useState("");
   const [viewPrescription, setViewPrescription] = useState<any>(null);
 
   // Fetch prescriptions for selected patient
