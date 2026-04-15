@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const pageTitles: Record<string, string> = {
