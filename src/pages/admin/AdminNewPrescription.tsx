@@ -66,7 +66,16 @@ const AdminNewPrescription = () => {
     enabled: !!patientId && !isEditMode,
   });
 
-  // Auto-populate from latest case follow-up medicines
+  // Resolve patient name from prefilled patient ID
+  useEffect(() => {
+    if (prefilledPatientId && !patientName && !isEditMode) {
+      supabase.from("patients").select("name").eq("id", prefilledPatientId).single().then(({ data }) => {
+        if (data?.name) setPatientName(data.name);
+      });
+    }
+  }, [prefilledPatientId]);
+
+
   useEffect(() => {
     if (isEditMode || autoPopulated || !patientCases?.length) return;
     
