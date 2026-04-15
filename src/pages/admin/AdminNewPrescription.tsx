@@ -6,6 +6,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Plus, Trash2, ArrowLeft, ClipboardPlus, User, Stethoscope, Pill, MessageSquare, Eye, Calendar, Loader2, X, FileText } from "lucide-react";
+import MedicineCombo from "@/components/shared/MedicineCombo";
+import DiagnosisCombo from "@/components/shared/DiagnosisCombo";
+import ComplaintCombo from "@/components/shared/ComplaintCombo";
 import PatientSelector from "@/components/shared/PatientSelector";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import { useCreatePrescription, usePrescription, useUpdatePrescription } from "@/hooks/useSupabaseData";
@@ -254,15 +257,13 @@ const AdminNewPrescription = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm text-muted-foreground mb-1.5 block">Chief Complaint</Label>
-                  <Textarea value={complaint} onChange={(e) => setComplaint(e.target.value)} placeholder="Describe the patient's primary complaints..." className="rounded-xl min-h-[100px] resize-y" />
+                  <ComplaintCombo value={complaint} onChange={setComplaint} />
                 </div>
                 <div>
                   <Label className="text-sm text-muted-foreground mb-1.5 block">Diagnosis *</Label>
-                  <Textarea
+                  <DiagnosisCombo
                     value={diagnosis}
-                    onChange={(e) => { setDiagnosis(e.target.value); if (errors.diagnosis) setErrors((er) => ({ ...er, diagnosis: "" })); }}
-                    placeholder="Your diagnosis after evaluation..."
-                    className="rounded-xl min-h-[100px] resize-y"
+                    onChange={(v) => { setDiagnosis(v); if (errors.diagnosis) setErrors((er) => ({ ...er, diagnosis: "" })); }}
                   />
                   {errors.diagnosis && <p className="text-xs text-destructive mt-1">{errors.diagnosis}</p>}
                 </div>
@@ -304,7 +305,17 @@ const AdminNewPrescription = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
                         <Label className="text-xs text-muted-foreground">Medicine Name *</Label>
-                        <Input value={med.name} onChange={(e) => updateMedicine(i, "name", e.target.value)} placeholder="e.g., Rhus Toxicodendron" className="mt-1 rounded-xl" />
+                        <div className="mt-1">
+                          <MedicineCombo
+                            value={med.name}
+                            onChange={(name, defaults) => {
+                              updateMedicine(i, "name", name);
+                              if (defaults?.potency && !med.potency) updateMedicine(i, "potency", defaults.potency);
+                              if (defaults?.dose && !med.dose) updateMedicine(i, "dose", defaults.dose);
+                              if (defaults?.frequency && !med.frequency) updateMedicine(i, "frequency", defaults.frequency);
+                            }}
+                          />
+                        </div>
                         {errors[`med_${i}_name`] && <p className="text-xs text-destructive mt-1">{errors[`med_${i}_name`]}</p>}
                       </div>
                       <div>
