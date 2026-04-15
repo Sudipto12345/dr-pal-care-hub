@@ -287,7 +287,7 @@ const AdminNewCase = () => {
     setErrors(e);
     if (Object.keys(e).length) { toast.error("Please fix errors"); return; }
     
-    const symptomsText = complaints.map(c => c.complaint).filter(Boolean).join("; ");
+    const symptomsText = [chiefComplaintsSummary.join(", "), ...complaints.map(c => c.complaint).filter(Boolean)].filter(Boolean).join("; ");
     const historyText = [majorIllness, surgery, medHistory].filter(Boolean).join("; ");
     const notesText = [keyRubrics, miasm, medicine, ...followUps.map(f => f.notes).filter(Boolean)].filter(Boolean).join(" | ");
     const form_data = buildFormData();
