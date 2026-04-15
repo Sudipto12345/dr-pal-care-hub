@@ -1,11 +1,12 @@
 import { useState } from "react";
 import PageHeader from "@/components/shared/PageHeader";
+import { Link } from "react-router-dom";
 import DataTable from "@/components/shared/DataTable";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import AddPatientForm from "@/components/forms/AddPatientForm";
 import { usePatients, useDeletePatient, useUpdatePatient } from "@/hooks/useSupabaseData";
 import { Button } from "@/components/ui/button";
-import { Trash2, Loader2, Eye, Pencil, Save, X } from "lucide-react";
+import { Trash2, Loader2, Eye, Pencil, Save, X, Clock } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -77,6 +78,7 @@ const AdminPatients = () => {
             accessor: (row: any) => (
               <div className="flex gap-1">
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setViewPatient(row)} title="View"><Eye className="w-3.5 h-3.5" /></Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7 text-info" asChild title="Timeline"><Link to={`/admin/patients/${row.id}/timeline`}><Clock className="w-3.5 h-3.5" /></Link></Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(row)} title="Edit"><Pencil className="w-3.5 h-3.5" /></Button>
                 <ConfirmDialog
                   trigger={<Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="w-3.5 h-3.5" /></Button>}
@@ -108,6 +110,9 @@ const AdminPatients = () => {
             <div className="flex justify-between"><span className="text-muted-foreground">Registered:</span><span className="font-medium">{viewPatient && new Date(viewPatient.created_at).toLocaleDateString()}</span></div>
           </div>
           <div className="flex justify-end gap-2 pt-2 border-t border-border">
+            <Button variant="outline" size="sm" className="rounded-xl" asChild>
+              <Link to={`/admin/patients/${viewPatient?.id}/timeline`}><Clock className="w-3.5 h-3.5 mr-1" /> Timeline</Link>
+            </Button>
             <Button variant="outline" size="sm" className="rounded-xl" onClick={() => { setViewPatient(null); openEdit(viewPatient); }}>
               <Pencil className="w-3.5 h-3.5 mr-1" /> Edit
             </Button>

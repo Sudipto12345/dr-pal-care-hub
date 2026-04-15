@@ -48,6 +48,7 @@ import AdminNewCase from "./pages/admin/AdminNewCase";
 import AdminTestimonials from "./pages/admin/AdminTestimonials";
 import AdminYoutubeVideos from "./pages/admin/AdminYoutubeVideos";
 import AdminOrders from "./pages/admin/AdminOrders";
+import AdminPatientTimeline from "./pages/admin/AdminPatientTimeline";
 
 const queryClient = new QueryClient();
 
@@ -99,6 +100,7 @@ const App = () => (
                   <Route path="/admin/cases" element={<AdminCases />} />
                   <Route path="/admin/cases/new" element={<AdminNewCase />} />
                   <Route path="/admin/cases/:id/edit" element={<AdminNewCase />} />
+                  <Route path="/admin/patients/:patientId/timeline" element={<AdminPatientTimeline />} />
                   <Route path="/admin/products" element={<AdminProducts />} />
                   <Route path="/admin/orders" element={<AdminOrders />} />
                   <Route path="/admin/blog" element={<AdminBlog />} />
