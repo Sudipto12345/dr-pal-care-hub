@@ -393,6 +393,7 @@ const AdminNewCase = () => {
                         if (first.dose) setDose(prev => prev || first.dose);
                         if (first.frequency) setRepetition(prev => prev || first.frequency);
                       }
+                      if (rx?.advice) setAdvice(prev => prev || rx.advice);
                     }}>
                       <SelectTrigger className="rounded-xl flex-1">
                         <SelectValue placeholder="Select a prescription to link..." />
