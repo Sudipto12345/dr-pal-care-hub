@@ -28,6 +28,8 @@ const potencyOptions = ["3X", "6X", "12X", "30C", "200C", "1M", "10M", "50M", "C
 
 const AdminNewPrescription = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const prefilledPatientId = searchParams.get("patient") || "";
   const isEditMode = !!id;
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -35,7 +37,7 @@ const AdminNewPrescription = () => {
   const updatePrescription = useUpdatePrescription();
   const { data: existingRx, isLoading: rxLoading } = usePrescription(id || "");
 
-  const [patientId, setPatientId] = useState("");
+  const [patientId, setPatientId] = useState(prefilledPatientId);
   const [patientName, setPatientName] = useState("");
   const [followUpDate, setFollowUpDate] = useState("");
   const [complaint, setComplaint] = useState<string[]>([]);
