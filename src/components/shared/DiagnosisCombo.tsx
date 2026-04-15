@@ -52,8 +52,8 @@ const DiagnosisCombo = (props: DiagnosisComboProps) => {
 
   return (
     <ComboCreate
-      value={props.value}
-      onChange={props.onChange}
+      value={props.value as string}
+      onChange={props.onChange as (v: string) => void}
       options={options}
       onCreateNew={handleCreate}
       isCreating={createDiagnosis.isPending}
