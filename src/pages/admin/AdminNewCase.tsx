@@ -30,14 +30,23 @@ interface ComplaintRow {
 }
 const emptyComplaint: ComplaintRow = { complaint: "", duration: "", location: "", sensation: "", betterBy: "", worseBy: "" };
 
+interface FollowUpMedicine {
+  name: string;
+  potency: string;
+  dose: string;
+  frequency: string;
+}
+const emptyFollowUpMedicine: FollowUpMedicine = { name: "", potency: "", dose: "", frequency: "" };
+
 interface FollowUpRow {
   date: string;
   status: string;
   improvement: string;
   medicine: string;
   notes: string;
+  medicines: FollowUpMedicine[];
 }
-const emptyFollowUp: FollowUpRow = { date: "", status: "", improvement: "", medicine: "", notes: "" };
+const emptyFollowUp: FollowUpRow = { date: "", status: "", improvement: "", medicine: "", notes: "", medicines: [{ ...emptyFollowUpMedicine }] };
 const SectionHeader = ({ number, icon: Icon, title, color = "primary" }: { number: number; icon: any; title: string; color?: string }) => (
   <div className="flex items-center gap-2 mb-5">
     <span className={`w-7 h-7 rounded-full bg-${color} text-white text-xs font-bold flex items-center justify-center`}>{number}</span>
