@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Plus, Trash2, ArrowLeft, ClipboardPlus, User, Stethoscope, Pill, MessageSquare, Eye, Calendar, Loader2 } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, ClipboardPlus, User, Stethoscope, Pill, MessageSquare, Eye, Calendar, Loader2, X } from "lucide-react";
 import PatientSelector from "@/components/shared/PatientSelector";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
-import { useCreatePrescription } from "@/hooks/useSupabaseData";
+import { useCreatePrescription, usePrescription, useUpdatePrescription } from "@/hooks/useSupabaseData";
 import { useAuth } from "@/hooks/useAuth";
 
 interface MedicineRow {
@@ -19,13 +19,17 @@ interface MedicineRow {
 }
 
 const emptyMedicine: MedicineRow = { name: "", potency: "", dose: "", frequency: "" };
-
 const potencyOptions = ["3X", "6X", "12X", "30C", "200C", "1M", "10M", "50M", "CM", "Q (Mother Tincture)"];
 
 const AdminNewPrescription = () => {
+  const { id } = useParams();
+  const isEditMode = !!id;
   const navigate = useNavigate();
   const { user } = useAuth();
   const createPrescription = useCreatePrescription();
+  const updatePrescription = useUpdatePrescription();
+  const { data: existingRx, isLoading: rxLoading } = usePrescription(id || "");
+
   const [patientId, setPatientId] = useState("");
   const [patientName, setPatientName] = useState("");
   const [followUpDate, setFollowUpDate] = useState("");
@@ -34,6 +38,28 @@ const AdminNewPrescription = () => {
   const [notes, setNotes] = useState("");
   const [medicines, setMedicines] = useState<MedicineRow[]>([{ ...emptyMedicine }]);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loaded, setLoaded] = useState(false);
+
+  // Load existing prescription data for edit mode
+  useEffect(() => {
+    if (isEditMode && existingRx && !loaded) {
+      setPatientId(existingRx.patient_id);
+      setPatientName((existingRx.patients as any)?.name || "");
+      setDiagnosis(existingRx.diagnosis || "");
+      setNotes(existingRx.advice || "");
+      setFollowUpDate(existingRx.follow_up || "");
+      const items = (existingRx.prescription_items || []) as any[];
+      if (items.length > 0) {
+        setMedicines(items.map((item: any) => ({
+          name: item.medicine_name || "",
+          potency: item.potency || "",
+          dose: item.dose || "",
+          frequency: item.frequency || "",
+        })));
+      }
+      setLoaded(true);
+    }
+  }, [existingRx, isEditMode, loaded]);
 
   const addMedicine = () => setMedicines((m) => [...m, { ...emptyMedicine }]);
 
@@ -64,25 +90,42 @@ const AdminNewPrescription = () => {
       toast.error("Please fix the errors before submitting");
       return;
     }
-    createPrescription.mutate(
-      {
+
+    const itemsPayload = medicines.filter((m) => m.name.trim()).map((m) => ({
+      medicine_name: m.name,
+      potency: m.potency || undefined,
+      dose: m.dose || undefined,
+      frequency: m.frequency || undefined,
+    }));
+
+    if (isEditMode) {
+      updatePrescription.mutate({
+        id: id!,
         patient_id: patientId,
         doctor_id: user?.id || "",
         diagnosis,
         advice: notes,
         follow_up: followUpDate || undefined,
-        items: medicines.filter((m) => m.name.trim()).map((m) => ({
-          medicine_name: m.name,
-          potency: m.potency || undefined,
-          dose: m.dose || undefined,
-          frequency: m.frequency || undefined,
-        })),
-      },
-      { onSuccess: () => navigate("/admin/prescriptions") }
-    );
+        items: itemsPayload,
+      }, { onSuccess: () => navigate("/admin/prescriptions") });
+    } else {
+      createPrescription.mutate({
+        patient_id: patientId,
+        doctor_id: user?.id || "",
+        diagnosis,
+        advice: notes,
+        follow_up: followUpDate || undefined,
+        items: itemsPayload,
+      }, { onSuccess: () => navigate("/admin/prescriptions") });
+    }
   };
 
+  const isPending = isEditMode ? updatePrescription.isPending : createPrescription.isPending;
   const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+
+  if (isEditMode && rxLoading) {
+    return <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
+  }
 
   return (
     <div className="space-y-0 animate-fade-in">
@@ -94,9 +137,11 @@ const AdminNewPrescription = () => {
           </div>
           <div>
             <h1 className="text-xl font-heading font-bold flex items-center gap-2">
-              <Plus className="w-5 h-5" /> New Prescription
+              {isEditMode ? "Edit Prescription" : <><Plus className="w-5 h-5" /> New Prescription</>}
             </h1>
-            <p className="text-white/70 text-sm">Create a detailed prescription for your patient</p>
+            <p className="text-white/70 text-sm">
+              {isEditMode ? "Update the prescription details" : "Create a detailed prescription for your patient"}
+            </p>
           </div>
         </div>
         <Button variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10 rounded-xl" asChild>
@@ -131,12 +176,7 @@ const AdminNewPrescription = () => {
                 </div>
                 <div>
                   <Label className="text-sm text-muted-foreground mb-1.5 block">Follow-up Date</Label>
-                  <Input
-                    type="date"
-                    value={followUpDate}
-                    onChange={(e) => setFollowUpDate(e.target.value)}
-                    className="rounded-xl h-10"
-                  />
+                  <Input type="date" value={followUpDate} onChange={(e) => setFollowUpDate(e.target.value)} className="rounded-xl h-10" />
                 </div>
               </div>
             </div>
@@ -152,21 +192,13 @@ const AdminNewPrescription = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm text-muted-foreground mb-1.5 block">Chief Complaint</Label>
-                  <Textarea
-                    value={complaint}
-                    onChange={(e) => setComplaint(e.target.value)}
-                    placeholder="Describe the patient's primary complaints..."
-                    className="rounded-xl min-h-[100px] resize-y"
-                  />
+                  <Textarea value={complaint} onChange={(e) => setComplaint(e.target.value)} placeholder="Describe the patient's primary complaints..." className="rounded-xl min-h-[100px] resize-y" />
                 </div>
                 <div>
                   <Label className="text-sm text-muted-foreground mb-1.5 block">Diagnosis *</Label>
                   <Textarea
                     value={diagnosis}
-                    onChange={(e) => {
-                      setDiagnosis(e.target.value);
-                      if (errors.diagnosis) setErrors((er) => ({ ...er, diagnosis: "" }));
-                    }}
+                    onChange={(e) => { setDiagnosis(e.target.value); if (errors.diagnosis) setErrors((er) => ({ ...er, diagnosis: "" })); }}
                     placeholder="Your diagnosis after evaluation..."
                     className="rounded-xl min-h-[100px] resize-y"
                   />
@@ -197,11 +229,7 @@ const AdminNewPrescription = () => {
                       </div>
                       {medicines.length > 1 && (
                         <ConfirmDialog
-                          trigger={
-                            <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          }
+                          trigger={<Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>}
                           title="Remove Medicine"
                           description={med.name ? `Remove "${med.name}"?` : "Remove this medicine?"}
                           confirmLabel="Remove"
@@ -214,46 +242,26 @@ const AdminNewPrescription = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
                         <Label className="text-xs text-muted-foreground">Medicine Name *</Label>
-                        <Input
-                          value={med.name}
-                          onChange={(e) => updateMedicine(i, "name", e.target.value)}
-                          placeholder="e.g., Rhus Toxicodendron"
-                          className="mt-1 rounded-xl"
-                        />
+                        <Input value={med.name} onChange={(e) => updateMedicine(i, "name", e.target.value)} placeholder="e.g., Rhus Toxicodendron" className="mt-1 rounded-xl" />
                         {errors[`med_${i}_name`] && <p className="text-xs text-destructive mt-1">{errors[`med_${i}_name`]}</p>}
                       </div>
                       <div>
                         <Label className="text-xs text-muted-foreground">Potency</Label>
-                        <select
-                          value={med.potency}
-                          onChange={(e) => updateMedicine(i, "potency", e.target.value)}
-                          className="mt-1 w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                        >
+                        <select value={med.potency} onChange={(e) => updateMedicine(i, "potency", e.target.value)}
+                          className="mt-1 w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
                           <option value="">Select</option>
-                          {potencyOptions.map((p) => (
-                            <option key={p} value={p}>{p}</option>
-                          ))}
+                          {potencyOptions.map((p) => <option key={p} value={p}>{p}</option>)}
                         </select>
                       </div>
                       <div>
                         <Label className="text-xs text-muted-foreground">Dose</Label>
-                        <Input
-                          value={med.dose}
-                          onChange={(e) => updateMedicine(i, "dose", e.target.value)}
-                          placeholder="e.g., 4 pills, Twice Daily"
-                          className="mt-1 rounded-xl"
-                        />
+                        <Input value={med.dose} onChange={(e) => updateMedicine(i, "dose", e.target.value)} placeholder="e.g., 4 pills, Twice Daily" className="mt-1 rounded-xl" />
                       </div>
                     </div>
 
                     <div>
                       <Label className="text-xs text-muted-foreground">Frequency / Repetition</Label>
-                      <Input
-                        value={med.frequency}
-                        onChange={(e) => updateMedicine(i, "frequency", e.target.value)}
-                        placeholder="e.g., 5 Days, then wait / Once daily x 7 days"
-                        className="mt-1 rounded-xl"
-                      />
+                      <Input value={med.frequency} onChange={(e) => updateMedicine(i, "frequency", e.target.value)} placeholder="e.g., 5 Days, then wait / Once daily x 7 days" className="mt-1 rounded-xl" />
                     </div>
                   </div>
                 ))}
@@ -272,12 +280,7 @@ const AdminNewPrescription = () => {
                 </div>
                 <h2 className="font-heading font-semibold text-base">Advice & Instructions</h2>
               </div>
-              <Textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Dietary advice, lifestyle changes, do's and don'ts..."
-                className="rounded-xl min-h-[120px] resize-y"
-              />
+              <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Dietary advice, lifestyle changes, do's and don'ts..." className="rounded-xl min-h-[120px] resize-y" />
             </div>
           </div>
 
@@ -291,7 +294,6 @@ const AdminNewPrescription = () => {
                 <h2 className="font-heading font-semibold text-base">Preview</h2>
               </div>
 
-              {/* Patient preview */}
               <div className="flex flex-col items-center text-center mb-6">
                 <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-3">
                   <User className="w-8 h-8 text-muted-foreground" />
@@ -300,7 +302,6 @@ const AdminNewPrescription = () => {
                 <p className="text-xs text-muted-foreground">{today}</p>
               </div>
 
-              {/* Diagnosis preview */}
               {diagnosis && (
                 <div className="mb-4 p-3 rounded-xl bg-muted/30 border border-border">
                   <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Diagnosis</p>
@@ -308,7 +309,6 @@ const AdminNewPrescription = () => {
                 </div>
               )}
 
-              {/* Medicines preview */}
               <div className="mb-6">
                 <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-2">Medicines</p>
                 {medicines.some((m) => m.name) ? (
@@ -316,9 +316,7 @@ const AdminNewPrescription = () => {
                     {medicines.filter((m) => m.name).map((m, i) => (
                       <div key={i} className="p-2.5 rounded-lg bg-muted/30 border border-border">
                         <p className="text-sm font-medium text-foreground">{m.name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {[m.potency, m.dose, m.frequency].filter(Boolean).join(" · ") || "—"}
-                        </p>
+                        <p className="text-xs text-muted-foreground">{[m.potency, m.dose, m.frequency].filter(Boolean).join(" · ") || "—"}</p>
                       </div>
                     ))}
                   </div>
@@ -327,10 +325,10 @@ const AdminNewPrescription = () => {
                 )}
               </div>
 
-              {/* Actions */}
               <div className="space-y-2">
-                <Button type="submit" variant="hero" className="w-full rounded-xl" onClick={handleSubmit}>
-                  <ClipboardPlus className="w-4 h-4 mr-2" /> Create Prescription
+                <Button type="submit" variant="hero" className="w-full rounded-xl" disabled={isPending}>
+                  {isPending && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+                  <ClipboardPlus className="w-4 h-4 mr-2" /> {isEditMode ? "Update Prescription" : "Create Prescription"}
                 </Button>
                 <Button type="button" variant="outline" className="w-full rounded-xl" asChild>
                   <Link to="/admin/prescriptions"><X className="w-4 h-4 mr-1" /> Cancel</Link>
@@ -343,8 +341,5 @@ const AdminNewPrescription = () => {
     </div>
   );
 };
-
-// Need X icon
-import { X } from "lucide-react";
 
 export default AdminNewPrescription;

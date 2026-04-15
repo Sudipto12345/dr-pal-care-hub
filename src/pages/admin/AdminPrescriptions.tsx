@@ -2,7 +2,7 @@ import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import { usePrescriptions, useDeletePrescription } from "@/hooks/useSupabaseData";
 import { Button } from "@/components/ui/button";
-import { Eye, Plus, Loader2, Trash2 } from "lucide-react";
+import { Eye, Plus, Loader2, Trash2, Pencil } from "lucide-react";
 import { Link } from "react-router-dom";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 
@@ -33,6 +33,9 @@ const AdminPrescriptions = () => {
               <div className="flex gap-1">
                 <Button variant="ghost" size="icon" className="h-7 w-7" asChild title="View">
                   <Link to={`/prescription/${row.id}`}><Eye className="w-3.5 h-3.5" /></Link>
+                </Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7" asChild title="Edit">
+                  <Link to={`/admin/prescriptions/${row.id}/edit`}><Pencil className="w-3.5 h-3.5" /></Link>
                 </Button>
                 <ConfirmDialog
                   trigger={<Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="w-3.5 h-3.5" /></Button>}
