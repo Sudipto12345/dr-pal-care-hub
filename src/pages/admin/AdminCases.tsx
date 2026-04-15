@@ -164,7 +164,17 @@ const AdminCases = () => {
 
     return { patientName, html: `
     <div class="header">
+      <div class="logo-area">
+        <svg class="logo-icon" viewBox="0 0 48 48" width="48" height="48">
+          <circle cx="24" cy="24" r="22" fill="#166534" opacity="0.1" stroke="#166534" stroke-width="2"/>
+          <path d="M24 8 C20 16, 14 20, 14 28 C14 34, 18 38, 24 38 C30 38, 34 34, 34 28 C34 20, 28 16, 24 8Z" fill="#166534" opacity="0.3"/>
+          <line x1="24" y1="14" x2="24" y2="34" stroke="#166534" stroke-width="2"/>
+          <line x1="18" y1="20" x2="24" y2="26" stroke="#166534" stroke-width="1.5"/>
+          <line x1="30" y1="22" x2="24" y2="28" stroke="#166534" stroke-width="1.5"/>
+        </svg>
+      </div>
       <h1>Newlife Homeo Hall</h1>
+      <p class="clinic-tagline">Holistic Homeopathic Care</p>
       <p>Rampal, Bagerhat · +880 1911 734 726</p>
       <p style="margin-top:8px;font-size:14px;font-weight:600;">Case Record — ${patientName}</p>
       <p>Date: ${date}</p>
@@ -196,7 +206,22 @@ const AdminCases = () => {
     </div>
     ${followUpsHtml ? `<div class="section full-width" style="margin-top:4px;"><h3>Follow-Up Visits (${fd.followUps.length})</h3>${followUpsHtml}</div>` : ""}
     ${!fd || !Object.keys(fd).length ? `<div class="grid"><div class="section">${row("Symptoms", c.symptoms)}${row("History", c.history)}${row("Notes", c.notes)}</div></div>` : ""}
-    <div class="footer">Printed on ${new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })} · Newlife Homeo Hall</div>
+    
+    <div class="signature-area">
+      <div class="signature-left">
+        <div class="sig-line"></div>
+        <p>Patient / Guardian Signature</p>
+      </div>
+      <div class="signature-right">
+        <div class="sig-line"></div>
+        <p>Doctor's Signature & Seal</p>
+        <p class="doctor-name">Dr. [Name]</p>
+        <p class="doctor-qual">BHMS / DHMS</p>
+        <p class="doctor-qual">Newlife Homeo Hall</p>
+      </div>
+    </div>
+
+    <div class="footer">Printed on ${new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })} · Newlife Homeo Hall · This is a confidential medical document</div>
     `};
   };
 
