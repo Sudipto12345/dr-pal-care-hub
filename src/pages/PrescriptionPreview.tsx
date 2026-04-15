@@ -19,6 +19,7 @@ const PrescriptionPreview = () => {
 
   const patient = prescription.patients as any;
   const medicines = (prescription.prescription_items || []) as any[];
+  const ce = ((prescription as any).clinical_exam || {}) as any;
 
   return (
     <div className="min-h-screen bg-muted/40">
@@ -147,14 +148,14 @@ const PrescriptionPreview = () => {
 
               {/* Risk Factors / Notes */}
               <div style={{ marginBottom: "18px" }}>
-                <p style={{ fontSize: "14px", fontWeight: 700, margin: "0 0 4px" }}>Risk Factors:</p>
+                <p style={{ fontSize: "14px", fontWeight: 700, margin: "0 0 4px" }}>Risk Factors: <span style={{ fontWeight: 400, fontSize: "12px" }}>{ce.riskFactors || ""}</span></p>
                 <div style={{ fontSize: "12px", color: "#333", lineHeight: 1.6 }}>
-                  <p style={{ margin: "0" }}>O/E-</p>
-                  <p style={{ margin: "0" }}>Pulse-</p>
-                  <p style={{ margin: "0" }}>BP-</p>
-                  <p style={{ margin: "0" }}>Heart-</p>
-                  <p style={{ margin: "0" }}>Lung-</p>
-                  <p style={{ margin: "0" }}>Others-</p>
+                  <p style={{ margin: "0" }}>O/E- {ce.oe || ""}</p>
+                  <p style={{ margin: "0" }}>Pulse- {ce.pulse || ""}</p>
+                  <p style={{ margin: "0" }}>BP- {ce.bp || ""}</p>
+                  <p style={{ margin: "0" }}>Heart- {ce.heart || ""}</p>
+                  <p style={{ margin: "0" }}>Lung- {ce.lung || ""}</p>
+                  <p style={{ margin: "0" }}>Others- {ce.others || ""}</p>
                 </div>
               </div>
 
