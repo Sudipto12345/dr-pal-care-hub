@@ -30,14 +30,23 @@ interface ComplaintRow {
 }
 const emptyComplaint: ComplaintRow = { complaint: "", duration: "", location: "", sensation: "", betterBy: "", worseBy: "" };
 
+interface FollowUpMedicine {
+  name: string;
+  potency: string;
+  dose: string;
+  frequency: string;
+}
+const emptyFollowUpMedicine: FollowUpMedicine = { name: "", potency: "", dose: "", frequency: "" };
+
 interface FollowUpRow {
   date: string;
   status: string;
   improvement: string;
   medicine: string;
   notes: string;
+  medicines: FollowUpMedicine[];
 }
-const emptyFollowUp: FollowUpRow = { date: "", status: "", improvement: "", medicine: "", notes: "" };
+const emptyFollowUp: FollowUpRow = { date: "", status: "", improvement: "", medicine: "", notes: "", medicines: [{ ...emptyFollowUpMedicine }] };
 const SectionHeader = ({ number, icon: Icon, title, color = "primary" }: { number: number; icon: any; title: string; color?: string }) => (
   <div className="flex items-center gap-2 mb-5">
     <span className={`w-7 h-7 rounded-full bg-${color} text-white text-xs font-bold flex items-center justify-center`}>{number}</span>
@@ -221,9 +230,9 @@ const AdminNewCase = () => {
       if (fd.potency) setPotency(fd.potency);
       if (fd.dose) setDose(fd.dose);
       if (fd.repetition) setRepetition(fd.repetition);
-      if (fd.followUps) setFollowUps(fd.followUps);
+      if (fd.followUps) setFollowUps(fd.followUps.map((fu: any) => ({ ...fu, medicines: fu.medicines || [{ ...emptyFollowUpMedicine }] })));
       // Legacy support
-      else if (fd.nextVisit || fd.followUpNotes) setFollowUps([{ date: fd.nextVisit || "", status: "", improvement: "", medicine: "", notes: fd.followUpNotes || "" }]);
+      else if (fd.nextVisit || fd.followUpNotes) setFollowUps([{ date: fd.nextVisit || "", status: "", improvement: "", medicine: "", notes: fd.followUpNotes || "", medicines: [{ ...emptyFollowUpMedicine }] }]);
     }
   }, [existingCase]);
 
@@ -244,10 +253,19 @@ const AdminNewCase = () => {
     keyRubrics, miasm, medicine, potency, dose, repetition, followUps,
   });
 
-  const addFollowUp = () => setFollowUps(f => [...f, { ...emptyFollowUp }]);
+  const addFollowUp = () => setFollowUps(f => [...f, { ...emptyFollowUp, medicines: [{ ...emptyFollowUpMedicine }] }]);
   const removeFollowUp = (i: number) => { if (followUps.length > 1) setFollowUps(f => f.filter((_, idx) => idx !== i)); };
   const updateFollowUp = (i: number, field: keyof FollowUpRow, value: string) => {
     setFollowUps(f => f.map((row, idx) => idx === i ? { ...row, [field]: value } : row));
+  };
+  const addFollowUpMedicine = (fuIdx: number) => {
+    setFollowUps(f => f.map((row, idx) => idx === fuIdx ? { ...row, medicines: [...row.medicines, { ...emptyFollowUpMedicine }] } : row));
+  };
+  const removeFollowUpMedicine = (fuIdx: number, medIdx: number) => {
+    setFollowUps(f => f.map((row, idx) => idx === fuIdx ? { ...row, medicines: row.medicines.length > 1 ? row.medicines.filter((_, mi) => mi !== medIdx) : row.medicines } : row));
+  };
+  const updateFollowUpMedicine = (fuIdx: number, medIdx: number, field: keyof FollowUpMedicine, value: string) => {
+    setFollowUps(f => f.map((row, idx) => idx === fuIdx ? { ...row, medicines: row.medicines.map((m, mi) => mi === medIdx ? { ...m, [field]: value } : m) } : row));
   };
 
   const handleSubmit = (ev: React.FormEvent) => {
@@ -625,6 +643,33 @@ const AdminNewCase = () => {
                       <Input value={fu.notes} onChange={(e) => updateFollowUp(i, "notes", e.target.value)}
                         placeholder="e.g., Reduce dose, next visit after 15 days" className="rounded-xl" />
                     </div>
+                  </div>
+
+                  {/* Prescription for this follow-up */}
+                  <div className="mt-4 pt-3 border-t border-border">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-xs font-semibold text-secondary flex items-center gap-1"><Pill className="w-3.5 h-3.5" /> Prescription</p>
+                      <span className="text-[10px] text-muted-foreground">{fu.medicines.length} medicine{fu.medicines.length !== 1 ? "s" : ""}</span>
+                    </div>
+                    {fu.medicines.map((med, mi) => (
+                      <div key={mi} className="flex gap-2 mb-2 items-start">
+                        <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          <Input value={med.name} onChange={(e) => updateFollowUpMedicine(i, mi, "name", e.target.value)} placeholder="Medicine" className="rounded-lg text-xs h-8" />
+                          <Input value={med.potency} onChange={(e) => updateFollowUpMedicine(i, mi, "potency", e.target.value)} placeholder="Potency" className="rounded-lg text-xs h-8" />
+                          <Input value={med.dose} onChange={(e) => updateFollowUpMedicine(i, mi, "dose", e.target.value)} placeholder="Dose" className="rounded-lg text-xs h-8" />
+                          <Input value={med.frequency} onChange={(e) => updateFollowUpMedicine(i, mi, "frequency", e.target.value)} placeholder="Frequency" className="rounded-lg text-xs h-8" />
+                        </div>
+                        {fu.medicines.length > 1 && (
+                          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive shrink-0" onClick={() => removeFollowUpMedicine(i, mi)}>
+                            <X className="w-3.5 h-3.5" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                    <Button type="button" variant="ghost" size="sm" onClick={() => addFollowUpMedicine(i)}
+                      className="text-xs text-secondary hover:text-secondary h-7 px-2">
+                      <Plus className="w-3 h-3 mr-1" /> Add Medicine
+                    </Button>
                   </div>
                 </div>
               ))}
