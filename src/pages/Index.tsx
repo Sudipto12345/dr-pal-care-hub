@@ -4,9 +4,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Heart, Stethoscope, Pill, ShieldCheck, Star, ArrowRight, Calendar, Leaf, Phone, MapPin,
   Quote, Award, GraduationCap, Globe, Building2, Droplets, TreePine, Sprout, Sun,
-  MessageCircle,
+  MessageCircle, Play,
 } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useTestimonials } from "@/hooks/useTestimonials";
+import { useYoutubeVideos } from "@/hooks/useYoutubeVideos";
 
 import heroBanner from "@/assets/hero-doctor-new.jpg";
 import aboutDoctor from "@/assets/about-doctor.jpg";
@@ -38,6 +40,8 @@ const WaveDivider = ({ flip = false }: { flip?: boolean }) => (
 
 const Index = () => {
   const { t } = useLanguage();
+  const { data: dbTestimonials } = useTestimonials(true);
+  const { data: youtubeVideos } = useYoutubeVideos(true);
 
   const highlights = [
     { icon: Leaf, title: t.highlights.holisticHealing, desc: t.highlights.holisticDesc },
@@ -52,10 +56,10 @@ const Index = () => {
     { icon: Globe, title: t.services.onlineConsultation, desc: t.services.onlineConsultationDesc, img: featureOnline, color: "from-info/20 to-info/5" },
   ];
 
-  const testimonials = [
-    { name: "Priya Sharma", location: "New Delhi", text: "Dr. Pal's treatment completely cured my chronic allergies after 3 months. I wish I had found homeopathy sooner.", rating: 5 },
+  const testimonials = dbTestimonials?.length ? dbTestimonials : [
+    { name: "Priya Sharma", location: "New Delhi", text: "Dr. Pal's treatment completely cured my chronic allergies after 3 months.", rating: 5 },
     { name: "Rajesh Kumar", location: "Kolkata", text: "After years of conventional medicine, homeopathy finally gave me lasting relief from migraines.", rating: 5 },
-    { name: "Anita Desai", location: "Mumbai", text: "The holistic approach and genuine caring nature of Dr. Pal is truly commendable. My whole family trusts him.", rating: 5 },
+    { name: "Anita Desai", location: "Mumbai", text: "The holistic approach and genuine caring nature of Dr. Pal is truly commendable.", rating: 5 },
   ];
 
   const blogs = [
