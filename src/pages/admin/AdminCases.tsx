@@ -91,6 +91,16 @@ const buildCopyText = (c: any) => {
     if (fd.repetition) lines.push(`Repetition: ${fd.repetition}`);
   }
 
+  if (fd.followUps?.length) {
+    lines.push(`\n--- Follow-Up Visits ---`);
+    fd.followUps.forEach((fu: any, i: number) => {
+      lines.push(`\nVisit #${i + 1}: ${fu.date || "No date"} — ${fu.status || "No status"}`);
+      if (fu.improvement) lines.push(`  Improvement/Loss: ${fu.improvement}`);
+      if (fu.medicine) lines.push(`  Medicine: ${fu.medicine}`);
+      if (fu.notes) lines.push(`  Notes: ${fu.notes}`);
+    });
+  }
+
   if (c.symptoms) lines.push(`\nSymptoms: ${c.symptoms}`);
   if (c.history) lines.push(`History: ${c.history}`);
   if (c.notes) lines.push(`Notes: ${c.notes}`);
