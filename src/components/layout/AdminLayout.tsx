@@ -2,11 +2,12 @@ import { Outlet, useLocation } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AdminSidebar from "./AdminSidebar";
 import MobileBottomNav from "./MobileBottomNav";
-import { Leaf, LayoutDashboard, Users, CalendarDays, FileText, Package, Globe, Bell, Search } from "lucide-react";
+import { Leaf, LayoutDashboard, Users, CalendarDays, FileText, Package, Globe, Bell, Search, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const pageTitles: Record<string, string> = {
@@ -63,6 +64,18 @@ const AdminLayout = () => {
                   className="pl-9 h-8 w-56 bg-muted/50 border-0 rounded-xl text-sm focus:bg-background focus:border-border"
                 />
               </div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="hero" size="sm" className="h-8 rounded-xl px-3 text-xs">
+                    <Plus className="w-3.5 h-3.5 mr-1" /> Create
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild><Link to="/admin/prescriptions/new" className="flex items-center gap-2"><FileText className="w-4 h-4" /> New Prescription</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild><Link to="/admin/appointments" className="flex items-center gap-2"><CalendarDays className="w-4 h-4" /> New Appointment</Link></DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
               <button onClick={toggleLang} className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-medium border border-border/60 text-foreground hover:bg-accent transition-colors">
                 <Globe className="w-3.5 h-3.5" /> {lang === "en" ? "বাংলা" : "EN"}
