@@ -43,7 +43,6 @@ import AdminPrescriptions from "./pages/admin/AdminPrescriptions";
 import AdminCases from "./pages/admin/AdminCases";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminBlog from "./pages/admin/AdminBlog";
-import AdminBlog from "./pages/admin/AdminBlog";
 import AdminNewPrescription from "./pages/admin/AdminNewPrescription";
 import AdminNewCase from "./pages/admin/AdminNewCase";
 import AdminTestimonials from "./pages/admin/AdminTestimonials";
