@@ -97,6 +97,12 @@ const buildCopyText = (c: any) => {
       lines.push(`\nVisit #${i + 1}: ${fu.date || "No date"} — ${fu.status || "No status"}`);
       if (fu.improvement) lines.push(`  Improvement/Loss: ${fu.improvement}`);
       if (fu.medicine) lines.push(`  Medicine: ${fu.medicine}`);
+      if ((fu.medicines || []).filter((m: any) => m.name?.trim()).length > 0) {
+        lines.push(`  Prescription:`);
+        fu.medicines.filter((m: any) => m.name?.trim()).forEach((m: any, mi: number) => {
+          lines.push(`    ${mi + 1}. ${m.name} ${[m.potency, m.dose, m.frequency].filter(Boolean).join(" · ")}`);
+        });
+      }
       if (fu.notes) lines.push(`  Notes: ${fu.notes}`);
     });
   }
