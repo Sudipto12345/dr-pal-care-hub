@@ -384,41 +384,48 @@ const AdminNewCase = () => {
               </div>
 
               {/* Link Prescription - shown after patient selected */}
-              {patientId && patientPrescriptions.length > 0 && (
+              {patientId && (
                 <div className="mt-4 pt-4 border-t border-border">
                   <Label className="text-xs text-muted-foreground mb-1.5 flex items-center gap-1.5">
                     <FileText className="w-3.5 h-3.5 text-secondary" /> Link Prescription
                   </Label>
                   <div className="flex gap-2">
-                    <Select value={selectedPrescriptionId} onValueChange={(val) => {
-                      setSelectedPrescriptionId(val);
-                      const rx = patientPrescriptions.find((p: any) => p.id === val);
-                      if (rx?.diagnosis) setKeyRubrics(prev => prev || rx.diagnosis);
-                      if (rx?.prescription_items?.length) {
-                        const first = rx.prescription_items[0];
-                        if (first.medicine_name) setMedicine(prev => prev || first.medicine_name);
-                        if (first.potency) setPotency(prev => prev || first.potency);
-                        if (first.dose) setDose(prev => prev || first.dose);
-                        if (first.frequency) setRepetition(prev => prev || first.frequency);
-                      }
-                      if (rx?.advice) setAdvice(prev => prev || rx.advice);
-                    }}>
-                      <SelectTrigger className="rounded-xl flex-1">
-                        <SelectValue placeholder="Select a prescription to link..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {patientPrescriptions.map((p: any) => (
-                          <SelectItem key={p.id} value={p.id}>
-                            {new Date(p.created_at).toLocaleDateString()} — {p.diagnosis || "No diagnosis"} ({p.prescription_items?.length || 0} medicines)
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    {patientPrescriptions.length > 0 ? (
+                      <Select value={selectedPrescriptionId} onValueChange={(val) => {
+                        setSelectedPrescriptionId(val);
+                        const rx = patientPrescriptions.find((p: any) => p.id === val);
+                        if (rx?.diagnosis) { setKeyRubrics(prev => prev || rx.diagnosis); setDiagnosis(prev => prev || rx.diagnosis); }
+                        if (rx?.prescription_items?.length) {
+                          const first = rx.prescription_items[0];
+                          if (first.medicine_name) setMedicine(prev => prev || first.medicine_name);
+                          if (first.potency) setPotency(prev => prev || first.potency);
+                          if (first.dose) setDose(prev => prev || first.dose);
+                          if (first.frequency) setRepetition(prev => prev || first.frequency);
+                        }
+                        if (rx?.advice) setAdvice(prev => prev || rx.advice);
+                      }}>
+                        <SelectTrigger className="rounded-xl flex-1">
+                          <SelectValue placeholder="Select a prescription to link..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {patientPrescriptions.map((p: any) => (
+                            <SelectItem key={p.id} value={p.id}>
+                              {new Date(p.created_at).toLocaleDateString()} — {p.diagnosis || "No diagnosis"} ({p.prescription_items?.length || 0} medicines)
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <p className="flex-1 text-sm text-muted-foreground bg-muted/30 rounded-xl px-3 py-2">No prescriptions found for this patient</p>
+                    )}
                     {selectedPrescriptionId && (
                       <Button type="button" variant="outline" size="icon" className="rounded-xl h-10 w-10 shrink-0" onClick={() => setViewPrescription(patientPrescriptions.find((p: any) => p.id === selectedPrescriptionId))} title="View Prescription">
                         <Eye className="w-4 h-4" />
                       </Button>
                     )}
+                    <Button type="button" variant="hero" size="sm" className="rounded-xl h-10 shrink-0" onClick={() => setShowQuickRx(true)}>
+                      <Plus className="w-4 h-4 mr-1" /> New Rx
+                    </Button>
                   </div>
                 </div>
               )}
