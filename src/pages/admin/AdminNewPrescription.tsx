@@ -64,9 +64,22 @@ const AdminNewPrescription = () => {
       toast.error("Please fix the errors before submitting");
       return;
     }
-    toast.success("Prescription created successfully", {
-      description: `For ${patientName} – ${diagnosis}`,
-    });
+    createPrescription.mutate(
+      {
+        patient_id: patientId,
+        doctor_id: user?.id || "",
+        diagnosis,
+        advice: notes,
+        follow_up: followUpDate || undefined,
+        items: medicines.filter((m) => m.name.trim()).map((m) => ({
+          medicine_name: m.name,
+          potency: m.potency || undefined,
+          dose: m.dose || undefined,
+          frequency: m.frequency || undefined,
+        })),
+      },
+      { onSuccess: () => navigate("/admin/prescriptions") }
+    );
   };
 
   const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
