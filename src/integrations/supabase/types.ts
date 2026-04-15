@@ -100,6 +100,7 @@ export type Database = {
       cases: {
         Row: {
           created_at: string
+          form_data: Json | null
           history: string | null
           id: string
           notes: string | null
@@ -109,6 +110,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          form_data?: Json | null
           history?: string | null
           id?: string
           notes?: string | null
@@ -118,6 +120,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          form_data?: Json | null
           history?: string | null
           id?: string
           notes?: string | null
