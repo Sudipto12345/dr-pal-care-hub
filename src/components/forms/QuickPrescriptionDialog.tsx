@@ -32,14 +32,14 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
   const createPrescription = useCreatePrescription();
 
   const [patientId, setPatientId] = useState("");
-  const [diagnosis, setDiagnosis] = useState("");
+  const [diagnosis, setDiagnosis] = useState<string[]>([]);
   const [advice, setAdvice] = useState("");
   const [followUp, setFollowUp] = useState("");
   const [medicines, setMedicines] = useState<MedicineRow[]>([{ ...emptyMedicine }]);
 
   const reset = () => {
     setPatientId("");
-    setDiagnosis("");
+    setDiagnosis([]);
     setAdvice("");
     setFollowUp("");
     setMedicines([{ ...emptyMedicine }]);
@@ -47,13 +47,13 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
 
   const handleSubmit = () => {
     if (!patientId) { toast.error("Select a patient"); return; }
-    if (!diagnosis.trim()) { toast.error("Diagnosis is required"); return; }
+    if (diagnosis.length === 0) { toast.error("Diagnosis is required"); return; }
     if (!medicines.some(m => m.name.trim())) { toast.error("Add at least one medicine"); return; }
 
     createPrescription.mutate({
       patient_id: patientId,
       doctor_id: user?.id || "",
-      diagnosis,
+      diagnosis: diagnosis.join(", "),
       advice: advice || undefined,
       follow_up: followUp || undefined,
       items: medicines.filter(m => m.name.trim()).map(m => ({
@@ -98,7 +98,7 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
           {/* Diagnosis */}
           <div>
             <Label className="text-xs text-muted-foreground mb-1 block">Diagnosis *</Label>
-            <DiagnosisCombo value={diagnosis} onChange={setDiagnosis} />
+            <DiagnosisCombo multi value={diagnosis} onChange={setDiagnosis} />
           </div>
 
           {/* Medicines */}

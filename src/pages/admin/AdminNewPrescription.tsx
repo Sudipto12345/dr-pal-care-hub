@@ -38,8 +38,8 @@ const AdminNewPrescription = () => {
   const [patientId, setPatientId] = useState("");
   const [patientName, setPatientName] = useState("");
   const [followUpDate, setFollowUpDate] = useState("");
-  const [complaint, setComplaint] = useState("");
-  const [diagnosis, setDiagnosis] = useState("");
+  const [complaint, setComplaint] = useState<string[]>([]);
+  const [diagnosis, setDiagnosis] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
   const [medicines, setMedicines] = useState<MedicineRow[]>([{ ...emptyMedicine }]);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -86,7 +86,7 @@ const AdminNewPrescription = () => {
         
         if (meds.length > 0) {
           setMedicines(meds);
-          if (fd.diagnosis) setDiagnosis(fd.diagnosis);
+          if (fd.diagnosis) setDiagnosis(typeof fd.diagnosis === 'string' ? fd.diagnosis.split(", ").filter(Boolean) : [fd.diagnosis]);
           setAutoPopulated(true);
           toast.info("Auto-filled from latest case follow-up", {
             description: `${meds.length} medicine${meds.length !== 1 ? "s" : ""} loaded from case record`,
@@ -102,7 +102,7 @@ const AdminNewPrescription = () => {
     if (isEditMode && existingRx && !loaded) {
       setPatientId(existingRx.patient_id);
       setPatientName((existingRx.patients as any)?.name || "");
-      setDiagnosis(existingRx.diagnosis || "");
+      setDiagnosis(existingRx.diagnosis ? existingRx.diagnosis.split(", ") : []);
       setNotes(existingRx.advice || "");
       setFollowUpDate(existingRx.follow_up || "");
       const items = (existingRx.prescription_items || []) as any[];
@@ -140,7 +140,7 @@ const AdminNewPrescription = () => {
   const validate = () => {
     const e: Record<string, string> = {};
     if (!patientId) e.patientId = "Select a patient";
-    if (!diagnosis.trim()) e.diagnosis = "Diagnosis is required";
+    if (diagnosis.length === 0) e.diagnosis = "Diagnosis is required";
     medicines.forEach((m, i) => {
       if (!m.name.trim()) e[`med_${i}_name`] = "Required";
     });
@@ -167,7 +167,7 @@ const AdminNewPrescription = () => {
         id: id!,
         patient_id: patientId,
         doctor_id: user?.id || "",
-        diagnosis,
+        diagnosis: diagnosis.join(", "),
         advice: notes,
         follow_up: followUpDate || undefined,
         items: itemsPayload,
@@ -176,7 +176,7 @@ const AdminNewPrescription = () => {
       createPrescription.mutate({
         patient_id: patientId,
         doctor_id: user?.id || "",
-        diagnosis,
+        diagnosis: diagnosis.join(", "),
         advice: notes,
         follow_up: followUpDate || undefined,
         items: itemsPayload,
@@ -257,11 +257,12 @@ const AdminNewPrescription = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm text-muted-foreground mb-1.5 block">Chief Complaint</Label>
-                  <ComplaintCombo value={complaint} onChange={setComplaint} />
+                  <ComplaintCombo multi value={complaint} onChange={setComplaint} />
                 </div>
                 <div>
                   <Label className="text-sm text-muted-foreground mb-1.5 block">Diagnosis *</Label>
                   <DiagnosisCombo
+                    multi
                     value={diagnosis}
                     onChange={(v) => { setDiagnosis(v); if (errors.diagnosis) setErrors((er) => ({ ...er, diagnosis: "" })); }}
                   />
@@ -375,10 +376,10 @@ const AdminNewPrescription = () => {
                 <p className="text-xs text-muted-foreground">{today}</p>
               </div>
 
-              {diagnosis && (
+              {diagnosis.length > 0 && (
                 <div className="mb-4 p-3 rounded-xl bg-muted/30 border border-border">
                   <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Diagnosis</p>
-                  <p className="text-sm text-foreground">{diagnosis}</p>
+                  <p className="text-sm text-foreground">{diagnosis.join(", ")}</p>
                 </div>
               )}
 
