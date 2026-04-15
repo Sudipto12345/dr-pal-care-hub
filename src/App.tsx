@@ -24,6 +24,7 @@ import CartPage from "./pages/CartPage";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import Blog from "./pages/Blog";
+import BlogDetail from "./pages/BlogDetail";
 import BookAppointment from "./pages/BookAppointment";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
