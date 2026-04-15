@@ -228,7 +228,31 @@ export const useDeletePrescription = () => {
   });
 };
 
-// ─── CASES ───
+export const useUpdatePrescription = () => {
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: async ({ id, items, ...updates }: {
+      id: string; patient_id?: string; doctor_id?: string; diagnosis?: string; advice?: string; follow_up?: string;
+      items: { medicine_name: string; potency?: string; dose?: string; frequency?: string }[];
+    }) => {
+      const { error: rxErr } = await supabase.from("prescriptions").update(updates).eq("id", id);
+      if (rxErr) throw rxErr;
+      await supabase.from("prescription_items").delete().eq("prescription_id", id);
+      if (items.length > 0) {
+        const { error: itemErr } = await supabase.from("prescription_items").insert(items.map((i) => ({ ...i, prescription_id: id })));
+        if (itemErr) throw itemErr;
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["prescriptions"] });
+      toast({ title: "Prescription updated" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+};
+
+
 export const useCases = () =>
   useQuery({
     queryKey: ["cases"],
