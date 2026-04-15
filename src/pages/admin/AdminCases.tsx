@@ -348,8 +348,30 @@ const AdminCases = () => {
                                   </div>
                                 </div>
                               )}
+                              {/* Follow-up Prescription Medicines */}
+                              {(fu.medicines || []).filter((m: any) => m.name?.trim()).length > 0 && (
+                                <div className="mt-2 p-2.5 rounded-lg bg-secondary/5 border border-secondary/20">
+                                  <div className="flex items-center gap-1.5 mb-2">
+                                    <Pill className="w-3 h-3 text-secondary" />
+                                    <span className="text-[10px] uppercase tracking-wider text-secondary font-semibold">
+                                      Prescription ({(fu.medicines || []).filter((m: any) => m.name?.trim()).length} medicine{(fu.medicines || []).filter((m: any) => m.name?.trim()).length !== 1 ? "s" : ""})
+                                    </span>
+                                  </div>
+                                  <div className="space-y-1.5">
+                                    {(fu.medicines || []).filter((m: any) => m.name?.trim()).map((med: any, mi: number) => (
+                                      <div key={mi} className="flex items-center gap-2 text-xs">
+                                        <span className="w-4 h-4 rounded-full bg-secondary/20 text-secondary text-[9px] font-bold flex items-center justify-center shrink-0">{mi + 1}</span>
+                                        <span className="font-medium text-foreground">{med.name}</span>
+                                        <span className="text-muted-foreground">
+                                          {[med.potency, med.dose, med.frequency].filter(Boolean).join(" · ") || ""}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
                               {fu.notes && (
-                                <div className="flex items-start gap-1.5">
+                                <div className="flex items-start gap-1.5 mt-1.5">
                                   <span className="text-xs">📝</span>
                                   <div>
                                     <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Notes:</span>
