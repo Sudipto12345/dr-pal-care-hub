@@ -4,23 +4,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { Plus, CheckCircle } from "lucide-react";
+import { Plus, CheckCircle, Loader2 } from "lucide-react";
+import { useCreatePatient } from "@/hooks/useSupabaseData";
 
-interface AddPatientFormProps {
-  trigger?: React.ReactNode;
-}
+const initialState = { name: "", email: "", phone: "", age: "", gender: "", address: "" };
 
-const initialState = {
-  name: "", email: "", phone: "", age: "", gender: "", bloodGroup: "",
-  address: "", allergies: "", emergencyContact: "",
-};
-
-const AddPatientForm = ({ trigger }: AddPatientFormProps) => {
+const AddPatientForm = ({ trigger }: { trigger?: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(initialState);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState(false);
+  const createPatient = useCreatePatient();
 
   const set = (field: string, value: string) => {
     setForm((f) => ({ ...f, [field]: value }));
@@ -31,9 +25,7 @@ const AddPatientForm = ({ trigger }: AddPatientFormProps) => {
     const e: Record<string, string> = {};
     if (!form.name.trim()) e.name = "Name is required";
     if (!form.phone.trim()) e.phone = "Phone is required";
-    if (!form.age.trim()) e.age = "Age is required";
-    else if (isNaN(Number(form.age)) || Number(form.age) < 0 || Number(form.age) > 120) e.age = "Enter valid age (0–120)";
-    if (!form.gender) e.gender = "Gender is required";
+    if (form.age && (isNaN(Number(form.age)) || Number(form.age) < 0 || Number(form.age) > 120)) e.age = "Enter valid age";
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Invalid email";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -41,30 +33,27 @@ const AddPatientForm = ({ trigger }: AddPatientFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) {
-      toast.error("Please fix the errors before submitting");
-      return;
-    }
-    console.log("New Patient:", form);
-    setSuccess(true);
-    toast.success("Patient added successfully", {
-      description: `${form.name} has been registered`,
-      action: { label: "View", onClick: () => console.log("View patient") },
-    });
-    setTimeout(() => {
-      setForm(initialState);
-      setErrors({});
-      setSuccess(false);
-      setOpen(false);
-    }, 1500);
+    if (!validate()) return;
+    createPatient.mutate(
+      {
+        name: form.name,
+        phone: form.phone,
+        age: form.age ? Number(form.age) : undefined,
+        gender: form.gender?.toLowerCase() || undefined,
+        address: form.address || undefined,
+        email: form.email || undefined,
+      },
+      {
+        onSuccess: () => {
+          setSuccess(true);
+          setTimeout(() => { setForm(initialState); setErrors({}); setSuccess(false); setOpen(false); }, 1500);
+        },
+      }
+    );
   };
 
   const handleOpenChange = (next: boolean) => {
-    if (!next) {
-      setForm(initialState);
-      setErrors({});
-      setSuccess(false);
-    }
+    if (!next) { setForm(initialState); setErrors({}); setSuccess(false); }
     setOpen(next);
   };
 
@@ -80,13 +69,11 @@ const AddPatientForm = ({ trigger }: AddPatientFormProps) => {
               <CheckCircle className="w-8 h-8 text-primary-foreground" />
             </div>
             <h3 className="font-heading text-xl font-bold text-foreground mb-1">Patient Registered!</h3>
-            <p className="text-muted-foreground text-sm">{form.name} has been added to your records.</p>
+            <p className="text-muted-foreground text-sm">{form.name} has been added.</p>
           </div>
         ) : (
           <>
-            <DialogHeader>
-              <DialogTitle className="font-heading text-xl">Add New Patient</DialogTitle>
-            </DialogHeader>
+            <DialogHeader><DialogTitle className="font-heading text-xl">Add New Patient</DialogTitle></DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4 mt-2">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -100,27 +87,19 @@ const AddPatientForm = ({ trigger }: AddPatientFormProps) => {
                   {errors.phone && <p className="text-xs text-destructive mt-1">{errors.phone}</p>}
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label>Age *</Label>
+                  <Label>Age</Label>
                   <Input value={form.age} onChange={(e) => set("age", e.target.value)} placeholder="35" className="mt-1 rounded-xl" />
                   {errors.age && <p className="text-xs text-destructive mt-1">{errors.age}</p>}
                 </div>
                 <div>
-                  <Label>Gender *</Label>
+                  <Label>Gender</Label>
                   <select value={form.gender} onChange={(e) => set("gender", e.target.value)} className="mt-1 w-full h-10 rounded-xl border border-input bg-background px-3 text-sm">
                     <option value="">Select</option>
-                    <option>Male</option>
-                    <option>Female</option>
-                    <option>Other</option>
-                  </select>
-                  {errors.gender && <p className="text-xs text-destructive mt-1">{errors.gender}</p>}
-                </div>
-                <div>
-                  <Label>Blood Group</Label>
-                  <select value={form.bloodGroup} onChange={(e) => set("bloodGroup", e.target.value)} className="mt-1 w-full h-10 rounded-xl border border-input bg-background px-3 text-sm">
-                    <option value="">Select</option>
-                    {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((bg) => <option key={bg}>{bg}</option>)}
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
                   </select>
                 </div>
               </div>
@@ -133,19 +112,11 @@ const AddPatientForm = ({ trigger }: AddPatientFormProps) => {
                 <Label>Address</Label>
                 <Textarea value={form.address} onChange={(e) => set("address", e.target.value)} placeholder="Full address" className="mt-1 rounded-xl" />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <Label>Allergies</Label>
-                  <Input value={form.allergies} onChange={(e) => set("allergies", e.target.value)} placeholder="Dust, Pollen, etc." className="mt-1 rounded-xl" />
-                </div>
-                <div>
-                  <Label>Emergency Contact</Label>
-                  <Input value={form.emergencyContact} onChange={(e) => set("emergencyContact", e.target.value)} placeholder="+91 98765 99999" className="mt-1 rounded-xl" />
-                </div>
-              </div>
               <div className="flex justify-end gap-2 pt-2">
                 <Button type="button" variant="outline" onClick={() => handleOpenChange(false)} className="rounded-xl">Cancel</Button>
-                <Button type="submit" variant="hero">Add Patient</Button>
+                <Button type="submit" variant="hero" disabled={createPatient.isPending}>
+                  {createPatient.isPending && <Loader2 className="w-4 h-4 animate-spin mr-1" />} Add Patient
+                </Button>
               </div>
             </form>
           </>
