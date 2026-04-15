@@ -110,6 +110,9 @@ const AdminPatients = () => {
             <div className="flex justify-between"><span className="text-muted-foreground">Registered:</span><span className="font-medium">{viewPatient && new Date(viewPatient.created_at).toLocaleDateString()}</span></div>
           </div>
           <div className="flex justify-end gap-2 pt-2 border-t border-border">
+            <Button variant="outline" size="sm" className="rounded-xl" asChild>
+              <Link to={`/admin/patients/${viewPatient?.id}/timeline`}><Clock className="w-3.5 h-3.5 mr-1" /> Timeline</Link>
+            </Button>
             <Button variant="outline" size="sm" className="rounded-xl" onClick={() => { setViewPatient(null); openEdit(viewPatient); }}>
               <Pencil className="w-3.5 h-3.5 mr-1" /> Edit
             </Button>
