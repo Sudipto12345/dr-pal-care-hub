@@ -190,11 +190,14 @@ export const useCreatePrescription = () => {
   const qc = useQueryClient();
   const { toast } = useToast();
   return useMutation({
-    mutationFn: async ({ items, ...prescription }: {
+    mutationFn: async ({ items, clinical_exam, ...prescription }: {
       patient_id: string; doctor_id: string; diagnosis?: string; advice?: string; follow_up?: string;
+      clinical_exam?: Record<string, string>;
       items: { medicine_name: string; potency?: string; dose?: string; frequency?: string }[];
     }) => {
-      const { data: rx, error: rxErr } = await supabase.from("prescriptions").insert(prescription).select().single();
+      const insertData: any = { ...prescription };
+      if (clinical_exam) insertData.clinical_exam = clinical_exam;
+      const { data: rx, error: rxErr } = await supabase.from("prescriptions").insert(insertData as any).select().single();
       if (rxErr) throw rxErr;
       if (items.length > 0) {
         const { error: itemErr } = await supabase.from("prescription_items").insert(items.map((i) => ({ ...i, prescription_id: rx.id })));
@@ -232,11 +235,14 @@ export const useUpdatePrescription = () => {
   const qc = useQueryClient();
   const { toast } = useToast();
   return useMutation({
-    mutationFn: async ({ id, items, ...updates }: {
+    mutationFn: async ({ id, items, clinical_exam, ...updates }: {
       id: string; patient_id?: string; doctor_id?: string; diagnosis?: string; advice?: string; follow_up?: string;
+      clinical_exam?: Record<string, string>;
       items: { medicine_name: string; potency?: string; dose?: string; frequency?: string }[];
     }) => {
-      const { error: rxErr } = await supabase.from("prescriptions").update(updates).eq("id", id);
+      const updateData: any = { ...updates };
+      if (clinical_exam) updateData.clinical_exam = clinical_exam;
+      const { error: rxErr } = await supabase.from("prescriptions").update(updateData as any).eq("id", id);
       if (rxErr) throw rxErr;
       await supabase.from("prescription_items").delete().eq("prescription_id", id);
       if (items.length > 0) {
