@@ -91,6 +91,16 @@ const buildCopyText = (c: any) => {
     if (fd.repetition) lines.push(`Repetition: ${fd.repetition}`);
   }
 
+  if (fd.followUps?.length) {
+    lines.push(`\n--- Follow-Up Visits ---`);
+    fd.followUps.forEach((fu: any, i: number) => {
+      lines.push(`\nVisit #${i + 1}: ${fu.date || "No date"} — ${fu.status || "No status"}`);
+      if (fu.improvement) lines.push(`  Improvement/Loss: ${fu.improvement}`);
+      if (fu.medicine) lines.push(`  Medicine: ${fu.medicine}`);
+      if (fu.notes) lines.push(`  Notes: ${fu.notes}`);
+    });
+  }
+
   if (c.symptoms) lines.push(`\nSymptoms: ${c.symptoms}`);
   if (c.history) lines.push(`History: ${c.history}`);
   if (c.notes) lines.push(`Notes: ${c.notes}`);
@@ -280,8 +290,36 @@ const AdminCases = () => {
                 </SectionBlock>
               )}
 
-              {/* Follow-up */}
-              {(viewCase.form_data.nextVisit || viewCase.form_data.followUpNotes) && (
+              {/* Follow-ups */}
+              {viewCase.form_data.followUps?.length > 0 && (
+                <div className="md:col-span-2">
+                  <SectionBlock icon={CalendarDays} title={`Follow-Up Visits (${viewCase.form_data.followUps.length})`} color="info">
+                    <div className="space-y-2">
+                      {viewCase.form_data.followUps.map((fu: any, i: number) => (
+                        <div key={i} className="p-2.5 rounded-lg bg-muted/30 border border-border">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="w-5 h-5 rounded-full bg-info text-white text-[10px] font-bold flex items-center justify-center">{i + 1}</span>
+                            <span className="text-xs font-semibold">{fu.date || "No date"}</span>
+                            {fu.status && (
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                                fu.status === "Improved" ? "bg-green-100 text-green-700" :
+                                fu.status === "Worse" ? "bg-red-100 text-red-700" :
+                                fu.status === "Same" ? "bg-gray-100 text-gray-700" :
+                                "bg-amber-100 text-amber-700"
+                              }`}>{fu.status}</span>
+                            )}
+                          </div>
+                          {fu.improvement && <p className="text-xs text-foreground">{fu.improvement}</p>}
+                          {fu.medicine && <p className="text-xs text-muted-foreground">💊 {fu.medicine}</p>}
+                          {fu.notes && <p className="text-xs text-muted-foreground">📝 {fu.notes}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  </SectionBlock>
+                </div>
+              )}
+              {/* Legacy follow-up */}
+              {!viewCase.form_data.followUps && (viewCase.form_data.nextVisit || viewCase.form_data.followUpNotes) && (
                 <SectionBlock icon={CalendarDays} title="Follow-Up" color="info">
                   <InfoRow label="Next Visit" value={viewCase.form_data.nextVisit} />
                   <InfoRow label="Notes" value={viewCase.form_data.followUpNotes} />
