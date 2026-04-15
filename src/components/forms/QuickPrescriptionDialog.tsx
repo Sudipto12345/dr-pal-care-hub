@@ -148,6 +148,23 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
             </div>
           </div>
 
+          {/* Clinical Examination */}
+          <div>
+            <div className="flex items-center gap-1.5 mb-2">
+              <Activity className="w-3.5 h-3.5 text-muted-foreground" />
+              <Label className="text-xs text-muted-foreground">Clinical Examination</Label>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <Input value={clinicalExam.riskFactors} onChange={e => setClinicalExam(p => ({ ...p, riskFactors: e.target.value }))} placeholder="Risk Factors" className="rounded-lg h-8 text-xs" />
+              <Input value={clinicalExam.oe} onChange={e => setClinicalExam(p => ({ ...p, oe: e.target.value }))} placeholder="O/E" className="rounded-lg h-8 text-xs" />
+              <Input value={clinicalExam.pulse} onChange={e => setClinicalExam(p => ({ ...p, pulse: e.target.value }))} placeholder="Pulse" className="rounded-lg h-8 text-xs" />
+              <Input value={clinicalExam.bp} onChange={e => setClinicalExam(p => ({ ...p, bp: e.target.value }))} placeholder="BP" className="rounded-lg h-8 text-xs" />
+              <Input value={clinicalExam.heart} onChange={e => setClinicalExam(p => ({ ...p, heart: e.target.value }))} placeholder="Heart" className="rounded-lg h-8 text-xs" />
+              <Input value={clinicalExam.lung} onChange={e => setClinicalExam(p => ({ ...p, lung: e.target.value }))} placeholder="Lung" className="rounded-lg h-8 text-xs" />
+              <Input value={clinicalExam.others} onChange={e => setClinicalExam(p => ({ ...p, others: e.target.value }))} placeholder="Others" className="rounded-lg h-8 text-xs col-span-2 sm:col-span-3" />
+            </div>
+          </div>
+
           {/* Advice */}
           <div>
             <Label className="text-xs text-muted-foreground mb-1 block">Advice</Label>
