@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AdminSidebar from "./AdminSidebar";
@@ -10,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import QuickPrescriptionDialog from "@/components/forms/QuickPrescriptionDialog";
 
 const pageTitles: Record<string, string> = {
   "/admin/dashboard": "Dashboard",
@@ -26,7 +24,7 @@ const AdminLayout = () => {
   const { t, lang, toggleLang } = useLanguage();
   const location = useLocation();
   const pageTitle = pageTitles[location.pathname] || "Admin";
-  const [rxOpen, setRxOpen] = useState(false);
+  
 
   const bottomNavItems = [
     { label: t.admin.dashboard, url: "/admin/dashboard", icon: LayoutDashboard },
@@ -75,12 +73,10 @@ const AdminLayout = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem onClick={() => setRxOpen(true)} className="flex items-center gap-2 cursor-pointer"><FileText className="w-4 h-4" /> New Prescription</DropdownMenuItem>
+                  <DropdownMenuItem asChild><Link to="/admin/prescriptions/new" className="flex items-center gap-2"><FileText className="w-4 h-4" /> New Prescription</Link></DropdownMenuItem>
                   <DropdownMenuItem asChild><Link to="/admin/appointments" className="flex items-center gap-2"><CalendarDays className="w-4 h-4" /> New Appointment</Link></DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-
-              <QuickPrescriptionDialog open={rxOpen} onOpenChange={setRxOpen} />
 
               <button onClick={toggleLang} className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-medium border border-border/60 text-foreground hover:bg-accent transition-colors">
                 <Globe className="w-3.5 h-3.5" /> {lang === "en" ? "বাংলা" : "EN"}

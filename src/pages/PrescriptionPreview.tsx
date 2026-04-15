@@ -1,11 +1,16 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Printer, ArrowLeft, Download, Loader2 } from "lucide-react";
+import { Printer, ArrowLeft, Download, Loader2, Eye, EyeOff } from "lucide-react";
 import { usePrescription } from "@/hooks/useSupabaseData";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const PrescriptionPreview = () => {
   const { id } = useParams();
   const { data: prescription, isLoading } = usePrescription(id || "");
+  const [showHeader, setShowHeader] = useState(true);
+  const [showFooter, setShowFooter] = useState(true);
 
   const handlePrint = () => window.print();
 
@@ -23,7 +28,18 @@ const PrescriptionPreview = () => {
           <Link to="/admin/prescriptions" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back to Prescriptions
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            {/* Header/Footer toggles */}
+            <div className="flex items-center gap-4 border-r border-border pr-3">
+              <div className="flex items-center gap-1.5">
+                <Switch id="show-header" checked={showHeader} onCheckedChange={setShowHeader} className="h-4 w-7" />
+                <Label htmlFor="show-header" className="text-xs text-muted-foreground cursor-pointer">Header</Label>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Switch id="show-footer" checked={showFooter} onCheckedChange={setShowFooter} className="h-4 w-7" />
+                <Label htmlFor="show-footer" className="text-xs text-muted-foreground cursor-pointer">Footer</Label>
+              </div>
+            </div>
             <Button variant="outline" size="sm" className="rounded-xl" onClick={handlePrint}>
               <Printer className="w-4 h-4 mr-1" /> Print
             </Button>
@@ -37,11 +53,19 @@ const PrescriptionPreview = () => {
       {/* Prescription Content */}
       <div className="container mx-auto max-w-4xl py-8 px-4">
         <div className="bg-white rounded-2xl shadow-elevated p-8 print:shadow-none print:rounded-none print:p-6">
-          {/* Header */}
-          <div className="text-center border-b-2 border-primary/20 pb-6 mb-6">
-            <h1 className="text-2xl font-heading font-bold text-foreground">Dr. Amit Kumar Pal</h1>
-            <p className="text-sm text-primary font-medium">BHMS (Gold Medalist) | Advanced Homeopathic Practitioner</p>
-            <p className="text-xs text-muted-foreground mt-1">Reg. No: WBHMC/12345</p>
+          {/* Header - maintains space when hidden */}
+          <div className="border-b-2 border-primary/20 pb-6 mb-6">
+            {showHeader ? (
+              <div className="text-center">
+                <h1 className="text-2xl font-heading font-bold text-foreground">Dr. Amit Kumar Pal</h1>
+                <p className="text-sm text-primary font-medium">BHMS (Gold Medalist) | Advanced Homeopathic Practitioner</p>
+                <p className="text-xs text-muted-foreground mt-1">Reg. No: WBHMC/12345</p>
+                <p className="text-xs text-muted-foreground mt-0.5">📞 +91 98765 43210 | ✉ dr.amitpal@clinic.com</p>
+                <p className="text-xs text-muted-foreground">📍 123 Healing Lane, New Delhi, India 110001</p>
+              </div>
+            ) : (
+              <div className="h-[88px]" /> /* blank space preserving layout */
+            )}
           </div>
 
           {/* Patient Info */}
@@ -118,17 +142,24 @@ const PrescriptionPreview = () => {
             </div>
           )}
 
-          {/* Footer */}
-          <div className="flex justify-between items-end pt-8 border-t border-border/50">
-            <div className="text-xs text-muted-foreground">
-              <p>This is a computer-generated prescription.</p>
-            </div>
-            <div className="text-right">
-              <div className="w-40 border-t border-foreground/30 pt-1">
-                <p className="text-sm font-semibold text-foreground">Dr. Amit Kumar Pal</p>
-                <p className="text-xs text-muted-foreground">BHMS (Gold Medalist)</p>
+          {/* Footer - maintains space when hidden */}
+          <div className="pt-8 border-t border-border/50">
+            {showFooter ? (
+              <div className="flex justify-between items-end">
+                <div className="text-xs text-muted-foreground">
+                  <p>This is a computer-generated prescription.</p>
+                  <p className="mt-0.5">📞 +91 98765 43210 | 📍 123 Healing Lane, New Delhi</p>
+                </div>
+                <div className="text-right">
+                  <div className="w-40 border-t border-foreground/30 pt-1">
+                    <p className="text-sm font-semibold text-foreground">Dr. Amit Kumar Pal</p>
+                    <p className="text-xs text-muted-foreground">BHMS (Gold Medalist)</p>
+                  </div>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="h-[52px]" /> /* blank space preserving layout */
+            )}
           </div>
         </div>
       </div>
