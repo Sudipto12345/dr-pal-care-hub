@@ -30,14 +30,12 @@ const Navbar = () => {
     { label: t.nav.contact, path: "/contact" },
   ];
 
-  const navBg = scrolled || !isHome
-    ? "bg-card/95 backdrop-blur-xl border-b border-border shadow-soft"
-    : "bg-transparent border-b border-transparent";
+  const navBg = "bg-primary border-b border-primary/80 shadow-soft";
 
-  const textColor = scrolled || !isHome ? "text-foreground" : "text-white";
-  const mutedColor = scrolled || !isHome ? "text-muted-foreground" : "text-white/70";
-  const hoverBg = scrolled || !isHome ? "hover:bg-muted/50" : "hover:bg-white/10";
-  const activeStyle = scrolled || !isHome ? "bg-primary/10 text-primary" : "bg-white/15 text-white";
+  const textColor = "text-primary-foreground";
+  const mutedColor = "text-primary-foreground/70";
+  const hoverBg = "hover:bg-white/15";
+  const activeStyle = "bg-white/20 text-primary-foreground";
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navBg}`}>
