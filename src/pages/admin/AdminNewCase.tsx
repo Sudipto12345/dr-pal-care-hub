@@ -252,7 +252,7 @@ const AdminNewCase = () => {
     menstruation, flow, mensPain, leucorrhoea, sexualDesire, maleProblems,
     majorIllness, surgery, medHistory, famDiabetes, famHypertension, famCancer, famOther,
     weight, height, pulse, bp, tongue, skin, investigations,
-    keyRubrics, miasm, medicine, potency, dose, repetition, followUps,
+    keyRubrics, miasm, medicine, potency, dose, repetition, advice, followUps,
   });
 
   const addFollowUp = () => setFollowUps(f => [...f, { ...emptyFollowUp, medicines: [{ ...emptyFollowUpMedicine }] }]);
