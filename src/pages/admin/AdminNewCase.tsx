@@ -617,7 +617,8 @@ const AdminNewCase = () => {
             <div className="bg-card rounded-2xl border-2 border-green-200 p-5">
               <SectionHeader number={12} icon={Pill} title="Prescription" color="secondary" />
               <div className="space-y-3">
-                <div className="mt-1">
+                <div>
+                  <Label className="text-xs text-muted-foreground mb-1.5 block">Medicine</Label>
                   <MedicineCombo
                     value={medicine}
                     onChange={(name, defaults) => {
