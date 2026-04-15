@@ -86,7 +86,7 @@ const AdminNewPrescription = () => {
         
         if (meds.length > 0) {
           setMedicines(meds);
-          if (fd.diagnosis) setDiagnosis(fd.diagnosis);
+          if (fd.diagnosis) setDiagnosis(typeof fd.diagnosis === 'string' ? fd.diagnosis.split(", ").filter(Boolean) : [fd.diagnosis]);
           setAutoPopulated(true);
           toast.info("Auto-filled from latest case follow-up", {
             description: `${meds.length} medicine${meds.length !== 1 ? "s" : ""} loaded from case record`,
@@ -376,10 +376,10 @@ const AdminNewPrescription = () => {
                 <p className="text-xs text-muted-foreground">{today}</p>
               </div>
 
-              {diagnosis && (
+              {diagnosis.length > 0 && (
                 <div className="mb-4 p-3 rounded-xl bg-muted/30 border border-border">
                   <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">Diagnosis</p>
-                  <p className="text-sm text-foreground">{diagnosis}</p>
+                  <p className="text-sm text-foreground">{diagnosis.join(", ")}</p>
                 </div>
               )}
 
