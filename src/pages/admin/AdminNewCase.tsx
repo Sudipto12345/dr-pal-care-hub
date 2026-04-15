@@ -76,6 +76,7 @@ const AdminNewCase = () => {
     enabled: !!patientId,
   });
   const [age, setAge] = useState("");
+  const [ageUnit, setAgeUnit] = useState("Years");
   const [sex, setSex] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
   const [occupation, setOccupation] = useState("");
