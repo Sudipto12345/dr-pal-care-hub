@@ -3,11 +3,13 @@ import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import { useCases, useDeleteCase } from "@/hooks/useSupabaseData";
 import { Button } from "@/components/ui/button";
-import { Plus, Loader2, Eye, Pencil, Trash2, Copy, User, MessageSquare, Brain, Activity, Stethoscope, History, Users, FlaskConical, Lightbulb, Pill, CalendarDays, Venus, Mars, Printer, Download } from "lucide-react";
+import { Plus, Loader2, Eye, Pencil, Trash2, Copy, User, MessageSquare, Brain, Activity, Stethoscope, History, Users, FlaskConical, Lightbulb, Pill, CalendarDays, Venus, Mars, Printer, Download, ClipboardPlus, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 const InfoRow = ({ label, value }: { label: string; value: string | undefined }) => {
   if (!value) return null;
@@ -114,10 +116,63 @@ const buildCopyText = (c: any) => {
   return lines.join("\n");
 };
 
+const buildPrescriptionPrintHtml = (patient: any, rx: any, medicines: any[], ce: any) => {
+  const medsRows = medicines.map((m: any, i: number) => {
+    const freq = (m.frequency || "").toLowerCase();
+    const morning = freq.includes("thrice") || freq.includes("twice") || freq.includes("once") || freq.includes("morning") ? m.dose || "✓" : "";
+    const noon = freq.includes("thrice") || freq.includes("twice") ? m.dose || "✓" : "";
+    const night = freq.includes("thrice") || freq.includes("night") || freq.includes("once") ? m.dose || "✓" : "";
+    const beforeMeal = freq.includes("before") ? "✓" : "";
+    const afterMeal = freq.includes("after") ? "✓" : "";
+    return `<tr><td>${i+1}</td><td style="font-weight:600;text-align:left">${m.medicine_name}</td><td>${m.potency||"—"}</td><td>${morning}</td><td>${noon}</td><td>${night}</td><td>${beforeMeal}</td><td>${afterMeal}</td><td style="font-size:10px">${m.frequency||"—"}</td></tr>`;
+  }).join("");
+  const emptyRows = Array.from({length: Math.max(0, 10 - medicines.length)}).map(() => "<tr>" + "<td>&nbsp;</td>".repeat(9) + "</tr>").join("");
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Rx - ${patient?.name || "Patient"}</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&display=swap');*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Times New Roman',serif;color:#1a1a1a}.page{width:210mm;min-height:297mm;padding:10mm 12mm;position:relative;margin:0 auto}.hdr{border-bottom:2.5px solid #333;padding-bottom:10px;margin-bottom:8px;display:flex;justify-content:space-between}.hdr>div{flex:1}.hdr .rt{text-align:right}.bn{font-family:'Noto Sans Bengali',sans-serif}.pr{display:flex;border-bottom:1.5px solid #999;padding-bottom:6px;margin-bottom:10px;font-size:13px;gap:6px}.bc{display:flex;min-height:520px}.lc{width:35%;padding-right:12px;border-right:1.5px solid #bbb}.rc{width:65%;padding-left:10px}table{width:100%;border-collapse:collapse;font-size:11px}th{border:1px solid #999;padding:5px 3px;text-align:center;font-weight:700;background:#f5f5f5;font-size:11px}td{border:1px solid #ccc;padding:5px 3px;text-align:center;vertical-align:middle}.ft{position:absolute;bottom:10mm;left:12mm;right:12mm;border-top:2.5px solid #333;padding-top:8px;display:flex;justify-content:space-between;align-items:flex-end;font-size:11px}@media print{body{padding:0}.page{box-shadow:none}}</style></head><body><div class="page">
+<div class="hdr"><div><h1 class="bn" style="font-size:26px;font-weight:700;color:#1a237e;line-height:1.2">ডাঃ অমিত কুমার পাল</h1><p class="bn" style="font-size:12px;color:#333;font-weight:600">বিএইচএমএস (গোল্ড মেডেলিস্ট),</p><p class="bn" style="font-size:12px;color:#333">উন্নত হোমিওপ্যাথিক চিকিৎসক</p><p class="bn" style="font-size:12px;color:#c62828;font-weight:600">হোমিওপ্যাথি বিশেষজ্ঞ</p><p class="bn" style="font-size:11px;color:#555">নিউলাইফ হোমিও হল, রামপাল, বাগেরহাট</p></div><div class="rt"><h2 style="font-size:22px;font-weight:700;color:#1a237e;line-height:1.2">Dr. Amit Kumar Pal</h2><p style="font-size:12px;color:#333">BHMS (Gold Medalist)</p><p style="font-size:12px;color:#333">Advanced Homeopathic Practitioner</p><p style="font-size:11px;color:#c62828;font-weight:600">Intervention Homeopath</p><p style="font-size:11px;color:#c62828;font-weight:600">and Medicine Specialist</p><p style="font-size:11px;color:#1565c0;font-weight:600">Newlife Homeo Hall</p><p style="font-size:10px;color:#333">Rampal, Bagerhat</p><p style="font-size:10px;color:#333">Contact: +880 1911 734 726</p></div></div>
+<div class="pr"><div style="flex:2"><b>Name:</b> ${patient?.name||"___"}</div><div style="flex:0.8"><b>Age:</b> ${patient?.age||"___"}y</div><div style="flex:0.6"><b>Wt:</b> ___</div><div style="flex:1.2"><b>Date:</b> ${new Date(rx.created_at).toLocaleDateString()}</div></div>
+<div class="bc"><div class="lc"><div style="margin-bottom:18px"><p style="font-size:14px;font-weight:700;margin:0 0 4px">Dx-</p><p style="font-size:12px;color:#333;white-space:pre-line">${rx.diagnosis||""}</p></div><div style="margin-bottom:18px"><p style="font-size:14px;font-weight:700;margin:0 0 4px">Clinical Complaints:</p><p style="font-size:12px;color:#333;white-space:pre-line;min-height:80px">${rx.advice||""}</p></div><div style="margin-bottom:18px"><p style="font-size:14px;font-weight:700;margin:0 0 4px">Risk Factors: <span style="font-weight:400;font-size:12px">${ce.riskFactors||""}</span></p><div style="font-size:12px;color:#333;line-height:1.6"><p>O/E- ${ce.oe||""}</p><p>Pulse- ${ce.pulse||""}</p><p>BP- ${ce.bp||""}</p><p>Heart- ${ce.heart||""}</p><p>Lung- ${ce.lung||""}</p><p>Others- ${ce.others||""}</p></div></div><div><p style="font-size:14px;font-weight:700;margin:0 0 4px">Investigations:</p><p style="font-size:12px;color:#333;white-space:pre-line">${rx.follow_up?`Follow-up: ${new Date(rx.follow_up).toLocaleDateString()}`:""}</p></div></div>
+<div class="rc"><table><thead><tr><th></th><th style="text-align:left">Medicine</th><th>Potency</th><th class="bn">সকাল</th><th class="bn">দুপুর</th><th class="bn">রাত</th><th class="bn" style="font-size:9px;line-height:1.2">খাবার<br/>আগে</th><th class="bn" style="font-size:9px;line-height:1.2">খাবার<br/>পরে</th><th class="bn">সময়</th></tr></thead><tbody>${medsRows}${emptyRows}</tbody></table></div></div>
+<div class="ft"><div><p class="bn" style="font-weight:600;color:#333;font-size:12px">অনলাইন ও অফলাইন পরামর্শ সেবা</p><p style="color:#555;font-size:11px">Newlife Homeo Hall, Rampal, Bagerhat</p><p class="bn" style="font-weight:700;color:#c62828;font-size:14px">০১৯১১-৭৩৪৭২৬</p></div><div style="text-align:right"><div style="width:170px;border-top:1px solid #333;padding-top:4px;margin-left:auto"><p style="font-size:13px;font-weight:700;color:#1a237e">Dr. Amit Kumar Pal</p><p style="font-size:10px;color:#555">BHMS (Gold Medalist)</p></div></div></div>
+</div></body></html>`;
+};
+
 const AdminCases = () => {
   const { data: cases, isLoading } = useCases();
   const deleteCase = useDeleteCase();
   const [viewCase, setViewCase] = useState<any>(null);
+  const [viewRxForPatient, setViewRxForPatient] = useState<string | null>(null);
+  const [selectedRx, setSelectedRx] = useState<any>(null);
+
+  // Fetch prescriptions for viewed case's patient
+  const viewPatientId = viewCase?.patient_id || viewRxForPatient;
+  const { data: patientPrescriptions = [] } = useQuery({
+    queryKey: ["case-patient-prescriptions", viewPatientId],
+    queryFn: async () => {
+      if (!viewPatientId) return [];
+      const { data, error } = await supabase
+        .from("prescriptions")
+        .select("*, patients(name), prescription_items(*)")
+        .eq("patient_id", viewPatientId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!viewPatientId,
+  });
+
+  const handlePrintPrescription = (rx: any) => {
+    const patient = rx.patients || {};
+    const medicines = (rx.prescription_items || []) as any[];
+    const ce = (rx.clinical_exam || {}) as any;
+    const printHtml = buildPrescriptionPrintHtml(patient, rx, medicines, ce);
+    const printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.write(printHtml);
+      printWindow.document.close();
+      printWindow.onload = () => printWindow.print();
+    }
+  };
 
   const handleCopy = (c: any) => {
     navigator.clipboard.writeText(buildCopyText(c));
@@ -325,6 +380,9 @@ const AdminCases = () => {
             accessor: (row: any) => (
               <div className="flex gap-1">
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setViewCase(row)} title="View"><Eye className="w-3.5 h-3.5" /></Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7" asChild title="Create Prescription">
+                  <Link to={`/admin/prescriptions/new?patient=${row.patient_id}`}><ClipboardPlus className="w-3.5 h-3.5 text-secondary" /></Link>
+                </Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7" asChild title="Edit"><Link to={`/admin/cases/${row.id}/edit`}><Pencil className="w-3.5 h-3.5" /></Link></Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleCopy(row)} title="Copy"><Copy className="w-3.5 h-3.5" /></Button>
                 <ConfirmDialog
@@ -590,8 +648,46 @@ const AdminCases = () => {
             </div>
           )}
 
+          {/* Previous Prescriptions for this patient */}
+          {viewCase && patientPrescriptions.length > 0 && (
+            <div className="border-t border-border pt-3">
+              <div className="flex items-center gap-2 mb-3">
+                <FileText className="w-4 h-4 text-secondary" />
+                <span className="text-sm font-semibold">Previous Prescriptions ({patientPrescriptions.length})</span>
+              </div>
+              <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                {patientPrescriptions.map((rx: any) => (
+                  <div key={rx.id} className="flex items-center justify-between p-2.5 rounded-xl border border-border bg-muted/20 hover:bg-muted/40 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium truncate">{rx.diagnosis || "No diagnosis"}</p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {new Date(rx.created_at).toLocaleDateString()} · {rx.prescription_items?.length || 0} medicines
+                      </p>
+                    </div>
+                    <div className="flex gap-1 shrink-0 ml-2">
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setSelectedRx(rx)} title="View">
+                        <Eye className="w-3.5 h-3.5" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handlePrintPrescription(rx)} title="Print">
+                        <Printer className="w-3.5 h-3.5" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" asChild title="Full Preview">
+                        <Link to={`/prescription/${rx.id}`} target="_blank"><Download className="w-3.5 h-3.5" /></Link>
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Bottom actions */}
           <div className="flex justify-end gap-2 pt-2 border-t border-border">
+            <Button variant="outline" size="sm" className="rounded-xl" asChild>
+              <Link to={`/admin/prescriptions/new?patient=${viewCase?.patient_id}`}>
+                <ClipboardPlus className="w-3.5 h-3.5 mr-1" /> Create Rx
+              </Link>
+            </Button>
             <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleDownloadPdf(viewCase)}>
               <Download className="w-3.5 h-3.5 mr-1" /> PDF
             </Button>
@@ -605,6 +701,81 @@ const AdminCases = () => {
               <Link to={`/admin/cases/${viewCase?.id}/edit`}><Pencil className="w-3.5 h-3.5 mr-1" /> Edit</Link>
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Prescription Preview Dialog */}
+      <Dialog open={!!selectedRx} onOpenChange={(open) => !open && setSelectedRx(null)}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-heading flex items-center gap-2">
+              <FileText className="w-5 h-5 text-primary" /> Prescription Preview
+            </DialogTitle>
+          </DialogHeader>
+          {selectedRx && (
+            <div className="space-y-4 mt-2">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div><span className="text-muted-foreground">Patient:</span> <span className="font-medium">{selectedRx.patients?.name || "—"}</span></div>
+                <div><span className="text-muted-foreground">Date:</span> <span className="font-medium">{new Date(selectedRx.created_at).toLocaleDateString()}</span></div>
+                <div><span className="text-muted-foreground">Diagnosis:</span> <span className="font-medium">{selectedRx.diagnosis || "—"}</span></div>
+                <div><span className="text-muted-foreground">Follow-up:</span> <span className="font-medium">{selectedRx.follow_up ? new Date(selectedRx.follow_up).toLocaleDateString() : "—"}</span></div>
+              </div>
+              {(selectedRx as any).clinical_exam && Object.values((selectedRx as any).clinical_exam).some((v: any) => v) && (
+                <div>
+                  <h4 className="font-semibold text-sm mb-2 flex items-center gap-1"><Stethoscope className="w-4 h-4 text-destructive" /> Clinical Exam</h4>
+                  <div className="grid grid-cols-2 gap-1 text-xs">
+                    {Object.entries((selectedRx as any).clinical_exam).filter(([, v]) => v).map(([k, v]) => (
+                      <div key={k}><span className="text-muted-foreground capitalize">{k}:</span> <span>{String(v)}</span></div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {selectedRx.prescription_items?.length > 0 && (
+                <div>
+                  <h4 className="font-semibold text-sm mb-2 flex items-center gap-1"><Pill className="w-4 h-4 text-secondary" /> Medicines</h4>
+                  <table className="w-full text-sm border border-border rounded-xl overflow-hidden">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="text-left px-3 py-2 font-medium">#</th>
+                        <th className="text-left px-3 py-2 font-medium">Medicine</th>
+                        <th className="text-left px-3 py-2 font-medium">Potency</th>
+                        <th className="text-left px-3 py-2 font-medium">Dose</th>
+                        <th className="text-left px-3 py-2 font-medium">Frequency</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedRx.prescription_items.map((item: any, i: number) => (
+                        <tr key={item.id} className="border-t border-border">
+                          <td className="px-3 py-2">{i + 1}</td>
+                          <td className="px-3 py-2 font-medium">{item.medicine_name}</td>
+                          <td className="px-3 py-2">{item.potency || "—"}</td>
+                          <td className="px-3 py-2">{item.dose || "—"}</td>
+                          <td className="px-3 py-2">{item.frequency || "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              {selectedRx.advice && (
+                <div>
+                  <h4 className="font-semibold text-sm mb-1">Advice</h4>
+                  <p className="text-sm text-muted-foreground bg-muted/30 rounded-xl p-3">{selectedRx.advice}</p>
+                </div>
+              )}
+              <div className="flex justify-end gap-2 pt-2 border-t border-border">
+                <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handlePrintPrescription(selectedRx)}>
+                  <Printer className="w-3.5 h-3.5 mr-1" /> Print Prescription
+                </Button>
+                <Button variant="outline" size="sm" className="rounded-xl" asChild>
+                  <Link to={`/prescription/${selectedRx.id}`} target="_blank"><Eye className="w-3.5 h-3.5 mr-1" /> Full Preview</Link>
+                </Button>
+                <Button variant="hero" size="sm" className="rounded-xl" asChild>
+                  <Link to={`/admin/prescriptions/${selectedRx.id}/edit`}><Pencil className="w-3.5 h-3.5 mr-1" /> Edit</Link>
+                </Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

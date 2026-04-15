@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,6 +28,8 @@ const potencyOptions = ["3X", "6X", "12X", "30C", "200C", "1M", "10M", "50M", "C
 
 const AdminNewPrescription = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const prefilledPatientId = searchParams.get("patient") || "";
   const isEditMode = !!id;
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -35,7 +37,7 @@ const AdminNewPrescription = () => {
   const updatePrescription = useUpdatePrescription();
   const { data: existingRx, isLoading: rxLoading } = usePrescription(id || "");
 
-  const [patientId, setPatientId] = useState("");
+  const [patientId, setPatientId] = useState(prefilledPatientId);
   const [patientName, setPatientName] = useState("");
   const [followUpDate, setFollowUpDate] = useState("");
   const [complaint, setComplaint] = useState<string[]>([]);
@@ -64,7 +66,16 @@ const AdminNewPrescription = () => {
     enabled: !!patientId && !isEditMode,
   });
 
-  // Auto-populate from latest case follow-up medicines
+  // Resolve patient name from prefilled patient ID
+  useEffect(() => {
+    if (prefilledPatientId && !patientName && !isEditMode) {
+      supabase.from("patients").select("name").eq("id", prefilledPatientId).single().then(({ data }) => {
+        if (data?.name) setPatientName(data.name);
+      });
+    }
+  }, [prefilledPatientId]);
+
+
   useEffect(() => {
     if (isEditMode || autoPopulated || !patientCases?.length) return;
     
