@@ -1,15 +1,27 @@
 import { useDiagnoses, useCreateDiagnosis } from "@/hooks/useLookupData";
 import ComboCreate from "./ComboCreate";
+import MultiComboCreate from "./MultiComboCreate";
 import { toast } from "sonner";
 
-interface DiagnosisComboProps {
+interface DiagnosisComboSingleProps {
   value: string;
   onChange: (name: string) => void;
+  multi?: false;
   placeholder?: string;
   className?: string;
 }
 
-const DiagnosisCombo = ({ value, onChange, placeholder, className }: DiagnosisComboProps) => {
+interface DiagnosisComboMultiProps {
+  value: string[];
+  onChange: (names: string[]) => void;
+  multi: true;
+  placeholder?: string;
+  className?: string;
+}
+
+type DiagnosisComboProps = DiagnosisComboSingleProps | DiagnosisComboMultiProps;
+
+const DiagnosisCombo = (props: DiagnosisComboProps) => {
   const { data: diagnoses = [] } = useDiagnoses();
   const createDiagnosis = useCreateDiagnosis();
 
@@ -24,15 +36,29 @@ const DiagnosisCombo = ({ value, onChange, placeholder, className }: DiagnosisCo
     }
   };
 
+  if (props.multi) {
+    return (
+      <MultiComboCreate
+        values={props.value}
+        onChange={props.onChange}
+        options={options}
+        onCreateNew={handleCreate}
+        isCreating={createDiagnosis.isPending}
+        placeholder={props.placeholder || "Search or add diagnosis..."}
+        className={props.className}
+      />
+    );
+  }
+
   return (
     <ComboCreate
-      value={value}
-      onChange={onChange}
+      value={props.value}
+      onChange={props.onChange}
       options={options}
       onCreateNew={handleCreate}
       isCreating={createDiagnosis.isPending}
-      placeholder={placeholder || "Search or add diagnosis..."}
-      className={className}
+      placeholder={props.placeholder || "Search or add diagnosis..."}
+      className={props.className}
     />
   );
 };
