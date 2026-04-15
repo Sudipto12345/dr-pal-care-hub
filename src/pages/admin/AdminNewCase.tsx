@@ -129,11 +129,89 @@ const AdminNewCase = () => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Load existing case for edit mode
+  useEffect(() => {
+    if (existingCase?.form_data) {
+      const fd = existingCase.form_data as any;
+      setPatientId(existingCase.patient_id || "");
+      setPatientName(existingCase.patients?.name || "");
+      if (fd.age) setAge(fd.age);
+      if (fd.ageUnit) setAgeUnit(fd.ageUnit);
+      if (fd.sex) setSex(fd.sex);
+      if (fd.maritalStatus) setMaritalStatus(fd.maritalStatus);
+      if (fd.occupation) setOccupation(fd.occupation);
+      if (fd.phone) setPhone(fd.phone);
+      if (fd.address) setAddress(fd.address);
+      if (fd.complaints) setComplaints(fd.complaints);
+      if (fd.temperament) setTemperament(fd.temperament);
+      if (fd.fears) setFears(fd.fears);
+      if (fd.anger) setAnger(fd.anger);
+      if (fd.memory) setMemory(fd.memory);
+      if (fd.confidence) setConfidence(fd.confidence);
+      if (fd.stressHistory) setStressHistory(fd.stressHistory);
+      if (fd.company) setCompany(fd.company);
+      if (fd.appetite) setAppetite(fd.appetite);
+      if (fd.thirst) setThirst(fd.thirst);
+      if (fd.desireSweet) setDesireSweet(fd.desireSweet);
+      if (fd.desireSalt) setDesireSalt(fd.desireSalt);
+      if (fd.desireSour) setDesireSour(fd.desireSour);
+      if (fd.desireSpicy) setDesireSpicy(fd.desireSpicy);
+      if (fd.desireMeat) setDesireMeat(fd.desireMeat);
+      if (fd.aversion) setAversion(fd.aversion);
+      if (fd.sweatQty) setSweatQty(fd.sweatQty);
+      if (fd.sweatOdor) setSweatOdor(fd.sweatOdor);
+      if (fd.sleep) setSleep(fd.sleep);
+      if (fd.dreams) setDreams(fd.dreams);
+      if (fd.sleepPosition) setSleepPosition(fd.sleepPosition);
+      if (fd.thermalType) setThermalType(fd.thermalType);
+      if (fd.weatherEffect) setWeatherEffect(fd.weatherEffect);
+      if (fd.menstruation) setMenstruation(fd.menstruation);
+      if (fd.flow) setFlow(fd.flow);
+      if (fd.mensPain) setMensPain(fd.mensPain);
+      if (fd.leucorrhoea) setLeucorrhoea(fd.leucorrhoea);
+      if (fd.sexualDesire) setSexualDesire(fd.sexualDesire);
+      if (fd.maleProblems) setMaleProblems(fd.maleProblems);
+      if (fd.majorIllness) setMajorIllness(fd.majorIllness);
+      if (fd.surgery) setSurgery(fd.surgery);
+      if (fd.medHistory) setMedHistory(fd.medHistory);
+      if (fd.famDiabetes) setFamDiabetes(fd.famDiabetes);
+      if (fd.famHypertension) setFamHypertension(fd.famHypertension);
+      if (fd.famCancer) setFamCancer(fd.famCancer);
+      if (fd.famOther) setFamOther(fd.famOther);
+      if (fd.weight) setWeight(fd.weight);
+      if (fd.height) setHeight(fd.height);
+      if (fd.pulse) setPulse(fd.pulse);
+      if (fd.bp) setBp(fd.bp);
+      if (fd.tongue) setTongue(fd.tongue);
+      if (fd.skin) setSkin(fd.skin);
+      if (fd.investigations) setInvestigations(fd.investigations);
+      if (fd.keyRubrics) setKeyRubrics(fd.keyRubrics);
+      if (fd.miasm) setMiasm(fd.miasm);
+      if (fd.medicine) setMedicine(fd.medicine);
+      if (fd.potency) setPotency(fd.potency);
+      if (fd.dose) setDose(fd.dose);
+      if (fd.repetition) setRepetition(fd.repetition);
+      if (fd.nextVisit) setNextVisit(fd.nextVisit);
+      if (fd.followUpNotes) setFollowUpNotes(fd.followUpNotes);
+    }
+  }, [existingCase]);
+
   const addComplaint = () => setComplaints((c) => [...c, { ...emptyComplaint }]);
   const removeComplaint = (i: number) => { if (complaints.length > 1) setComplaints((c) => c.filter((_, idx) => idx !== i)); };
   const updateComplaint = (i: number, field: keyof ComplaintRow, value: string) => {
     setComplaints((c) => c.map((row, idx) => (idx === i ? { ...row, [field]: value } : row)));
   };
+
+  const buildFormData = () => ({
+    age, ageUnit, sex, maritalStatus, occupation, phone, address,
+    complaints, temperament, fears, anger, memory, confidence, stressHistory, company,
+    appetite, thirst, desireSweet, desireSalt, desireSour, desireSpicy, desireMeat, aversion,
+    sweatQty, sweatOdor, sleep, dreams, sleepPosition, thermalType, weatherEffect,
+    menstruation, flow, mensPain, leucorrhoea, sexualDesire, maleProblems,
+    majorIllness, surgery, medHistory, famDiabetes, famHypertension, famCancer, famOther,
+    weight, height, pulse, bp, tongue, skin, investigations,
+    keyRubrics, miasm, medicine, potency, dose, repetition, nextVisit, followUpNotes,
+  });
 
   const handleSubmit = (ev: React.FormEvent) => {
     ev.preventDefault();
@@ -145,11 +223,19 @@ const AdminNewCase = () => {
     const symptomsText = complaints.map(c => c.complaint).filter(Boolean).join("; ");
     const historyText = [majorIllness, surgery, medHistory].filter(Boolean).join("; ");
     const notesText = [keyRubrics, miasm, medicine, followUpNotes].filter(Boolean).join(" | ");
+    const form_data = buildFormData();
     
-    createCase.mutate(
-      { patient_id: patientId, symptoms: symptomsText, history: historyText, notes: notesText },
-      { onSuccess: () => navigate("/admin/cases") }
-    );
+    if (isEdit) {
+      updateCase.mutate(
+        { id: editId!, patient_id: patientId, symptoms: symptomsText, history: historyText, notes: notesText, form_data },
+        { onSuccess: () => navigate("/admin/cases") }
+      );
+    } else {
+      createCase.mutate(
+        { patient_id: patientId, symptoms: symptomsText, history: historyText, notes: notesText, form_data },
+        { onSuccess: () => navigate("/admin/cases") }
+      );
+    }
   };
 
   const SelectField = ({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: string[] }) => (
@@ -168,6 +254,8 @@ const AdminNewCase = () => {
       <Input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="rounded-xl" />
     </div>
   );
+
+  if (isEdit && loadingCase) return <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
 
   return (
     <div className="space-y-0 animate-fade-in">
