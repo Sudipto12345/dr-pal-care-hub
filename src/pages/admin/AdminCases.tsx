@@ -648,8 +648,46 @@ const AdminCases = () => {
             </div>
           )}
 
+          {/* Previous Prescriptions for this patient */}
+          {viewCase && patientPrescriptions.length > 0 && (
+            <div className="border-t border-border pt-3">
+              <div className="flex items-center gap-2 mb-3">
+                <FileText className="w-4 h-4 text-secondary" />
+                <span className="text-sm font-semibold">Previous Prescriptions ({patientPrescriptions.length})</span>
+              </div>
+              <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                {patientPrescriptions.map((rx: any) => (
+                  <div key={rx.id} className="flex items-center justify-between p-2.5 rounded-xl border border-border bg-muted/20 hover:bg-muted/40 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium truncate">{rx.diagnosis || "No diagnosis"}</p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {new Date(rx.created_at).toLocaleDateString()} · {rx.prescription_items?.length || 0} medicines
+                      </p>
+                    </div>
+                    <div className="flex gap-1 shrink-0 ml-2">
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setSelectedRx(rx)} title="View">
+                        <Eye className="w-3.5 h-3.5" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handlePrintPrescription(rx)} title="Print">
+                        <Printer className="w-3.5 h-3.5" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" asChild title="Full Preview">
+                        <Link to={`/prescription/${rx.id}`} target="_blank"><Download className="w-3.5 h-3.5" /></Link>
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Bottom actions */}
           <div className="flex justify-end gap-2 pt-2 border-t border-border">
+            <Button variant="outline" size="sm" className="rounded-xl" asChild>
+              <Link to={`/admin/prescriptions/new?patient=${viewCase?.patient_id}`}>
+                <ClipboardPlus className="w-3.5 h-3.5 mr-1" /> Create Rx
+              </Link>
+            </Button>
             <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleDownloadPdf(viewCase)}>
               <Download className="w-3.5 h-3.5 mr-1" /> PDF
             </Button>
@@ -663,6 +701,81 @@ const AdminCases = () => {
               <Link to={`/admin/cases/${viewCase?.id}/edit`}><Pencil className="w-3.5 h-3.5 mr-1" /> Edit</Link>
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Prescription Preview Dialog */}
+      <Dialog open={!!selectedRx} onOpenChange={(open) => !open && setSelectedRx(null)}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-heading flex items-center gap-2">
+              <FileText className="w-5 h-5 text-primary" /> Prescription Preview
+            </DialogTitle>
+          </DialogHeader>
+          {selectedRx && (
+            <div className="space-y-4 mt-2">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div><span className="text-muted-foreground">Patient:</span> <span className="font-medium">{selectedRx.patients?.name || "—"}</span></div>
+                <div><span className="text-muted-foreground">Date:</span> <span className="font-medium">{new Date(selectedRx.created_at).toLocaleDateString()}</span></div>
+                <div><span className="text-muted-foreground">Diagnosis:</span> <span className="font-medium">{selectedRx.diagnosis || "—"}</span></div>
+                <div><span className="text-muted-foreground">Follow-up:</span> <span className="font-medium">{selectedRx.follow_up ? new Date(selectedRx.follow_up).toLocaleDateString() : "—"}</span></div>
+              </div>
+              {(selectedRx as any).clinical_exam && Object.values((selectedRx as any).clinical_exam).some((v: any) => v) && (
+                <div>
+                  <h4 className="font-semibold text-sm mb-2 flex items-center gap-1"><Stethoscope className="w-4 h-4 text-destructive" /> Clinical Exam</h4>
+                  <div className="grid grid-cols-2 gap-1 text-xs">
+                    {Object.entries((selectedRx as any).clinical_exam).filter(([, v]) => v).map(([k, v]) => (
+                      <div key={k}><span className="text-muted-foreground capitalize">{k}:</span> <span>{String(v)}</span></div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {selectedRx.prescription_items?.length > 0 && (
+                <div>
+                  <h4 className="font-semibold text-sm mb-2 flex items-center gap-1"><Pill className="w-4 h-4 text-secondary" /> Medicines</h4>
+                  <table className="w-full text-sm border border-border rounded-xl overflow-hidden">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="text-left px-3 py-2 font-medium">#</th>
+                        <th className="text-left px-3 py-2 font-medium">Medicine</th>
+                        <th className="text-left px-3 py-2 font-medium">Potency</th>
+                        <th className="text-left px-3 py-2 font-medium">Dose</th>
+                        <th className="text-left px-3 py-2 font-medium">Frequency</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedRx.prescription_items.map((item: any, i: number) => (
+                        <tr key={item.id} className="border-t border-border">
+                          <td className="px-3 py-2">{i + 1}</td>
+                          <td className="px-3 py-2 font-medium">{item.medicine_name}</td>
+                          <td className="px-3 py-2">{item.potency || "—"}</td>
+                          <td className="px-3 py-2">{item.dose || "—"}</td>
+                          <td className="px-3 py-2">{item.frequency || "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              {selectedRx.advice && (
+                <div>
+                  <h4 className="font-semibold text-sm mb-1">Advice</h4>
+                  <p className="text-sm text-muted-foreground bg-muted/30 rounded-xl p-3">{selectedRx.advice}</p>
+                </div>
+              )}
+              <div className="flex justify-end gap-2 pt-2 border-t border-border">
+                <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handlePrintPrescription(selectedRx)}>
+                  <Printer className="w-3.5 h-3.5 mr-1" /> Print Prescription
+                </Button>
+                <Button variant="outline" size="sm" className="rounded-xl" asChild>
+                  <Link to={`/prescription/${selectedRx.id}`} target="_blank"><Eye className="w-3.5 h-3.5 mr-1" /> Full Preview</Link>
+                </Button>
+                <Button variant="hero" size="sm" className="rounded-xl" asChild>
+                  <Link to={`/admin/prescriptions/${selectedRx.id}/edit`}><Pencil className="w-3.5 h-3.5 mr-1" /> Edit</Link>
+                </Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
