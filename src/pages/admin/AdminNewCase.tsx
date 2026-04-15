@@ -659,7 +659,7 @@ const AdminNewCase = () => {
                           <Input value={med.dose} onChange={(e) => updateFollowUpMedicine(i, mi, "dose", e.target.value)} placeholder="Dose" className="rounded-lg text-xs h-8" />
                           <Input value={med.frequency} onChange={(e) => updateFollowUpMedicine(i, mi, "frequency", e.target.value)} placeholder="Frequency" className="rounded-lg text-xs h-8" />
                         </div>
-                        {fu.medicines.length > 1 && (
+                        {(fu.medicines || []).length > 1 && (
                           <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive shrink-0" onClick={() => removeFollowUpMedicine(i, mi)}>
                             <X className="w-3.5 h-3.5" />
                           </Button>
