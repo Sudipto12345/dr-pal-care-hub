@@ -204,6 +204,50 @@ export const useCreateCase = () => {
   });
 };
 
+export const useCase = (id: string) =>
+  useQuery({
+    queryKey: ["cases", id],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("cases").select("*, patients(name, age, gender, phone)").eq("id", id).single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!id,
+  });
+
+export const useUpdateCase = () => {
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: async ({ id, ...updates }: { id: string; symptoms?: string; history?: string; notes?: string }) => {
+      const { data, error } = await supabase.from("cases").update(updates).eq("id", id).select().single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["cases"] });
+      toast({ title: "Case updated" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+};
+
+export const useDeleteCase = () => {
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("cases").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["cases"] });
+      toast({ title: "Case deleted" });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+};
+
 // ─── PRODUCTS ───
 export const useProducts = () =>
   useQuery({
