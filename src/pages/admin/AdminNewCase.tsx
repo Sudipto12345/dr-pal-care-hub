@@ -163,6 +163,7 @@ const AdminNewCase = () => {
   const [potency, setPotency] = useState("");
   const [dose, setDose] = useState("");
   const [repetition, setRepetition] = useState("");
+  const [advice, setAdvice] = useState("");
 
   // Follow-ups (multiple)
   const [followUps, setFollowUps] = useState<FollowUpRow[]>([{ ...emptyFollowUp }]);
