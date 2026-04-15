@@ -23,6 +23,9 @@ const emptyMedicine: MedicineRow = { name: "", potency: "", dose: "", frequency:
 const potencyOptions = ["3X", "6X", "12X", "30C", "200C", "1M", "10M", "50M", "CM", "Q (Mother Tincture)"];
 
 const AdminNewPrescription = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const createPrescription = useCreatePrescription();
   const [patientId, setPatientId] = useState("");
   const [patientName, setPatientName] = useState("");
   const [followUpDate, setFollowUpDate] = useState("");
