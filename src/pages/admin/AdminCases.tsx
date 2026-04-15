@@ -290,30 +290,77 @@ const AdminCases = () => {
                 </SectionBlock>
               )}
 
-              {/* Follow-ups */}
+              {/* Follow-ups - Timeline Style */}
               {viewCase.form_data.followUps?.length > 0 && (
                 <div className="md:col-span-2">
                   <SectionBlock icon={CalendarDays} title={`Follow-Up Visits (${viewCase.form_data.followUps.length})`} color="info">
-                    <div className="space-y-2">
-                      {viewCase.form_data.followUps.map((fu: any, i: number) => (
-                        <div key={i} className="p-2.5 rounded-lg bg-muted/30 border border-border">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="w-5 h-5 rounded-full bg-info text-white text-[10px] font-bold flex items-center justify-center">{i + 1}</span>
-                            <span className="text-xs font-semibold">{fu.date || "No date"}</span>
-                            {fu.status && (
-                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
-                                fu.status === "Improved" ? "bg-green-100 text-green-700" :
-                                fu.status === "Worse" ? "bg-red-100 text-red-700" :
-                                fu.status === "Same" ? "bg-gray-100 text-gray-700" :
-                                "bg-amber-100 text-amber-700"
-                              }`}>{fu.status}</span>
-                            )}
+                    <div className="relative pl-4">
+                      {/* Timeline line */}
+                      <div className="absolute left-[19px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-info via-info/50 to-info/20 rounded-full" />
+                      
+                      <div className="space-y-4">
+                        {viewCase.form_data.followUps.map((fu: any, i: number) => (
+                          <div key={i} className="relative flex gap-3">
+                            {/* Timeline dot */}
+                            <div className="relative z-10 shrink-0">
+                              <div className={`w-4 h-4 rounded-full border-2 border-background shadow-sm flex items-center justify-center ${
+                                fu.status === "Improved" ? "bg-green-500" :
+                                fu.status === "Worse" ? "bg-red-500" :
+                                fu.status === "Same" ? "bg-gray-400" :
+                                fu.status === "Partially Improved" ? "bg-amber-500" :
+                                fu.status === "New Symptoms" ? "bg-purple-500" :
+                                "bg-info"
+                              }`}>
+                                <span className="text-[8px] text-white font-bold">{i + 1}</span>
+                              </div>
+                            </div>
+                            
+                            {/* Content card */}
+                            <div className="flex-1 p-3 rounded-xl bg-muted/40 border border-border/60 hover:border-info/30 transition-colors">
+                              {/* Header */}
+                              <div className="flex items-center gap-2 mb-2 flex-wrap">
+                                <span className="text-sm font-semibold text-foreground">{fu.date || "No date"}</span>
+                                {fu.status && (
+                                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                                    fu.status === "Improved" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :
+                                    fu.status === "Worse" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" :
+                                    fu.status === "Same" ? "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400" :
+                                    fu.status === "Partially Improved" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" :
+                                    fu.status === "New Symptoms" ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400" :
+                                    "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                                  }`}>{fu.status}</span>
+                                )}
+                              </div>
+                              
+                              {/* Content */}
+                              {fu.improvement && (
+                                <div className="mb-2">
+                                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Improvement/Loss:</span>
+                                  <p className="text-xs text-foreground mt-0.5">{fu.improvement}</p>
+                                </div>
+                              )}
+                              {fu.medicine && (
+                                <div className="flex items-start gap-1.5 mb-1.5">
+                                  <span className="text-xs">💊</span>
+                                  <div>
+                                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Medicine:</span>
+                                    <p className="text-xs text-foreground">{fu.medicine}</p>
+                                  </div>
+                                </div>
+                              )}
+                              {fu.notes && (
+                                <div className="flex items-start gap-1.5">
+                                  <span className="text-xs">📝</span>
+                                  <div>
+                                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Notes:</span>
+                                    <p className="text-xs text-foreground">{fu.notes}</p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          {fu.improvement && <p className="text-xs text-foreground">{fu.improvement}</p>}
-                          {fu.medicine && <p className="text-xs text-muted-foreground">💊 {fu.medicine}</p>}
-                          {fu.notes && <p className="text-xs text-muted-foreground">📝 {fu.notes}</p>}
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </SectionBlock>
                 </div>
