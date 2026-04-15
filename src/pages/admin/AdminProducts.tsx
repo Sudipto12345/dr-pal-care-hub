@@ -4,7 +4,7 @@ import StatusBadge from "@/components/shared/StatusBadge";
 import ProductForm from "@/components/forms/ProductForm";
 import { useProducts, useDeleteProduct } from "@/hooks/useSupabaseData";
 import { Button } from "@/components/ui/button";
-import { Trash2, Loader2 } from "lucide-react";
+import { Trash2, Loader2, Pencil } from "lucide-react";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 
 const AdminProducts = () => {
@@ -27,16 +27,21 @@ const AdminProducts = () => {
           { header: "Active", accessor: (row: any) => <StatusBadge status={row.is_active ? "Active" : "Inactive"} /> },
           {
             header: "Actions",
-            className: "text-right",
             accessor: (row: any) => (
-              <ConfirmDialog
-                trigger={<Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"><Trash2 className="w-4 h-4" /></Button>}
-                title="Delete Product"
-                description={`Delete ${row.name}?`}
-                confirmLabel="Delete"
-                variant="destructive"
-                onConfirm={() => deleteProduct.mutate(row.id)}
-              />
+              <div className="flex gap-1">
+                <ProductForm
+                  editData={row}
+                  trigger={<Button variant="ghost" size="icon" className="h-7 w-7" title="Edit"><Pencil className="w-3.5 h-3.5" /></Button>}
+                />
+                <ConfirmDialog
+                  trigger={<Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="w-3.5 h-3.5" /></Button>}
+                  title="Delete Product"
+                  description={`Delete ${row.name}?`}
+                  confirmLabel="Delete"
+                  variant="destructive"
+                  onConfirm={() => deleteProduct.mutate(row.id)}
+                />
+              </div>
             ),
           },
         ]}

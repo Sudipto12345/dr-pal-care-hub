@@ -1,17 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Plus, Loader2 } from "lucide-react";
-import { useCreateProduct } from "@/hooks/useSupabaseData";
+import { useCreateProduct, useUpdateProduct } from "@/hooks/useSupabaseData";
 
-const ProductForm = ({ trigger }: { trigger?: React.ReactNode }) => {
+interface ProductFormProps {
+  trigger?: React.ReactNode;
+  editData?: { id: string; name: string; category?: string | null; price: number; stock: number; description?: string | null; image_url?: string | null; is_active?: boolean; slug?: string | null };
+  onDone?: () => void;
+}
+
+const ProductForm = ({ trigger, editData, onDone }: ProductFormProps) => {
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", category: "", price: "", stock: "", description: "" });
+  const [form, setForm] = useState({ name: "", category: "", price: "", stock: "", description: "", image_url: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const createProduct = useCreateProduct();
+  const updateProduct = useUpdateProduct();
+  const isEdit = !!editData;
+
+  useEffect(() => {
+    if (editData && open) {
+      setForm({
+        name: editData.name || "",
+        category: editData.category || "",
+        price: editData.price?.toString() || "",
+        stock: editData.stock?.toString() || "",
+        description: editData.description || "",
+        image_url: editData.image_url || "",
+      });
+    }
+  }, [editData, open]);
 
   const set = (field: string, value: string) => {
     setForm((f) => ({ ...f, [field]: value }));
@@ -27,23 +48,39 @@ const ProductForm = ({ trigger }: { trigger?: React.ReactNode }) => {
     return Object.keys(e).length === 0;
   };
 
+  const handleClose = () => {
+    setOpen(false);
+    setErrors({});
+    if (!isEdit) setForm({ name: "", category: "", price: "", stock: "", description: "", image_url: "" });
+    onDone?.();
+  };
+
   const handleSubmit = (ev: React.FormEvent) => {
     ev.preventDefault();
     if (!validate()) return;
     const slug = form.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    createProduct.mutate(
-      { name: form.name, slug, price: Number(form.price), stock: Number(form.stock), category: form.category || undefined, description: form.description || undefined },
-      { onSuccess: () => { setForm({ name: "", category: "", price: "", stock: "", description: "" }); setErrors({}); setOpen(false); } }
-    );
+    const payload = {
+      name: form.name, slug, price: Number(form.price), stock: Number(form.stock),
+      category: form.category || undefined, description: form.description || undefined,
+      image_url: form.image_url || undefined,
+    };
+
+    if (isEdit) {
+      updateProduct.mutate({ id: editData!.id, ...payload }, { onSuccess: handleClose });
+    } else {
+      createProduct.mutate(payload, { onSuccess: handleClose });
+    }
   };
 
+  const isPending = isEdit ? updateProduct.isPending : createProduct.isPending;
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); else setOpen(true); }}>
       <DialogTrigger asChild>
         {trigger || <Button variant="hero" size="sm"><Plus className="w-4 h-4 mr-1" /> Add Product</Button>}
       </DialogTrigger>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl">
-        <DialogHeader><DialogTitle className="font-heading text-xl">Add Product</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle className="font-heading text-xl">{isEdit ? "Edit Product" : "Add Product"}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
           <div>
             <Label>Product Name *</Label>
@@ -70,13 +107,17 @@ const ProductForm = ({ trigger }: { trigger?: React.ReactNode }) => {
             </div>
           </div>
           <div>
+            <Label>Image URL</Label>
+            <Input value={form.image_url} onChange={(e) => set("image_url", e.target.value)} placeholder="https://..." className="mt-1 rounded-xl" />
+          </div>
+          <div>
             <Label>Description</Label>
             <Textarea value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Brief description..." className="mt-1 rounded-xl" />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} className="rounded-xl">Cancel</Button>
-            <Button type="submit" variant="hero" disabled={createProduct.isPending}>
-              {createProduct.isPending && <Loader2 className="w-4 h-4 animate-spin mr-1" />} Add Product
+            <Button type="button" variant="outline" onClick={handleClose} className="rounded-xl">Cancel</Button>
+            <Button type="submit" variant="hero" disabled={isPending}>
+              {isPending && <Loader2 className="w-4 h-4 animate-spin mr-1" />} {isEdit ? "Update" : "Add Product"}
             </Button>
           </div>
         </form>
