@@ -1,0 +1,1 @@
+ALTER TABLE public.prescriptions ADD COLUMN clinical_exam jsonb DEFAULT '{}'::jsonb;

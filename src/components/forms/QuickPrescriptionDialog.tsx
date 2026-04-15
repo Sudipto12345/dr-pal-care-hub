@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2, ClipboardPlus, Loader2 } from "lucide-react";
+import { Plus, Trash2, ClipboardPlus, Loader2, Activity } from "lucide-react";
 import MedicineCombo from "@/components/shared/MedicineCombo";
 import DiagnosisCombo from "@/components/shared/DiagnosisCombo";
 import PatientSelector from "@/components/shared/PatientSelector";
@@ -35,6 +35,9 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
   const [diagnosis, setDiagnosis] = useState<string[]>([]);
   const [advice, setAdvice] = useState("");
   const [followUp, setFollowUp] = useState("");
+  const [clinicalExam, setClinicalExam] = useState({
+    riskFactors: "", oe: "", pulse: "", bp: "", heart: "", lung: "", others: "",
+  });
   const [medicines, setMedicines] = useState<MedicineRow[]>([{ ...emptyMedicine }]);
 
   const reset = () => {
@@ -42,6 +45,7 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
     setDiagnosis([]);
     setAdvice("");
     setFollowUp("");
+    setClinicalExam({ riskFactors: "", oe: "", pulse: "", bp: "", heart: "", lung: "", others: "" });
     setMedicines([{ ...emptyMedicine }]);
   };
 
@@ -50,12 +54,14 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
     if (diagnosis.length === 0) { toast.error("Diagnosis is required"); return; }
     if (!medicines.some(m => m.name.trim())) { toast.error("Add at least one medicine"); return; }
 
+    const hasExam = Object.values(clinicalExam).some(v => v.trim());
     createPrescription.mutate({
       patient_id: patientId,
       doctor_id: user?.id || "",
       diagnosis: diagnosis.join(", "),
       advice: advice || undefined,
       follow_up: followUp || undefined,
+      clinical_exam: hasExam ? clinicalExam : undefined,
       items: medicines.filter(m => m.name.trim()).map(m => ({
         medicine_name: m.name,
         potency: m.potency || undefined,
@@ -139,6 +145,23 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
                   )}
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Clinical Examination */}
+          <div>
+            <div className="flex items-center gap-1.5 mb-2">
+              <Activity className="w-3.5 h-3.5 text-muted-foreground" />
+              <Label className="text-xs text-muted-foreground">Clinical Examination</Label>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <Input value={clinicalExam.riskFactors} onChange={e => setClinicalExam(p => ({ ...p, riskFactors: e.target.value }))} placeholder="Risk Factors" className="rounded-lg h-8 text-xs" />
+              <Input value={clinicalExam.oe} onChange={e => setClinicalExam(p => ({ ...p, oe: e.target.value }))} placeholder="O/E" className="rounded-lg h-8 text-xs" />
+              <Input value={clinicalExam.pulse} onChange={e => setClinicalExam(p => ({ ...p, pulse: e.target.value }))} placeholder="Pulse" className="rounded-lg h-8 text-xs" />
+              <Input value={clinicalExam.bp} onChange={e => setClinicalExam(p => ({ ...p, bp: e.target.value }))} placeholder="BP" className="rounded-lg h-8 text-xs" />
+              <Input value={clinicalExam.heart} onChange={e => setClinicalExam(p => ({ ...p, heart: e.target.value }))} placeholder="Heart" className="rounded-lg h-8 text-xs" />
+              <Input value={clinicalExam.lung} onChange={e => setClinicalExam(p => ({ ...p, lung: e.target.value }))} placeholder="Lung" className="rounded-lg h-8 text-xs" />
+              <Input value={clinicalExam.others} onChange={e => setClinicalExam(p => ({ ...p, others: e.target.value }))} placeholder="Others" className="rounded-lg h-8 text-xs col-span-2 sm:col-span-3" />
             </div>
           </div>
 

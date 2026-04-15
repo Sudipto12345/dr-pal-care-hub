@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Plus, Trash2, ArrowLeft, ClipboardPlus, User, Stethoscope, Pill, MessageSquare, Eye, Calendar, Loader2, X, FileText } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, ClipboardPlus, User, Stethoscope, Pill, MessageSquare, Eye, Calendar, Loader2, X, FileText, Activity } from "lucide-react";
 import MedicineCombo from "@/components/shared/MedicineCombo";
 import DiagnosisCombo from "@/components/shared/DiagnosisCombo";
 import ComplaintCombo from "@/components/shared/ComplaintCombo";
@@ -41,6 +41,9 @@ const AdminNewPrescription = () => {
   const [complaint, setComplaint] = useState<string[]>([]);
   const [diagnosis, setDiagnosis] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
+  const [clinicalExam, setClinicalExam] = useState({
+    riskFactors: "", oe: "", pulse: "", bp: "", heart: "", lung: "", others: "",
+  });
   const [medicines, setMedicines] = useState<MedicineRow[]>([{ ...emptyMedicine }]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loaded, setLoaded] = useState(false);
@@ -105,6 +108,13 @@ const AdminNewPrescription = () => {
       setDiagnosis(existingRx.diagnosis ? existingRx.diagnosis.split(", ") : []);
       setNotes(existingRx.advice || "");
       setFollowUpDate(existingRx.follow_up || "");
+      if ((existingRx as any).clinical_exam) {
+        const ce = (existingRx as any).clinical_exam as any;
+        setClinicalExam({
+          riskFactors: ce.riskFactors || "", oe: ce.oe || "", pulse: ce.pulse || "",
+          bp: ce.bp || "", heart: ce.heart || "", lung: ce.lung || "", others: ce.others || "",
+        });
+      }
       const items = (existingRx.prescription_items || []) as any[];
       if (items.length > 0) {
         setMedicines(items.map((item: any) => ({
@@ -162,25 +172,21 @@ const AdminNewPrescription = () => {
       frequency: m.frequency || undefined,
     }));
 
+    const hasExam = Object.values(clinicalExam).some(v => v.trim());
+    const payload: any = {
+      patient_id: patientId,
+      doctor_id: user?.id || "",
+      diagnosis: diagnosis.join(", "),
+      advice: notes,
+      follow_up: followUpDate || undefined,
+      items: itemsPayload,
+      clinical_exam: hasExam ? clinicalExam : undefined,
+    };
+
     if (isEditMode) {
-      updatePrescription.mutate({
-        id: id!,
-        patient_id: patientId,
-        doctor_id: user?.id || "",
-        diagnosis: diagnosis.join(", "),
-        advice: notes,
-        follow_up: followUpDate || undefined,
-        items: itemsPayload,
-      }, { onSuccess: () => navigate("/admin/prescriptions") });
+      updatePrescription.mutate({ id: id!, ...payload }, { onSuccess: () => navigate("/admin/prescriptions") });
     } else {
-      createPrescription.mutate({
-        patient_id: patientId,
-        doctor_id: user?.id || "",
-        diagnosis: diagnosis.join(", "),
-        advice: notes,
-        follow_up: followUpDate || undefined,
-        items: itemsPayload,
-      }, { onSuccess: () => navigate("/admin/prescriptions") });
+      createPrescription.mutate(payload, { onSuccess: () => navigate("/admin/prescriptions") });
     }
   };
 
@@ -267,6 +273,46 @@ const AdminNewPrescription = () => {
                     onChange={(v) => { setDiagnosis(v); if (errors.diagnosis) setErrors((er) => ({ ...er, diagnosis: "" })); }}
                   />
                   {errors.diagnosis && <p className="text-xs text-destructive mt-1">{errors.diagnosis}</p>}
+                </div>
+              </div>
+            </div>
+
+            {/* Clinical Examination */}
+            <div className="bg-card rounded-2xl border border-border p-6">
+              <div className="flex items-center gap-2 mb-5">
+                <div className="w-7 h-7 rounded-lg bg-accent/50 flex items-center justify-center">
+                  <Activity className="w-4 h-4 text-foreground" />
+                </div>
+                <h2 className="font-heading font-semibold text-base">Clinical Examination</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-xs text-muted-foreground">Risk Factors</Label>
+                  <Input value={clinicalExam.riskFactors} onChange={e => setClinicalExam(p => ({ ...p, riskFactors: e.target.value }))} placeholder="e.g., DM, HTN, Smoking" className="mt-1 rounded-xl" />
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">O/E (On Examination)</Label>
+                  <Input value={clinicalExam.oe} onChange={e => setClinicalExam(p => ({ ...p, oe: e.target.value }))} placeholder="General examination findings" className="mt-1 rounded-xl" />
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Pulse</Label>
+                  <Input value={clinicalExam.pulse} onChange={e => setClinicalExam(p => ({ ...p, pulse: e.target.value }))} placeholder="e.g., 78 bpm, regular" className="mt-1 rounded-xl" />
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">BP</Label>
+                  <Input value={clinicalExam.bp} onChange={e => setClinicalExam(p => ({ ...p, bp: e.target.value }))} placeholder="e.g., 120/80 mmHg" className="mt-1 rounded-xl" />
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Heart</Label>
+                  <Input value={clinicalExam.heart} onChange={e => setClinicalExam(p => ({ ...p, heart: e.target.value }))} placeholder="e.g., S1S2 normal, no murmur" className="mt-1 rounded-xl" />
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Lung</Label>
+                  <Input value={clinicalExam.lung} onChange={e => setClinicalExam(p => ({ ...p, lung: e.target.value }))} placeholder="e.g., Clear, NVBS" className="mt-1 rounded-xl" />
+                </div>
+                <div className="sm:col-span-2 lg:col-span-3">
+                  <Label className="text-xs text-muted-foreground">Others</Label>
+                  <Input value={clinicalExam.others} onChange={e => setClinicalExam(p => ({ ...p, others: e.target.value }))} placeholder="Any other clinical findings" className="mt-1 rounded-xl" />
                 </div>
               </div>
             </div>
