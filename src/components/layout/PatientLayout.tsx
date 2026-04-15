@@ -34,11 +34,11 @@ const PatientLayout = () => {
       <div className="min-h-screen flex w-full bg-background">
         <PatientSidebar />
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-16 flex items-center justify-between border-b border-border bg-card px-4 md:px-6 sticky top-0 z-40">
+          <header className="h-14 flex items-center justify-between border-b border-border/50 bg-card px-4 md:px-6 sticky top-0 z-40 shadow-xs">
             <div className="flex items-center gap-3">
-              <SidebarTrigger className="hidden md:flex h-8 w-8" />
+              <SidebarTrigger className="hidden md:flex h-8 w-8 text-foreground" />
               <div className="hidden md:block">
-                <h2 className="text-lg font-bold text-foreground tracking-tight">{pageTitle}</h2>
+                <h2 className="text-base font-bold text-foreground tracking-tight">{pageTitle}</h2>
               </div>
               <div className="md:hidden flex items-center gap-2">
                 <Link to="/">
@@ -51,16 +51,16 @@ const PatientLayout = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <button onClick={toggleLang} className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-medium border border-border hover:bg-accent transition-colors">
+              <button onClick={toggleLang} className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-medium border border-border/60 text-foreground hover:bg-accent transition-colors">
                 <Globe className="w-3.5 h-3.5" /> {lang === "en" ? "বাংলা" : "EN"}
               </button>
 
-              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl relative">
+              <Button variant="ghost" size="icon" className="h-8 w-8 rounded-xl text-foreground">
                 <Bell className="w-4 h-4" />
               </Button>
 
               <Avatar className="h-8 w-8 cursor-pointer">
-                <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">SB</AvatarFallback>
+                <AvatarFallback className="gradient-primary text-primary-foreground text-xs font-semibold">SB</AvatarFallback>
               </Avatar>
             </div>
           </header>

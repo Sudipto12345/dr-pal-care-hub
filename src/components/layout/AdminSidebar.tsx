@@ -35,10 +35,10 @@ const AdminSidebar = () => {
           <NavLink
             to={item.url}
             end
-            className={`rounded-xl transition-all duration-150 ${active ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
-            activeClassName="bg-primary/10 text-primary font-semibold"
+            className={`rounded-xl transition-all duration-150 ${active ? "bg-sidebar-primary text-sidebar-primary-foreground font-semibold" : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"}`}
+            activeClassName="bg-sidebar-primary text-sidebar-primary-foreground font-semibold"
           >
-            <item.icon className={`mr-2.5 h-4 w-4 ${active ? "text-primary" : ""}`} />
+            <item.icon className="mr-2.5 h-4 w-4" />
             {!collapsed && <span>{item.title}</span>}
           </NavLink>
         </SidebarMenuButton>
@@ -47,25 +47,25 @@ const AdminSidebar = () => {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border bg-card">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarContent className="px-2 py-3">
         {/* Logo */}
         <div className="px-3 py-2 mb-2 flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0 shadow-sm">
-            <Leaf className="w-5 h-5 text-primary-foreground" />
+          <div className="w-9 h-9 rounded-xl bg-sidebar-primary flex items-center justify-center flex-shrink-0 shadow-sm">
+            <Leaf className="w-5 h-5 text-sidebar-primary-foreground" />
           </div>
           {!collapsed && (
             <div className="min-w-0">
-              <p className="font-bold text-sm text-foreground truncate">Dr. Amit Kumar Pal</p>
-              <p className="text-[10px] text-muted-foreground truncate">{t.nav.adminPanel}</p>
+              <p className="font-bold text-sm text-sidebar-foreground truncate">Dr. Amit Kumar Pal</p>
+              <p className="text-[10px] text-sidebar-foreground/60 truncate">{t.nav.adminPanel}</p>
             </div>
           )}
         </div>
 
-        <Separator className="mb-2" />
+        <Separator className="mb-2 bg-sidebar-border" />
 
         <SidebarGroup>
-          {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/70 font-semibold px-3 mb-1">Clinical</SidebarGroupLabel>}
+          {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-sidebar-foreground/50 font-semibold px-3 mb-1">Clinical</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu className="space-y-0.5">
               {mainItems.map(renderItem)}
@@ -73,10 +73,10 @@ const AdminSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Separator className="my-2" />
+        <Separator className="my-2 bg-sidebar-border" />
 
         <SidebarGroup>
-          {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/70 font-semibold px-3 mb-1">Manage</SidebarGroupLabel>}
+          {!collapsed && <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-sidebar-foreground/50 font-semibold px-3 mb-1">Manage</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu className="space-y-0.5">
               {manageItems.map(renderItem)}
@@ -85,11 +85,11 @@ const AdminSidebar = () => {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-3 border-t border-border">
+      <SidebarFooter className="p-3 border-t border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link to="/" className="text-muted-foreground hover:text-foreground rounded-xl">
+              <Link to="/" className="text-sidebar-foreground/70 hover:text-sidebar-foreground rounded-xl">
                 <LogOut className="mr-2 h-4 w-4" />
                 {!collapsed && <span className="text-sm">Back to Site</span>}
               </Link>
