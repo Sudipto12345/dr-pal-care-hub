@@ -609,6 +609,10 @@ const AdminNewCase = () => {
             <div className="bg-card rounded-2xl border-2 border-amber-200 p-5">
               <SectionHeader number={11} icon={Lightbulb} title="Totality & Analysis" color="warning" />
               <div className="mb-3">
+                <Label className="text-xs text-muted-foreground mb-1.5 block">Diagnosis</Label>
+                <DiagnosisCombo value={diagnosis} onChange={setDiagnosis} />
+              </div>
+              <div className="mb-3">
                 <Label className="text-xs text-muted-foreground mb-1.5 block">Key Rubrics</Label>
                 <Textarea value={keyRubrics} onChange={(e) => setKeyRubrics(e.target.value)} placeholder="Key rubrics for repertorization" className="rounded-xl min-h-[70px]" />
               </div>
@@ -868,6 +872,7 @@ const AdminNewCase = () => {
           )}
         </DialogContent>
       </Dialog>
+      <QuickPrescriptionDialog open={showQuickRx} onOpenChange={setShowQuickRx} />
     </div>
   );
 };
