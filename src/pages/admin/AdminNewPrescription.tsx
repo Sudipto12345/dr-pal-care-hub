@@ -5,11 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Plus, Trash2, ArrowLeft, ClipboardPlus, User, Stethoscope, Pill, MessageSquare, Eye, Calendar, Loader2, X } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, ClipboardPlus, User, Stethoscope, Pill, MessageSquare, Eye, Calendar, Loader2, X, FileText } from "lucide-react";
 import PatientSelector from "@/components/shared/PatientSelector";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import { useCreatePrescription, usePrescription, useUpdatePrescription } from "@/hooks/useSupabaseData";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 interface MedicineRow {
   name: string;
@@ -39,6 +41,58 @@ const AdminNewPrescription = () => {
   const [medicines, setMedicines] = useState<MedicineRow[]>([{ ...emptyMedicine }]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loaded, setLoaded] = useState(false);
+  const [autoPopulated, setAutoPopulated] = useState(false);
+
+  // Fetch patient's latest case for follow-up prescription data
+  const { data: patientCases } = useQuery({
+    queryKey: ["patient-cases-for-rx", patientId],
+    queryFn: async () => {
+      if (!patientId) return [];
+      const { data } = await supabase
+        .from("cases")
+        .select("id, form_data, created_at")
+        .eq("patient_id", patientId)
+        .order("created_at", { ascending: false });
+      return data || [];
+    },
+    enabled: !!patientId && !isEditMode,
+  });
+
+  // Auto-populate from latest case follow-up medicines
+  useEffect(() => {
+    if (isEditMode || autoPopulated || !patientCases?.length) return;
+    
+    for (const c of patientCases) {
+      const fd = c.form_data as any;
+      if (!fd?.followUps?.length) continue;
+      
+      // Get the latest follow-up that has medicines
+      const followUpsWithMeds = [...fd.followUps].reverse().find(
+        (fu: any) => fu.medicines?.length && fu.medicines.some((m: any) => m.name?.trim())
+      );
+      
+      if (followUpsWithMeds) {
+        const meds: MedicineRow[] = followUpsWithMeds.medicines
+          .filter((m: any) => m.name?.trim())
+          .map((m: any) => ({
+            name: m.name || "",
+            potency: m.potency || "",
+            dose: m.dose || "",
+            frequency: m.frequency || "",
+          }));
+        
+        if (meds.length > 0) {
+          setMedicines(meds);
+          if (fd.diagnosis) setDiagnosis(fd.diagnosis);
+          setAutoPopulated(true);
+          toast.info("Auto-filled from latest case follow-up", {
+            description: `${meds.length} medicine${meds.length !== 1 ? "s" : ""} loaded from case record`,
+          });
+          return;
+        }
+      }
+    }
+  }, [patientCases, isEditMode, autoPopulated]);
 
   // Load existing prescription data for edit mode
   useEffect(() => {
@@ -60,6 +114,13 @@ const AdminNewPrescription = () => {
       setLoaded(true);
     }
   }, [existingRx, isEditMode, loaded]);
+
+  const handlePatientChange = (id: string, name: string) => {
+    setPatientId(id);
+    setPatientName(name);
+    setAutoPopulated(false); // Reset so new patient triggers auto-populate
+    if (errors.patientId) setErrors((e) => ({ ...e, patientId: "" }));
+  };
 
   const addMedicine = () => setMedicines((m) => [...m, { ...emptyMedicine }]);
 
@@ -166,13 +227,14 @@ const AdminNewPrescription = () => {
                   <Label className="text-sm text-muted-foreground mb-1.5 block">Select Patient *</Label>
                   <PatientSelector
                     value={patientId}
-                    onChange={(id, name) => {
-                      setPatientId(id);
-                      setPatientName(name);
-                      if (errors.patientId) setErrors((e) => ({ ...e, patientId: "" }));
-                    }}
+                    onChange={handlePatientChange}
                     error={errors.patientId}
                   />
+                  {autoPopulated && (
+                    <p className="text-xs text-info mt-1.5 flex items-center gap-1">
+                      <FileText className="w-3 h-3" /> Medicines auto-filled from case follow-up
+                    </p>
+                  )}
                 </div>
                 <div>
                   <Label className="text-sm text-muted-foreground mb-1.5 block">Follow-up Date</Label>
