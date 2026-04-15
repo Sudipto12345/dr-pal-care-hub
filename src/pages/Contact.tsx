@@ -34,10 +34,10 @@ const Contact = () => (
           <div className="space-y-6">
             <h2 className="font-heading text-2xl font-bold text-foreground mb-6">Clinic Information</h2>
             {[
-              { icon: MapPin, label: "Address", value: "123 Healing Lane, New Delhi, India 110001" },
-              { icon: Phone, label: "Phone", value: "+91 98765 43210" },
-              { icon: Mail, label: "Email", value: "dr.amitpal@clinic.com" },
-              { icon: Clock, label: "Hours", value: "Mon-Sat: 9:00 AM - 7:00 PM" },
+              { icon: MapPin, label: "Address", value: "Newlife Homeo Hall, Rampal, Bagerhat" },
+              { icon: Phone, label: "Phone", value: "+880 1911 734 726" },
+              { icon: Mail, label: "WhatsApp", value: "01911734726" },
+              { icon: Clock, label: "Consultation", value: "Online & Offline Consultation Available" },
             ].map((item) => (
               <Card key={item.label} className="border-border rounded-2xl">
                 <CardContent className="p-4 flex items-start gap-4">

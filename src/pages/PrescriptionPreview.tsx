@@ -72,7 +72,7 @@ const PrescriptionPreview = () => {
                     হোমিওপ্যাথি বিশেষজ্ঞ
                   </p>
                   <p className="font-bangla" style={{ fontSize: "11px", margin: "1px 0", color: "#555" }}>
-                    ক্লিনিক: ১২৩ হিলিং লেন, নিউ দিল্লি
+                    নিউলাইফ হোমিও হল, রামপাল, বাগেরহাট
                   </p>
                 </div>
 
@@ -94,13 +94,13 @@ const PrescriptionPreview = () => {
                     and Medicine Specialist
                   </p>
                   <p style={{ fontSize: "11px", margin: "3px 0 0", color: "#1565c0", fontWeight: 600 }}>
-                    Healing Lane Clinic
+                    Newlife Homeo Hall
                   </p>
                   <p style={{ fontSize: "10px", margin: "1px 0", color: "#333" }}>
-                    Reg. No: WBHMC/12345
+                    Rampal, Bagerhat
                   </p>
                   <p style={{ fontSize: "10px", margin: "1px 0", color: "#333" }}>
-                    Contact: +91 98765 43210
+                    Contact: +880 1911 734 726
                   </p>
                 </div>
               </div>
@@ -232,13 +232,13 @@ const PrescriptionPreview = () => {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", fontSize: "11px" }}>
                 <div>
                   <p className="font-bangla" style={{ margin: "0 0 2px", fontWeight: 600, color: "#333", fontSize: "12px" }}>
-                    প্রতিদিন সকাল ৯টা থেকে রাত ৯টা
+                    অনলাইন ও অফলাইন পরামর্শ সেবা
                   </p>
                   <p style={{ margin: "0 0 2px", color: "#555", fontSize: "11px" }}>
-                    123 Healing Lane, New Delhi, India
+                    Newlife Homeo Hall, Rampal, Bagerhat
                   </p>
                   <p className="font-bangla" style={{ margin: "0", fontWeight: 700, color: "#c62828", fontSize: "14px" }}>
-                    ০১৯৮৭-৬৫৪৩২১
+                    ০১৯১১-৭৩৪৭২৬
                   </p>
                 </div>
                 <div style={{ textAlign: "right" }}>
