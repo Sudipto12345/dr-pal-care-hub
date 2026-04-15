@@ -19,6 +19,8 @@ import { FileText, Eye } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import MedicineCombo from "@/components/shared/MedicineCombo";
 import ComplaintCombo from "@/components/shared/ComplaintCombo";
+import DiagnosisCombo from "@/components/shared/DiagnosisCombo";
+import QuickPrescriptionDialog from "@/components/forms/QuickPrescriptionDialog";
 
 const selectClass = "w-full h-10 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring";
 
@@ -70,6 +72,8 @@ const AdminNewCase = () => {
   const [patientId, setPatientId] = useState("");
   const [patientName, setPatientName] = useState("");
   const [selectedPrescriptionId, setSelectedPrescriptionId] = useState("");
+  const [showQuickRx, setShowQuickRx] = useState(false);
+  const [diagnosis, setDiagnosis] = useState("");
   const [viewPrescription, setViewPrescription] = useState<any>(null);
 
   // Fetch prescriptions for selected patient
@@ -235,6 +239,7 @@ const AdminNewCase = () => {
       if (fd.dose) setDose(fd.dose);
       if (fd.repetition) setRepetition(fd.repetition);
       if (fd.advice) setAdvice(fd.advice);
+      if (fd.diagnosis) setDiagnosis(fd.diagnosis);
       if (fd.followUps) setFollowUps(fd.followUps.map((fu: any) => ({ ...fu, medicines: fu.medicines || [{ ...emptyFollowUpMedicine }] })));
       // Legacy support
       else if (fd.nextVisit || fd.followUpNotes) setFollowUps([{ date: fd.nextVisit || "", status: "", improvement: "", medicine: "", notes: fd.followUpNotes || "", medicines: [{ ...emptyFollowUpMedicine }] }]);
@@ -255,7 +260,7 @@ const AdminNewCase = () => {
     menstruation, flow, mensPain, leucorrhoea, sexualDesire, maleProblems,
     majorIllness, surgery, medHistory, famDiabetes, famHypertension, famCancer, famOther,
     weight, height, pulse, bp, tongue, skin, investigations,
-    keyRubrics, miasm, medicine, potency, dose, repetition, advice, followUps,
+    keyRubrics, miasm, medicine, potency, dose, repetition, advice, diagnosis, followUps,
   });
 
   const addFollowUp = () => setFollowUps(f => [...f, { ...emptyFollowUp, medicines: [{ ...emptyFollowUpMedicine }] }]);
@@ -379,41 +384,48 @@ const AdminNewCase = () => {
               </div>
 
               {/* Link Prescription - shown after patient selected */}
-              {patientId && patientPrescriptions.length > 0 && (
+              {patientId && (
                 <div className="mt-4 pt-4 border-t border-border">
                   <Label className="text-xs text-muted-foreground mb-1.5 flex items-center gap-1.5">
                     <FileText className="w-3.5 h-3.5 text-secondary" /> Link Prescription
                   </Label>
                   <div className="flex gap-2">
-                    <Select value={selectedPrescriptionId} onValueChange={(val) => {
-                      setSelectedPrescriptionId(val);
-                      const rx = patientPrescriptions.find((p: any) => p.id === val);
-                      if (rx?.diagnosis) setKeyRubrics(prev => prev || rx.diagnosis);
-                      if (rx?.prescription_items?.length) {
-                        const first = rx.prescription_items[0];
-                        if (first.medicine_name) setMedicine(prev => prev || first.medicine_name);
-                        if (first.potency) setPotency(prev => prev || first.potency);
-                        if (first.dose) setDose(prev => prev || first.dose);
-                        if (first.frequency) setRepetition(prev => prev || first.frequency);
-                      }
-                      if (rx?.advice) setAdvice(prev => prev || rx.advice);
-                    }}>
-                      <SelectTrigger className="rounded-xl flex-1">
-                        <SelectValue placeholder="Select a prescription to link..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {patientPrescriptions.map((p: any) => (
-                          <SelectItem key={p.id} value={p.id}>
-                            {new Date(p.created_at).toLocaleDateString()} — {p.diagnosis || "No diagnosis"} ({p.prescription_items?.length || 0} medicines)
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    {patientPrescriptions.length > 0 ? (
+                      <Select value={selectedPrescriptionId} onValueChange={(val) => {
+                        setSelectedPrescriptionId(val);
+                        const rx = patientPrescriptions.find((p: any) => p.id === val);
+                        if (rx?.diagnosis) { setKeyRubrics(prev => prev || rx.diagnosis); setDiagnosis(prev => prev || rx.diagnosis); }
+                        if (rx?.prescription_items?.length) {
+                          const first = rx.prescription_items[0];
+                          if (first.medicine_name) setMedicine(prev => prev || first.medicine_name);
+                          if (first.potency) setPotency(prev => prev || first.potency);
+                          if (first.dose) setDose(prev => prev || first.dose);
+                          if (first.frequency) setRepetition(prev => prev || first.frequency);
+                        }
+                        if (rx?.advice) setAdvice(prev => prev || rx.advice);
+                      }}>
+                        <SelectTrigger className="rounded-xl flex-1">
+                          <SelectValue placeholder="Select a prescription to link..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {patientPrescriptions.map((p: any) => (
+                            <SelectItem key={p.id} value={p.id}>
+                              {new Date(p.created_at).toLocaleDateString()} — {p.diagnosis || "No diagnosis"} ({p.prescription_items?.length || 0} medicines)
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <p className="flex-1 text-sm text-muted-foreground bg-muted/30 rounded-xl px-3 py-2">No prescriptions found for this patient</p>
+                    )}
                     {selectedPrescriptionId && (
                       <Button type="button" variant="outline" size="icon" className="rounded-xl h-10 w-10 shrink-0" onClick={() => setViewPrescription(patientPrescriptions.find((p: any) => p.id === selectedPrescriptionId))} title="View Prescription">
                         <Eye className="w-4 h-4" />
                       </Button>
                     )}
+                    <Button type="button" variant="hero" size="sm" className="rounded-xl h-10 shrink-0" onClick={() => setShowQuickRx(true)}>
+                      <Plus className="w-4 h-4 mr-1" /> New Rx
+                    </Button>
                   </div>
                 </div>
               )}
@@ -596,6 +608,10 @@ const AdminNewCase = () => {
             {/* 11. Totality & Analysis */}
             <div className="bg-card rounded-2xl border-2 border-amber-200 p-5">
               <SectionHeader number={11} icon={Lightbulb} title="Totality & Analysis" color="warning" />
+              <div className="mb-3">
+                <Label className="text-xs text-muted-foreground mb-1.5 block">Diagnosis</Label>
+                <DiagnosisCombo value={diagnosis} onChange={setDiagnosis} />
+              </div>
               <div className="mb-3">
                 <Label className="text-xs text-muted-foreground mb-1.5 block">Key Rubrics</Label>
                 <Textarea value={keyRubrics} onChange={(e) => setKeyRubrics(e.target.value)} placeholder="Key rubrics for repertorization" className="rounded-xl min-h-[70px]" />
@@ -856,6 +872,7 @@ const AdminNewCase = () => {
           )}
         </DialogContent>
       </Dialog>
+      <QuickPrescriptionDialog open={showQuickRx} onOpenChange={setShowQuickRx} />
     </div>
   );
 };
