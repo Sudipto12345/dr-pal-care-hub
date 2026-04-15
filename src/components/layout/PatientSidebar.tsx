@@ -1,4 +1,4 @@
-import { LayoutDashboard, CalendarDays, FileText, ShoppingBag, User, LogOut, Leaf } from "lucide-react";
+import { ClipboardList, FileText, CalendarDays, FolderOpen, User, LogOut, Leaf, Phone, Clock } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, Link } from "react-router-dom";
 import {
@@ -15,11 +15,11 @@ const PatientSidebar = () => {
   const { t } = useLanguage();
 
   const items = [
-    { title: t.patient.dashboard, url: "/patient/dashboard", icon: LayoutDashboard },
-    { title: t.patient.appointments, url: "/patient/appointments", icon: CalendarDays },
-    { title: t.patient.prescriptions, url: "/patient/prescriptions", icon: FileText },
-    { title: t.patient.orders, url: "/patient/orders", icon: ShoppingBag },
-    { title: t.patient.profile, url: "/patient/profile", icon: User },
+    { title: "My Case", subtitle: "View Case Details", url: "/patient/dashboard", icon: ClipboardList },
+    { title: "Prescription", subtitle: "View Medicines", url: "/patient/prescriptions", icon: FileText },
+    { title: "Appointments", subtitle: "Visit History", url: "/patient/appointments", icon: CalendarDays },
+    { title: "Reports", subtitle: "Lab & Documents", url: "/patient/reports", icon: FolderOpen },
+    { title: "Profile", subtitle: "My Information", url: "/patient/profile", icon: User },
   ];
 
   return (
@@ -32,7 +32,7 @@ const PatientSidebar = () => {
           {!collapsed && (
             <div className="min-w-0">
               <p className="font-bold text-sm text-sidebar-foreground truncate">Dr. Amit Kumar Pal</p>
-              <p className="text-[10px] text-sidebar-foreground/60 truncate">{t.nav.patientPortal}</p>
+              <p className="text-[10px] text-sidebar-foreground/60 truncate">Advanced Homeopathic &amp; Wellness Care</p>
             </div>
           )}
         </div>
@@ -50,11 +50,16 @@ const PatientSidebar = () => {
                       <NavLink
                         to={item.url}
                         end
-                        className={`rounded-xl transition-all duration-150 ${active ? "bg-sidebar-primary text-sidebar-primary-foreground font-semibold" : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"}`}
+                        className={`rounded-xl transition-all duration-150 py-2.5 ${active ? "bg-sidebar-primary text-sidebar-primary-foreground font-semibold" : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"}`}
                         activeClassName="bg-sidebar-primary text-sidebar-primary-foreground font-semibold"
                       >
                         <item.icon className="mr-2.5 h-4 w-4" />
-                        {!collapsed && <span>{item.title}</span>}
+                        {!collapsed && (
+                          <div className="min-w-0">
+                            <span className="block text-sm">{item.title}</span>
+                            <span className="block text-[10px] opacity-60">{item.subtitle}</span>
+                          </div>
+                        )}
                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -64,6 +69,23 @@ const PatientSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      {/* Need Help section */}
+      {!collapsed && (
+        <div className="px-4 py-4">
+          <div className="bg-sidebar-accent/50 rounded-2xl p-4 text-center">
+            <div className="w-12 h-12 rounded-full bg-sidebar-primary/10 flex items-center justify-center mx-auto mb-2">
+              <Phone className="w-5 h-5 text-sidebar-primary" />
+            </div>
+            <p className="text-xs font-semibold text-sidebar-foreground mb-0.5">Need Help?</p>
+            <p className="text-[10px] text-sidebar-foreground/60 mb-1">Call Us</p>
+            <p className="text-xs font-bold text-sidebar-primary">+880 1911-734726</p>
+            <p className="text-[10px] text-sidebar-foreground/50 flex items-center justify-center gap-1 mt-0.5">
+              <Clock className="w-3 h-3" /> 10 AM - 8 PM
+            </p>
+          </div>
+        </div>
+      )}
 
       <SidebarFooter className="p-3 border-t border-sidebar-border">
         <SidebarMenu>
