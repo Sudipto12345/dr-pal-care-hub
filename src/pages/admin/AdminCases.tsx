@@ -520,6 +520,9 @@ const AdminCases = () => {
 
           {/* Bottom actions */}
           <div className="flex justify-end gap-2 pt-2 border-t border-border">
+            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handlePrint(viewCase)}>
+              <Printer className="w-3.5 h-3.5 mr-1" /> Print
+            </Button>
             <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleCopy(viewCase)}>
               <Copy className="w-3.5 h-3.5 mr-1" /> Copy
             </Button>
