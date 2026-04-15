@@ -57,7 +57,24 @@ const AdminNewCase = () => {
   const { data: existingCase, isLoading: loadingCase } = useCase(editId || "");
   const [patientId, setPatientId] = useState("");
   const [patientName, setPatientName] = useState("");
-  const [age, setAge] = useState("");
+  const [selectedPrescriptionId, setSelectedPrescriptionId] = useState("");
+  const [viewPrescription, setViewPrescription] = useState<any>(null);
+
+  // Fetch prescriptions for selected patient
+  const { data: patientPrescriptions = [] } = useQuery({
+    queryKey: ["patient-prescriptions", patientId],
+    queryFn: async () => {
+      if (!patientId) return [];
+      const { data, error } = await supabase
+        .from("prescriptions")
+        .select("*, patients(name), prescription_items(*)")
+        .eq("patient_id", patientId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!patientId,
+  });
   const [ageUnit, setAgeUnit] = useState("Years");
   const [sex, setSex] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
