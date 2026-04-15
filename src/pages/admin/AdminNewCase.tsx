@@ -323,8 +323,32 @@ const AdminNewCase = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                 <div>
                   <Label className="text-xs text-muted-foreground mb-1.5 block">Patient *</Label>
-                  <PatientSelector value={patientId} onChange={(id, name) => { setPatientId(id); setPatientName(name); }} error={errors.patientId} />
+                  <PatientSelector value={patientId} onChange={(id, name) => { setPatientId(id); setPatientName(name); setSelectedPrescriptionId(""); }} error={errors.patientId} />
                 </div>
+                {patientId && patientPrescriptions.length > 0 && (
+                  <div>
+                    <Label className="text-xs text-muted-foreground mb-1.5 block">Link Prescription</Label>
+                    <div className="flex gap-2">
+                      <Select value={selectedPrescriptionId} onValueChange={setSelectedPrescriptionId}>
+                        <SelectTrigger className="rounded-xl flex-1">
+                          <SelectValue placeholder="Select prescription..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {patientPrescriptions.map((p: any) => (
+                            <SelectItem key={p.id} value={p.id}>
+                              {new Date(p.created_at).toLocaleDateString()} — {p.diagnosis || "No diagnosis"} ({p.prescription_items?.length || 0} medicines)
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {selectedPrescriptionId && (
+                        <Button type="button" variant="outline" size="icon" className="rounded-xl h-10 w-10 shrink-0" onClick={() => setViewPrescription(patientPrescriptions.find((p: any) => p.id === selectedPrescriptionId))} title="View Prescription">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                )}
                 <div>
                   <Label className="text-xs text-muted-foreground mb-1.5 block">Age</Label>
                   <div className="flex gap-2">
