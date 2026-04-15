@@ -120,6 +120,38 @@ const AdminCases = () => {
   const { data: cases, isLoading } = useCases();
   const deleteCase = useDeleteCase();
   const [viewCase, setViewCase] = useState<any>(null);
+  const [viewRxForPatient, setViewRxForPatient] = useState<string | null>(null);
+  const [selectedRx, setSelectedRx] = useState<any>(null);
+
+  // Fetch prescriptions for viewed case's patient
+  const viewPatientId = viewCase?.patient_id || viewRxForPatient;
+  const { data: patientPrescriptions = [] } = useQuery({
+    queryKey: ["case-patient-prescriptions", viewPatientId],
+    queryFn: async () => {
+      if (!viewPatientId) return [];
+      const { data, error } = await supabase
+        .from("prescriptions")
+        .select("*, patients(name), prescription_items(*)")
+        .eq("patient_id", viewPatientId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!viewPatientId,
+  });
+
+  const handlePrintPrescription = (rx: any) => {
+    const patient = rx.patients || {};
+    const medicines = (rx.prescription_items || []) as any[];
+    const ce = (rx.clinical_exam || {}) as any;
+    const printHtml = buildPrescriptionPrintHtml(patient, rx, medicines, ce);
+    const printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.write(printHtml);
+      printWindow.document.close();
+      printWindow.onload = () => printWindow.print();
+    }
+  };
 
   const handleCopy = (c: any) => {
     navigator.clipboard.writeText(buildCopyText(c));
