@@ -48,6 +48,7 @@ import AdminNewCase from "./pages/admin/AdminNewCase";
 import AdminTestimonials from "./pages/admin/AdminTestimonials";
 import AdminYoutubeVideos from "./pages/admin/AdminYoutubeVideos";
 import AdminOrders from "./pages/admin/AdminOrders";
+import AdminPatientTimeline from "./pages/admin/AdminPatientTimeline";
 
 const queryClient = new QueryClient();
 
