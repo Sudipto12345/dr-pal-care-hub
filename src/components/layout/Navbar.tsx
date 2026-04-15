@@ -60,11 +60,11 @@ const Navbar = () => {
               className={`px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 relative group ${
                 location.pathname === link.path
                   ? activeStyle
-                  : `${mutedColor} ${hoverBg} hover:text-${scrolled || !isHome ? "foreground" : "white"}`
+                  : `${mutedColor} ${hoverBg} hover:text-white`
               }`}
             >
               {link.label}
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary rounded-full transition-all duration-300 group-hover:w-4/5" />
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-white rounded-full transition-all duration-300 group-hover:w-4/5" />
             </Link>
           ))}
         </div>
@@ -72,9 +72,7 @@ const Navbar = () => {
         <div className="hidden lg:flex items-center gap-2">
           <button
             onClick={toggleLang}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-colors ${
-              scrolled || !isHome ? "border-border hover:bg-accent" : "border-white/20 text-white hover:bg-white/10"
-            }`}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition-colors border-white/30 text-white hover:bg-white/15`}
           >
             <Globe className="w-3.5 h-3.5" />
             {lang === "en" ? "বাংলা" : "EN"}
@@ -83,7 +81,7 @@ const Navbar = () => {
           <button onClick={() => openCart(true)} className={`relative p-2 rounded-xl transition-colors ${hoverBg}`}>
             <ShoppingCart className={`w-5 h-5 ${textColor}`} />
             {totalItems > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center animate-scale-in">
+              <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-white text-primary text-[10px] font-bold flex items-center justify-center animate-scale-in">
                 {totalItems}
               </span>
             )}
@@ -94,7 +92,7 @@ const Navbar = () => {
           <Button variant="ghost" size="sm" className={`rounded-xl text-xs ${mutedColor} ${hoverBg}`} asChild>
             <Link to="/admin/dashboard">{t.nav.admin}</Link>
           </Button>
-          <Button size="sm" className="rounded-xl gradient-primary text-primary-foreground hover-scale shadow-glow" asChild>
+          <Button size="sm" className="rounded-xl bg-white text-primary hover:bg-white/90 font-semibold shadow-sm" asChild>
             <Link to="/book-appointment">{t.nav.bookAppointment}</Link>
           </Button>
         </div>
