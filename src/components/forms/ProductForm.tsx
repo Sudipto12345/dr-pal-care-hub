@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Plus, Loader2 } from "lucide-react";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/useSupabaseData";
+import ImageUpload from "@/components/shared/ImageUpload";
 
 interface ProductFormProps {
   trigger?: React.ReactNode;
@@ -107,8 +108,13 @@ const ProductForm = ({ trigger, editData, onDone }: ProductFormProps) => {
             </div>
           </div>
           <div>
-            <Label>Image URL</Label>
-            <Input value={form.image_url} onChange={(e) => set("image_url", e.target.value)} placeholder="https://..." className="mt-1 rounded-xl" />
+            <Label>Product Image</Label>
+            <ImageUpload
+              value={form.image_url}
+              onChange={(url) => set("image_url", url)}
+              folder="products"
+              className="mt-1"
+            />
           </div>
           <div>
             <Label>Description</Label>

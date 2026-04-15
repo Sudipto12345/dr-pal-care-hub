@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Plus, Loader2, Trash2, Pencil } from "lucide-react";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import ImageUpload from "@/components/shared/ImageUpload";
 
 const BlogFormDialog = ({ trigger, editData, onDone }: {
   trigger: React.ReactNode;
@@ -62,7 +63,15 @@ const BlogFormDialog = ({ trigger, editData, onDone }: {
         <div className="space-y-4 mt-2">
           <div><Label>Title *</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Post title" className="rounded-xl mt-1" /></div>
           <div><Label>Excerpt</Label><Input value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Short summary" className="rounded-xl mt-1" /></div>
-          <div><Label>Image URL</Label><Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://..." className="rounded-xl mt-1" /></div>
+          <div>
+            <Label>Featured Image</Label>
+            <ImageUpload
+              value={imageUrl}
+              onChange={setImageUrl}
+              folder="blog"
+              className="mt-1"
+            />
+          </div>
           <div><Label>Content</Label><Textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Write your post..." className="rounded-xl mt-1 min-h-[120px]" /></div>
           <div className="flex items-center gap-2"><Switch checked={published} onCheckedChange={setPublished} /><Label>{published ? "Published" : "Draft"}</Label></div>
           <div className="flex justify-end gap-2 pt-2">
@@ -96,6 +105,12 @@ const AdminBlog = () => {
         data={posts || []}
         searchPlaceholder="Search posts..."
         columns={[
+          {
+            header: "Image",
+            accessor: (row: any) => row.image_url ? (
+              <img src={row.image_url} alt={row.title} className="w-16 h-10 rounded-lg object-cover" />
+            ) : <div className="w-16 h-10 rounded-lg bg-muted flex items-center justify-center text-xs text-muted-foreground">No img</div>,
+          },
           { header: "Title", accessor: "title" },
           { header: "Date", accessor: (row: any) => new Date(row.created_at).toLocaleDateString() },
           { header: "Status", accessor: (row: any) => <StatusBadge status={row.published ? "Published" : "Draft"} /> },
