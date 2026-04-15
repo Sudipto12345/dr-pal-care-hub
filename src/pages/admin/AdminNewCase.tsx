@@ -619,6 +619,10 @@ const AdminNewCase = () => {
                   <TextField label="Dose" value={dose} onChange={setDose} placeholder="e.g., 4 pills" />
                 </div>
                 <TextField label="Repetition" value={repetition} onChange={setRepetition} placeholder="e.g., Once daily x 5 days" />
+                <div>
+                  <Label className="text-xs text-muted-foreground mb-1.5 block">Advice</Label>
+                  <Textarea value={advice} onChange={(e) => setAdvice(e.target.value)} placeholder="e.g., Avoid cold water, take rest..." className="rounded-xl min-h-[60px]" />
+                </div>
               </div>
             </div>
 
