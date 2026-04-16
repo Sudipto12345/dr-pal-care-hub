@@ -30,6 +30,7 @@ interface Props {
 
 const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const createPrescription = useCreatePrescription();
 
   const [patientId, setPatientId] = useState("");
