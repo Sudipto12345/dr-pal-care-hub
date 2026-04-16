@@ -71,10 +71,11 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
         frequency: m.frequency || undefined,
       })),
     }, {
-      onSuccess: () => {
+      onSuccess: (rx: any) => {
         toast.success("Prescription created!");
         reset();
         onOpenChange(false);
+        navigate(`/prescription/${rx.id}`);
       },
     });
   };
