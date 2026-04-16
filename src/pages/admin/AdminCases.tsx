@@ -682,24 +682,26 @@ const AdminCases = () => {
           )}
 
           {/* Bottom actions */}
-          <div className="flex justify-end gap-2 pt-2 border-t border-border">
-            <Button variant="outline" size="sm" className="rounded-xl" asChild>
+          <div className="flex flex-wrap justify-between gap-2 pt-3 border-t border-border">
+            <Button variant="hero" size="sm" className="rounded-xl" asChild>
               <Link to={`/admin/prescriptions/new?patient=${viewCase?.patient_id}`}>
-                <ClipboardPlus className="w-3.5 h-3.5 mr-1" /> Create Rx
+                <ClipboardPlus className="w-4 h-4 mr-1.5" /> Generate Prescription
               </Link>
             </Button>
-            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleDownloadPdf(viewCase)}>
-              <Download className="w-3.5 h-3.5 mr-1" /> PDF
-            </Button>
-            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handlePrint(viewCase)}>
-              <Printer className="w-3.5 h-3.5 mr-1" /> Print
-            </Button>
-            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleCopy(viewCase)}>
-              <Copy className="w-3.5 h-3.5 mr-1" /> Copy
-            </Button>
-            <Button variant="hero" size="sm" className="rounded-xl" asChild>
-              <Link to={`/admin/cases/${viewCase?.id}/edit`}><Pencil className="w-3.5 h-3.5 mr-1" /> Edit</Link>
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleDownloadPdf(viewCase)}>
+                <Download className="w-3.5 h-3.5 mr-1" /> PDF
+              </Button>
+              <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handlePrint(viewCase)}>
+                <Printer className="w-3.5 h-3.5 mr-1" /> Print
+              </Button>
+              <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleCopy(viewCase)}>
+                <Copy className="w-3.5 h-3.5 mr-1" /> Copy
+              </Button>
+              <Button variant="outline" size="sm" className="rounded-xl" asChild>
+                <Link to={`/admin/cases/${viewCase?.id}/edit`}><Pencil className="w-3.5 h-3.5 mr-1" /> Edit</Link>
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
