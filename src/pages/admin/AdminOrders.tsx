@@ -231,6 +231,9 @@ const AdminOrders = () => {
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setViewOrder(row)} title="View">
                   <Eye className="w-3.5 h-3.5" />
                 </Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleDownloadInvoice(row)} title="Download Invoice PDF">
+                  <Download className="w-3.5 h-3.5" />
+                </Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleCopyInvoice(row)} title="Copy Invoice">
                   <Copy className="w-3.5 h-3.5" />
                 </Button>
@@ -336,6 +339,9 @@ const AdminOrders = () => {
 
               {/* Actions */}
               <div className="flex justify-end gap-2 pt-2">
+                <Button size="sm" className="rounded-xl gradient-primary text-primary-foreground" onClick={() => handleDownloadInvoice(viewOrder)}>
+                  <Download className="w-3.5 h-3.5 mr-1" /> Invoice PDF
+                </Button>
                 <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleCopyInvoice(viewOrder)}>
                   <Copy className="w-3.5 h-3.5 mr-1" /> Copy Invoice
                 </Button>
