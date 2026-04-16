@@ -197,7 +197,7 @@ const AdminNewPrescription = () => {
     if (isEditMode) {
       updatePrescription.mutate({ id: id!, ...payload }, { onSuccess: () => navigate("/admin/prescriptions") });
     } else {
-      createPrescription.mutate(payload, { onSuccess: () => navigate("/admin/prescriptions") });
+      createPrescription.mutate(payload, { onSuccess: (rx: any) => navigate(`/prescription/${rx.id}`) });
     }
   };
 
