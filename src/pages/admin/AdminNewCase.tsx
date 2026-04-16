@@ -61,6 +61,23 @@ const SectionHeader = ({ number, icon: Icon, title, color = "primary" }: { numbe
   </div>
 );
 
+const SelectField = ({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: string[] }) => (
+  <div>
+    <Label className="text-xs text-muted-foreground mb-1.5 block">{label}</Label>
+    <select value={value} onChange={(e) => onChange(e.target.value)} className={selectClass}>
+      <option value="">Select</option>
+      {options.map((o) => <option key={o} value={o}>{o}</option>)}
+    </select>
+  </div>
+);
+
+const TextField = ({ label, value, onChange, placeholder, type = "text" }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string; type?: string }) => (
+  <div>
+    <Label className="text-xs text-muted-foreground mb-1.5 block">{label}</Label>
+    <Input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="rounded-xl" />
+  </div>
+);
+
 const AdminNewCase = () => {
   const navigate = useNavigate();
   const { id: editId } = useParams();
@@ -315,22 +332,6 @@ const AdminNewCase = () => {
     }
   };
 
-  const SelectField = ({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: string[] }) => (
-    <div>
-      <Label className="text-xs text-muted-foreground mb-1.5 block">{label}</Label>
-      <select value={value} onChange={(e) => onChange(e.target.value)} className={selectClass}>
-        <option value="">Select</option>
-        {options.map((o) => <option key={o} value={o}>{o}</option>)}
-      </select>
-    </div>
-  );
-
-  const TextField = ({ label, value, onChange, placeholder, type = "text" }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string; type?: string }) => (
-    <div>
-      <Label className="text-xs text-muted-foreground mb-1.5 block">{label}</Label>
-      <Input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="rounded-xl" />
-    </div>
-  );
 
   if (isEdit && loadingCase) return <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
 
