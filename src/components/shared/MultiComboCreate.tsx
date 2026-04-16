@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus, Check, Search, Loader2, X } from "lucide-react";
@@ -26,10 +27,43 @@ const MultiComboCreate = ({
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
+
+  const updatePosition = useCallback(() => {
+    if (!inputRef.current) return;
+    const rect = inputRef.current.getBoundingClientRect();
+    setDropdownStyle({
+      position: "fixed",
+      top: rect.bottom + 4,
+      left: rect.left,
+      width: rect.width,
+      zIndex: 9999,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    updatePosition();
+    const onScroll = () => updatePosition();
+    window.addEventListener("scroll", onScroll, true);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll, true);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [open, updatePosition]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      const target = e.target as Node;
+      if (ref.current?.contains(target)) return;
+      const portal = document.getElementById("combo-portal");
+      if (portal?.contains(target)) return;
+      // Check if target is in any fixed dropdown (our portaled dropdown)
+      const el = e.target as HTMLElement;
+      if (el.closest?.("[data-combo-dropdown]")) return;
+      setOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -62,9 +96,56 @@ const MultiComboCreate = ({
     setSearch("");
   };
 
+  const dropdown = open ? (
+    <div
+      style={dropdownStyle}
+      data-combo-dropdown
+      className="bg-popover border border-border rounded-xl shadow-lg max-h-52 overflow-y-auto"
+      onMouseDown={(e) => e.stopPropagation()}
+    >
+      {filtered.length > 0 ? (
+        filtered.map((o) => {
+          const isSelected = values.includes(o.label);
+          return (
+            <button
+              key={o.value}
+              type="button"
+              className={cn(
+                "w-full text-left px-3 py-2 text-sm hover:bg-accent transition-colors flex items-center justify-between",
+                isSelected && "bg-accent font-medium"
+              )}
+              onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+              onClick={() => toggleValue(o.label)}
+            >
+              <span>{o.label}</span>
+              {isSelected && <Check className="w-3.5 h-3.5 text-primary" />}
+            </button>
+          );
+        })
+      ) : (
+        <p className="px-3 py-2 text-sm text-muted-foreground">No results</p>
+      )}
+      {search.trim() && !exactMatch && (
+        <button
+          type="button"
+          className="w-full text-left px-3 py-2 text-sm border-t border-border hover:bg-accent transition-colors flex items-center gap-2 text-primary font-medium"
+          onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+          onClick={handleCreate}
+          disabled={isCreating}
+        >
+          {isCreating ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <Plus className="w-3.5 h-3.5" />
+          )}
+          Add "{search.trim()}"
+        </button>
+      )}
+    </div>
+  ) : null;
+
   return (
     <div ref={ref} className={cn("relative", className)}>
-      {/* Selected tags */}
       {values.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-2">
           {values.map((v) => (
@@ -85,10 +166,10 @@ const MultiComboCreate = ({
         </div>
       )}
 
-      {/* Search input */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
         <Input
+          ref={inputRef}
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
@@ -100,47 +181,7 @@ const MultiComboCreate = ({
         />
       </div>
 
-      {/* Dropdown */}
-      {open && (
-        <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-xl shadow-lg max-h-52 overflow-y-auto">
-          {filtered.length > 0 ? (
-            filtered.map((o) => {
-              const isSelected = values.includes(o.label);
-              return (
-                <button
-                  key={o.value}
-                  type="button"
-                  className={cn(
-                    "w-full text-left px-3 py-2 text-sm hover:bg-accent transition-colors flex items-center justify-between",
-                    isSelected && "bg-accent font-medium"
-                  )}
-                  onClick={() => toggleValue(o.label)}
-                >
-                  <span>{o.label}</span>
-                  {isSelected && <Check className="w-3.5 h-3.5 text-primary" />}
-                </button>
-              );
-            })
-          ) : (
-            <p className="px-3 py-2 text-sm text-muted-foreground">No results</p>
-          )}
-          {search.trim() && !exactMatch && (
-            <button
-              type="button"
-              className="w-full text-left px-3 py-2 text-sm border-t border-border hover:bg-accent transition-colors flex items-center gap-2 text-primary font-medium"
-              onClick={handleCreate}
-              disabled={isCreating}
-            >
-              {isCreating ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <Plus className="w-3.5 h-3.5" />
-              )}
-              Add "{search.trim()}"
-            </button>
-          )}
-        </div>
-      )}
+      {dropdown && createPortal(dropdown, document.body)}
     </div>
   );
 };
