@@ -9,6 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Separator } from "@/components/ui/separator";
 import StatusBadge from "@/components/shared/StatusBadge";
 import { toast } from "sonner";
+import { openInvoice } from "@/lib/invoiceTemplate";
 
 const statusOptions = [
   { value: "pending", label: "Pending", icon: Clock, color: "text-amber-500" },
