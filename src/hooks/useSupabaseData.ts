@@ -205,7 +205,7 @@ export const useCreatePrescription = () => {
       }
       return rx;
     },
-    onSuccess: () => {
+    onSuccess: (rx) => {
       qc.invalidateQueries({ queryKey: ["prescriptions"] });
       toast({ title: "Prescription created" });
     },

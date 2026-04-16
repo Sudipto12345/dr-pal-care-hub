@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,7 @@ interface Props {
 
 const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const createPrescription = useCreatePrescription();
 
   const [patientId, setPatientId] = useState("");
@@ -69,10 +71,11 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
         frequency: m.frequency || undefined,
       })),
     }, {
-      onSuccess: () => {
+      onSuccess: (rx: any) => {
         toast.success("Prescription created!");
         reset();
         onOpenChange(false);
+        navigate(`/prescription/${rx.id}`);
       },
     });
   };
