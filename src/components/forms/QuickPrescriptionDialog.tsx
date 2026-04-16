@@ -85,7 +85,7 @@ const QuickPrescriptionDialog = ({ open, onOpenChange }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) reset(); onOpenChange(v); }}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto" onPointerDownOutside={(e) => e.preventDefault()} onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2"><ClipboardPlus className="w-5 h-5 text-primary" /> Quick Prescription</DialogTitle>
           <DialogDescription>Create a prescription without leaving this page</DialogDescription>
