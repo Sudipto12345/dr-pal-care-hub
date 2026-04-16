@@ -3,7 +3,7 @@ import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import { useOrders, useUpdateOrderStatus } from "@/hooks/useSupabaseData";
 import { Button } from "@/components/ui/button";
-import { Loader2, Eye, Package, Truck, CheckCircle, XCircle, Clock, Receipt, Copy, ChevronDown } from "lucide-react";
+import { Loader2, Eye, Package, Truck, CheckCircle, XCircle, Clock, Receipt, Copy, ChevronDown, Download } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
@@ -50,6 +50,100 @@ const AdminOrders = () => {
     ];
     navigator.clipboard.writeText(lines.join("\n"));
     toast.success("Invoice copied to clipboard!");
+  };
+
+  const handleDownloadInvoice = (order: any) => {
+    const items = order.order_items || [];
+    const orderDate = new Date(order.created_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+    const invoiceNo = `INV-${order.id.slice(0, 8).toUpperCase()}`;
+
+    const itemRows = items.map((item: any, i: number) => `
+      <tr>
+        <td style="border:1px solid #ddd;padding:8px 10px;text-align:center">${i + 1}</td>
+        <td style="border:1px solid #ddd;padding:8px 10px">${item.products?.name || "Product"}</td>
+        <td style="border:1px solid #ddd;padding:8px 10px;text-align:center">${item.quantity}</td>
+        <td style="border:1px solid #ddd;padding:8px 10px;text-align:right">৳${Number(item.price).toFixed(2)}</td>
+        <td style="border:1px solid #ddd;padding:8px 10px;text-align:right;font-weight:600">৳${(item.quantity * Number(item.price)).toFixed(2)}</td>
+      </tr>
+    `).join("");
+
+    const html = `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Invoice ${invoiceNo}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',Arial,sans-serif; color:#1a1a1a; padding:0; }
+  .invoice { max-width:210mm; margin:0 auto; padding:15mm; }
+  @media print { body { padding:0; } .invoice { padding:10mm 12mm; } .no-print { display:none!important; } @page { margin:0; size:A4; } }
+</style></head><body>
+<div class="no-print" style="text-align:center;padding:12px;background:#f5f5f5;border-bottom:1px solid #ddd">
+  <button onclick="window.print()" style="padding:8px 24px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;margin-right:8px">🖨️ Print / Save PDF</button>
+  <button onclick="window.close()" style="padding:8px 24px;background:#666;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer">Close</button>
+</div>
+<div class="invoice">
+  <!-- Header -->
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1a237e;padding-bottom:15px;margin-bottom:20px">
+    <div>
+      <h1 style="font-size:28px;color:#1a237e;margin-bottom:4px">Newlife Homeo Hall</h1>
+      <p style="font-size:12px;color:#555">Dr. Amit Kumar Pal — BHMS (Gold Medalist)</p>
+      <p style="font-size:11px;color:#777">Rampal, Bagerhat</p>
+      <p style="font-size:11px;color:#777">Contact: +880 1911 734 726</p>
+    </div>
+    <div style="text-align:right">
+      <h2 style="font-size:32px;color:#1a237e;font-weight:700;letter-spacing:1px">INVOICE</h2>
+      <p style="font-size:13px;color:#555;margin-top:4px"><strong>Invoice #:</strong> ${invoiceNo}</p>
+      <p style="font-size:13px;color:#555"><strong>Date:</strong> ${orderDate}</p>
+      <p style="font-size:13px;color:#555"><strong>Status:</strong> ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</p>
+    </div>
+  </div>
+
+  <!-- Customer -->
+  <div style="background:#f8f9fa;border-radius:8px;padding:14px 18px;margin-bottom:20px;border:1px solid #e9ecef">
+    <h3 style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:8px">Bill To</h3>
+    <p style="font-size:15px;font-weight:700;color:#1a1a1a">${order.customer_name || "Guest Customer"}</p>
+    <p style="font-size:12px;color:#555;margin-top:2px">${order.phone || ""} ${order.customer_email ? "• " + order.customer_email : ""}</p>
+    <p style="font-size:12px;color:#555">${order.address || ""}</p>
+  </div>
+
+  <!-- Items Table -->
+  <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px">
+    <thead>
+      <tr style="background:#1a237e;color:#fff">
+        <th style="border:1px solid #1a237e;padding:10px;text-align:center;width:5%">#</th>
+        <th style="border:1px solid #1a237e;padding:10px;text-align:left">Product</th>
+        <th style="border:1px solid #1a237e;padding:10px;text-align:center;width:10%">Qty</th>
+        <th style="border:1px solid #1a237e;padding:10px;text-align:right;width:15%">Unit Price</th>
+        <th style="border:1px solid #1a237e;padding:10px;text-align:right;width:15%">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${itemRows}
+    </tbody>
+  </table>
+
+  <!-- Totals -->
+  <div style="display:flex;justify-content:flex-end">
+    <div style="width:250px">
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-top:2px solid #1a237e;font-size:18px;font-weight:700;color:#1a237e">
+        <span>Total</span>
+        <span>৳${Number(order.total).toFixed(2)}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="margin-top:40px;border-top:1px solid #ddd;padding-top:15px;text-align:center">
+    <p style="font-size:11px;color:#888">Thank you for your order!</p>
+    <p style="font-size:10px;color:#aaa;margin-top:4px">Newlife Homeo Hall • Rampal, Bagerhat • +880 1911 734 726</p>
+  </div>
+</div>
+</body></html>`;
+
+    const w = window.open("", "_blank");
+    if (w) {
+      w.document.write(html);
+      w.document.close();
+    }
   };
 
   if (isLoading) return <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
@@ -136,6 +230,9 @@ const AdminOrders = () => {
               <div className="flex gap-1">
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setViewOrder(row)} title="View">
                   <Eye className="w-3.5 h-3.5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleDownloadInvoice(row)} title="Download Invoice PDF">
+                  <Download className="w-3.5 h-3.5" />
                 </Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleCopyInvoice(row)} title="Copy Invoice">
                   <Copy className="w-3.5 h-3.5" />
@@ -242,6 +339,9 @@ const AdminOrders = () => {
 
               {/* Actions */}
               <div className="flex justify-end gap-2 pt-2">
+                <Button size="sm" className="rounded-xl gradient-primary text-primary-foreground" onClick={() => handleDownloadInvoice(viewOrder)}>
+                  <Download className="w-3.5 h-3.5 mr-1" /> Invoice PDF
+                </Button>
                 <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handleCopyInvoice(viewOrder)}>
                   <Copy className="w-3.5 h-3.5 mr-1" /> Copy Invoice
                 </Button>
