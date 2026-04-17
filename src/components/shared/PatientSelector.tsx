@@ -96,7 +96,10 @@ const PatientSelector = ({ value, onChange, error }: PatientSelectorProps) => {
         )}
       </div>
       <div className="border-t border-border p-2">
-        <AddPatientForm trigger={<Button variant="ghost" size="sm" className="w-full justify-start text-secondary hover:text-secondary rounded-lg"><UserPlus className="w-4 h-4 mr-2" /> Create New Patient</Button>} />
+        <AddPatientForm
+          onCreated={(p) => { onChange(p.id, p.name); setSearch(""); setIsOpen(false); }}
+          trigger={<Button variant="ghost" size="sm" className="w-full justify-start text-secondary hover:text-secondary rounded-lg"><UserPlus className="w-4 h-4 mr-2" /> Create New Patient</Button>}
+        />
       </div>
     </div>
   ) : null;
