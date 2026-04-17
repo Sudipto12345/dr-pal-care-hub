@@ -9,7 +9,7 @@ import { useCreatePatient } from "@/hooks/useSupabaseData";
 
 const initialState = { name: "", email: "", phone: "", age: "", gender: "", address: "" };
 
-const AddPatientForm = ({ trigger }: { trigger?: React.ReactNode }) => {
+const AddPatientForm = ({ trigger, onCreated }: { trigger?: React.ReactNode; onCreated?: (patient: { id: string; name: string }) => void }) => {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(initialState);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -44,9 +44,10 @@ const AddPatientForm = ({ trigger }: { trigger?: React.ReactNode }) => {
         email: form.email || undefined,
       },
       {
-        onSuccess: () => {
+        onSuccess: (data: any) => {
           setSuccess(true);
-          setTimeout(() => { setForm(initialState); setErrors({}); setSuccess(false); setOpen(false); }, 1500);
+          if (data?.id) onCreated?.({ id: data.id, name: data.name });
+          setTimeout(() => { setForm(initialState); setErrors({}); setSuccess(false); setOpen(false); }, 1200);
         },
       }
     );
