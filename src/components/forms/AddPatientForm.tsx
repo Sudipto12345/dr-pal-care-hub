@@ -62,7 +62,13 @@ const AddPatientForm = ({ trigger }: { trigger?: React.ReactNode }) => {
       <DialogTrigger asChild>
         {trigger || <Button variant="hero" size="sm"><Plus className="w-4 h-4 mr-1" /> Add Patient</Button>}
       </DialogTrigger>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl">
+      <DialogContent
+        className="max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl"
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
         {success ? (
           <div className="py-12 text-center animate-fade-in">
             <div className="w-16 h-16 rounded-full gradient-primary flex items-center justify-center mx-auto mb-4">
@@ -73,7 +79,10 @@ const AddPatientForm = ({ trigger }: { trigger?: React.ReactNode }) => {
           </div>
         ) : (
           <>
-            <DialogHeader><DialogTitle className="font-heading text-xl">Add New Patient</DialogTitle></DialogHeader>
+            <DialogHeader>
+              <DialogTitle className="font-heading text-xl">Add New Patient</DialogTitle>
+              <DialogDescription>Register a new patient to your records</DialogDescription>
+            </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4 mt-2">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
