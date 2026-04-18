@@ -10,7 +10,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useTestimonials } from "@/hooks/useTestimonials";
 import { useYoutubeVideos } from "@/hooks/useYoutubeVideos";
 
-import heroBanner from "@/assets/hero-doctor-new.jpg";
+import drAmitPal from "@/assets/dr-amit-pal.jpg";
 import aboutDoctor from "@/assets/about-doctor.jpg";
 import ctaBackground from "@/assets/cta-patient.jpg";
 import featureConsultation from "@/assets/feature-consultation.jpg";
@@ -21,7 +21,7 @@ import blogHealthy from "@/assets/blog-healthy.jpg";
 import blogNotes from "@/assets/blog-notes.jpg";
 import blogNatural from "@/assets/blog-natural.jpg";
 import clinicExterior from "@/assets/clinic-exterior.jpg";
-import doctorProfile from "@/assets/doctor-profile.png";
+const doctorProfile = drAmitPal;
 
 /* SVG leaf decorations */
 const FloatingLeaf = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
