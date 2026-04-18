@@ -332,6 +332,8 @@ export type Database = {
           gender: string | null
           id: string
           name: string
+          passcode: string | null
+          patient_code: string | null
           phone: string | null
           updated_at: string
           user_id: string | null
@@ -344,6 +346,8 @@ export type Database = {
           gender?: string | null
           id?: string
           name: string
+          passcode?: string | null
+          patient_code?: string | null
           phone?: string | null
           updated_at?: string
           user_id?: string | null
@@ -356,6 +360,8 @@ export type Database = {
           gender?: string | null
           id?: string
           name?: string
+          passcode?: string | null
+          patient_code?: string | null
           phone?: string | null
           updated_at?: string
           user_id?: string | null
@@ -602,6 +608,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_patient_code: { Args: never; Returns: string }
+      get_patient_login_email: { Args: { _code: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
