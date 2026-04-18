@@ -40,7 +40,14 @@ const Login = () => {
     } else {
       const { error } = await signIn(email, password);
       if (error) toast({ title: "Login failed", description: error.message, variant: "destructive" });
-      else navigate("/patient/dashboard");
+      else {
+        // Check role from freshly fetched user_roles to redirect correctly
+        const { data: { user: u } } = await supabase.auth.getUser();
+        if (u) {
+          const { data: r } = await supabase.from("user_roles").select("role").eq("user_id", u.id).single();
+          navigate(r?.role === "admin" ? "/admin/dashboard" : "/patient/dashboard");
+        } else navigate("/patient/dashboard");
+      }
     }
     setLoading(false);
   };
