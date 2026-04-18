@@ -32,7 +32,7 @@ const About = () => {
           <div className="grid md:grid-cols-[300px_1fr] gap-10 lg:gap-14 items-start">
             <div className="flex flex-col items-center text-center">
               <div className="w-52 h-52 rounded-2xl overflow-hidden shadow-card ring-2 ring-secondary/20 mb-5" style={{ transform: "rotate(-1deg)" }}>
-                <img src={doctorProfile} alt={t.doctor.name} className="w-full h-full object-cover" />
+                <img src={doctorProfile} alt={t.doctor.name} className="w-full h-full object-cover object-top" />
               </div>
               <h2 className="font-heading font-bold text-xl text-foreground">{t.doctor.name}</h2>
               <p className="text-secondary font-medium text-sm mt-1">{t.doctor.title}</p>
