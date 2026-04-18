@@ -180,7 +180,7 @@ export const usePrescription = (id: string) =>
   useQuery({
     queryKey: ["prescriptions", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("prescriptions").select("*, patients(name, age, gender, phone, address), prescription_items(*)").eq("id", id).single();
+      const { data, error } = await supabase.from("prescriptions").select("*, patients(name, age, gender, phone, address, patient_code, passcode), prescription_items(*)").eq("id", id).single();
       if (error) throw error;
       return data;
     },
