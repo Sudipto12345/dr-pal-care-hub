@@ -111,7 +111,7 @@ const PrescriptionPreview = () => {
           </div>
 
           {/* ===== PATIENT INFO ROW ===== */}
-          <div style={{ display: "flex", borderBottom: "1.5px solid #999", paddingBottom: "6px", marginBottom: "10px", fontSize: "13px", gap: "6px" }}>
+          <div style={{ display: "flex", borderBottom: "1.5px solid #999", paddingBottom: "6px", marginBottom: "6px", fontSize: "13px", gap: "6px" }}>
             <div style={{ flex: 2 }}>
               <span style={{ fontWeight: 700 }}>Name: </span>
               <span style={{ borderBottom: "1px dotted #999", paddingBottom: "1px" }}>{patient?.name || "________________"}</span>
@@ -129,6 +129,16 @@ const PrescriptionPreview = () => {
               <span>{new Date(prescription.created_at).toLocaleDateString()}</span>
             </div>
           </div>
+
+          {/* ===== PATIENT PORTAL LOGIN INFO ===== */}
+          {(patient?.patient_code || patient?.passcode) && (
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", border: "1px dashed #1565c0", background: "#f0f7ff", borderRadius: "4px", padding: "4px 8px", marginBottom: "10px", fontSize: "11px", color: "#0d47a1", gap: "8px", flexWrap: "wrap" }}>
+              <span style={{ fontWeight: 700 }}>🔐 Patient Portal Login:</span>
+              <span><strong>ID:</strong> <span style={{ fontFamily: "monospace", letterSpacing: "1px" }}>{patient?.patient_code || "—"}</span></span>
+              <span><strong>Passcode:</strong> <span style={{ fontFamily: "monospace", letterSpacing: "1px" }}>{patient?.passcode || "—"}</span></span>
+              <span style={{ fontStyle: "italic", color: "#1565c0" }}>Login: {typeof window !== "undefined" ? window.location.host : ""}/login</span>
+            </div>
+          )}
 
           {/* ===== TWO COLUMN BODY ===== */}
           <div style={{ display: "flex", gap: "0", minHeight: "520px" }}>
