@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Plus, CheckCircle, Loader2 } from "lucide-react";
+import { Plus, CheckCircle, Loader2, Copy, KeyRound, IdCard } from "lucide-react";
 import { useCreatePatient } from "@/hooks/useSupabaseData";
+import { toast } from "sonner";
 
 const initialState = { name: "", email: "", phone: "", age: "", gender: "", address: "" };
 
@@ -13,7 +14,7 @@ const AddPatientForm = ({ trigger, onCreated }: { trigger?: React.ReactNode; onC
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(initialState);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [success, setSuccess] = useState(false);
+  const [credentials, setCredentials] = useState<{ patient_code: string; passcode: string; name: string } | null>(null);
   const createPatient = useCreatePatient();
 
   const set = (field: string, value: string) => {
@@ -45,17 +46,30 @@ const AddPatientForm = ({ trigger, onCreated }: { trigger?: React.ReactNode; onC
       },
       {
         onSuccess: (data: any) => {
-          setSuccess(true);
-          if (data?.id) onCreated?.({ id: data.id, name: data.name });
-          setTimeout(() => { setForm(initialState); setErrors({}); setSuccess(false); setOpen(false); }, 1200);
+          setCredentials({ patient_code: data.patient_code, passcode: data.passcode, name: form.name });
+          if (data?.patient?.id) onCreated?.({ id: data.patient.id, name: data.patient.name });
         },
       }
     );
   };
 
+  const closeAll = () => {
+    setForm(initialState);
+    setErrors({});
+    setCredentials(null);
+    setOpen(false);
+  };
+
   const handleOpenChange = (next: boolean) => {
-    if (!next) { setForm(initialState); setErrors({}); setSuccess(false); }
-    setOpen(next);
+    if (!next) closeAll();
+    else setOpen(true);
+  };
+
+  const copyAll = () => {
+    if (!credentials) return;
+    const text = `Patient: ${credentials.name}\nPatient ID: ${credentials.patient_code}\nPasscode: ${credentials.passcode}\n\nLogin at: ${window.location.origin}/login`;
+    navigator.clipboard.writeText(text);
+    toast.success("Copied to clipboard");
   };
 
   return (
@@ -70,19 +84,46 @@ const AddPatientForm = ({ trigger, onCreated }: { trigger?: React.ReactNode; onC
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
       >
-        {success ? (
-          <div className="py-12 text-center animate-fade-in">
-            <div className="w-16 h-16 rounded-full gradient-primary flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="w-8 h-8 text-primary-foreground" />
+        {credentials ? (
+          <div className="py-6 animate-fade-in">
+            <div className="text-center mb-5">
+              <div className="w-14 h-14 rounded-full gradient-primary flex items-center justify-center mx-auto mb-3">
+                <CheckCircle className="w-7 h-7 text-primary-foreground" />
+              </div>
+              <h3 className="font-heading text-xl font-bold text-foreground mb-1">Patient Account Created!</h3>
+              <p className="text-muted-foreground text-sm">Share these credentials with {credentials.name}</p>
             </div>
-            <h3 className="font-heading text-xl font-bold text-foreground mb-1">Patient Registered!</h3>
-            <p className="text-muted-foreground text-sm">{form.name} has been added.</p>
+            <div className="space-y-3 bg-accent/40 rounded-xl p-4 border border-border">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <IdCard className="w-4 h-4 text-primary" />
+                  <span className="text-sm text-muted-foreground">Patient ID</span>
+                </div>
+                <span className="font-mono font-bold text-lg text-foreground tracking-wider">{credentials.patient_code}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <KeyRound className="w-4 h-4 text-primary" />
+                  <span className="text-sm text-muted-foreground">Passcode</span>
+                </div>
+                <span className="font-mono font-bold text-lg text-foreground tracking-wider">{credentials.passcode}</span>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground mt-3 text-center">
+              ⚠️ This passcode will not be shown again. Copy it now.
+            </p>
+            <div className="flex gap-2 mt-5">
+              <Button variant="outline" className="flex-1 rounded-xl" onClick={copyAll}>
+                <Copy className="w-4 h-4 mr-1" /> Copy
+              </Button>
+              <Button variant="hero" className="flex-1 rounded-xl" onClick={closeAll}>Done</Button>
+            </div>
           </div>
         ) : (
           <>
             <DialogHeader>
               <DialogTitle className="font-heading text-xl">Add New Patient</DialogTitle>
-              <DialogDescription>Register a new patient to your records</DialogDescription>
+              <DialogDescription>A 5-digit ID and 6-digit passcode will be generated for patient login</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4 mt-2">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -114,7 +155,7 @@ const AddPatientForm = ({ trigger, onCreated }: { trigger?: React.ReactNode; onC
                 </div>
               </div>
               <div>
-                <Label>Email</Label>
+                <Label>Email (optional)</Label>
                 <Input value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="patient@email.com" type="email" className="mt-1 rounded-xl" />
                 {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
               </div>
@@ -125,7 +166,7 @@ const AddPatientForm = ({ trigger, onCreated }: { trigger?: React.ReactNode; onC
               <div className="flex justify-end gap-2 pt-2">
                 <Button type="button" variant="outline" onClick={() => handleOpenChange(false)} className="rounded-xl">Cancel</Button>
                 <Button type="submit" variant="hero" disabled={createPatient.isPending}>
-                  {createPatient.isPending && <Loader2 className="w-4 h-4 animate-spin mr-1" />} Add Patient
+                  {createPatient.isPending && <Loader2 className="w-4 h-4 animate-spin mr-1" />} Create Account
                 </Button>
               </div>
             </form>
