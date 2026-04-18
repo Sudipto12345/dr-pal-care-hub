@@ -135,7 +135,7 @@ const Index = () => {
               {/* Decorative ring */}
               <div className="absolute -inset-4 md:-inset-6 rounded-[2.5rem] bg-gradient-to-br from-primary/20 via-secondary/15 to-info/10 blur-2xl" />
               <div className="relative w-[260px] sm:w-[320px] md:w-[360px] lg:w-[400px] aspect-[4/5] rounded-[2rem] overflow-hidden shadow-elevated ring-4 ring-card">
-                <img src={drAmitPal} alt="Dr. Amit Kumar Pal — Homeopathic Consultant" className="w-full h-full object-cover" />
+                <img src={drAmitPal} alt="Dr. Amit Kumar Pal — Homeopathic Consultant" className="w-full h-full object-cover object-top" />
                 {/* Floating badge */}
                 <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-md rounded-full px-3 py-1.5 shadow-lg flex items-center gap-1.5 border border-primary/20">
                   <Award className="w-3.5 h-3.5 text-primary" />
