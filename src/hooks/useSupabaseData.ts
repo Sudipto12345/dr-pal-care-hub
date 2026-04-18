@@ -29,9 +29,10 @@ export const useCreatePatient = () => {
   const { toast } = useToast();
   return useMutation({
     mutationFn: async (patient: { name: string; phone?: string; age?: number; gender?: string; address?: string; email?: string }) => {
-      const { data, error } = await supabase.from("patients").insert(patient).select().single();
+      const { data, error } = await supabase.functions.invoke("create-patient-account", { body: patient });
       if (error) throw error;
-      return data;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      return data as { patient: any; patient_code: string; passcode: string };
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["patients"] });
