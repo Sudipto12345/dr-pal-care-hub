@@ -45,7 +45,7 @@ const Login = () => {
         const { data: { user: u } } = await supabase.auth.getUser();
         if (u) {
           const { data: r } = await supabase.from("user_roles").select("role").eq("user_id", u.id).single();
-          navigate(r?.role === "admin" ? "/admin" : "/patient/dashboard");
+          navigate(r?.role === "admin" ? "/admin/dashboard" : "/patient/dashboard");
         } else navigate("/patient/dashboard");
       }
     }
