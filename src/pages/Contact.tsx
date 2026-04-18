@@ -34,9 +34,9 @@ const Contact = () => (
           <div className="space-y-6">
             <h2 className="font-heading text-2xl font-bold text-foreground mb-6">Clinic Information</h2>
             {[
-              { icon: MapPin, label: "Address", value: "Newlife Homeo Hall, Rampal, Bagerhat" },
-              { icon: Phone, label: "Phone", value: "+880 1911 734 726" },
-              { icon: Mail, label: "WhatsApp", value: "01911734726" },
+              { icon: MapPin, label: "Address", value: "Dhaka, Bangladesh" },
+              { icon: Phone, label: "Phone", value: "+880 1911 734 726 / 01787 354 248" },
+              { icon: Mail, label: "Email", value: "dramithomeo@gmail.com" },
               { icon: Clock, label: "Consultation", value: "Online & Offline Consultation Available" },
             ].map((item) => (
               <Card key={item.label} className="border-border rounded-2xl">

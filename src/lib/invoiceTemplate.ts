@@ -35,12 +35,13 @@ export const generateInvoiceHtml = (order: any) => {
     <div style="height:4px;background:linear-gradient(90deg,#3b82f6 0%,#06b6d4 50%,#10b981 100%);border-radius:2px;margin-bottom:36px"></div>
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px">
       <div>
-        <h1 style="font-size:22px;font-weight:700;color:#0f172a;letter-spacing:-.5px;margin-bottom:2px">Newlife Homeo Hall</h1>
-        <p style="font-size:12px;color:#64748b;font-weight:400">Established Healthcare & Wellness</p>
+        <h1 style="font-size:22px;font-weight:700;color:#0f172a;letter-spacing:-.5px;margin-bottom:2px">Dr. Amit Kumar Pal</h1>
+        <p style="font-size:12px;color:#64748b;font-weight:400">Homeopathic Consultant, Researcher & Wellness Specialist</p>
         <div style="margin-top:12px;font-size:11px;color:#94a3b8;line-height:1.8">
-          <div>Dr. Amit Kumar Pal — BHMS (Gold Medalist)</div>
-          <div>Rampal, Bagerhat, Bangladesh</div>
-          <div>+880 1911 734 726</div>
+          <div>DHMS (BHB), Dhaka • Gold Medalist (India)</div>
+          <div>Dhaka, Bangladesh</div>
+          <div>+880 1911 734 726 / 01787 354 248</div>
+          <div>dramithomeo@gmail.com</div>
         </div>
       </div>
       <div style="text-align:right">
@@ -93,12 +94,12 @@ export const generateInvoiceHtml = (order: any) => {
       <p style="font-size:12px;color:#64748b">Cash on Delivery (COD)</p>
     </div>
     <div style="margin-top:32px;text-align:center">
-      <p style="font-size:13px;color:#94a3b8;font-style:italic">Thank you for choosing Newlife Homeo Hall</p>
+      <p style="font-size:13px;color:#94a3b8;font-style:italic">Thank you for choosing Dr. Amit Kumar Pal — Homeopathic Care</p>
     </div>
   </div>
   <div class="footer-band" style="display:flex;justify-content:space-between;align-items:center">
     <div style="font-size:10px;color:#94a3b8;line-height:1.6">
-      <span style="font-weight:600;color:#e2e8f0">Newlife Homeo Hall</span> • Rampal, Bagerhat • +880 1911 734 726
+      <span style="font-weight:600;color:#e2e8f0">Dr. Amit Kumar Pal</span> • Dhaka, Bangladesh • +880 1911 734 726 / 01787 354 248 • dramithomeo@gmail.com
     </div>
     <div style="font-size:9px;color:#64748b">Generated on ${new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'})}</div>
   </div>

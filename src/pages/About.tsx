@@ -2,7 +2,7 @@ import { Award, GraduationCap, Users, Clock, Globe, Building2, Stethoscope, MapP
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import doctorProfile from "@/assets/doctor-profile.png";
+import doctorProfile from "@/assets/dr-amit-pal.jpg";
 import { useLanguage } from "@/i18n/LanguageContext";
 import PageHero from "@/components/shared/PageHero";
 import heroServices from "@/assets/hero-services.jpg";

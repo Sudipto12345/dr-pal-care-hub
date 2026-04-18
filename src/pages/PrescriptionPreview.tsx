@@ -63,17 +63,20 @@ const PrescriptionPreview = () => {
                   <h1 className="font-bangla" style={{ fontSize: "26px", fontWeight: 700, color: "#1a237e", margin: 0, lineHeight: 1.2 }}>
                     ডাঃ অমিত কুমার পাল
                   </h1>
-                  <p className="font-bangla" style={{ fontSize: "12px", margin: "2px 0", color: "#333", fontWeight: 600 }}>
-                    বিএইচএমএস (গোল্ড মেডেলিস্ট),
+                  <p className="font-bangla" style={{ fontSize: "11px", margin: "2px 0", color: "#333", fontWeight: 600 }}>
+                    হোমিওপ্যাথিক কনসালট্যান্ট, গবেষক ও ওয়েলনেস বিশেষজ্ঞ
                   </p>
-                  <p className="font-bangla" style={{ fontSize: "12px", margin: "1px 0", color: "#333" }}>
-                    উন্নত হোমিওপ্যাথিক চিকিৎসক
-                  </p>
-                  <p className="font-bangla" style={{ fontSize: "12px", margin: "1px 0", color: "#c62828", fontWeight: 600 }}>
-                    হোমিওপ্যাথি বিশেষজ্ঞ
+                  <p className="font-bangla" style={{ fontSize: "11px", margin: "1px 0", color: "#c62828", fontWeight: 600 }}>
+                    সরকার অনুমোদিত হোমিওপ্যাথিক ডাক্তার
                   </p>
                   <p className="font-bangla" style={{ fontSize: "11px", margin: "1px 0", color: "#555" }}>
-                    নিউলাইফ হোমিও হল, রামপাল, বাগেরহাট
+                    ডিএইচএমএস (বিএইচবি), ঢাকা | এমএ, বিএ (ইংরেজি)
+                  </p>
+                  <p className="font-bangla" style={{ fontSize: "11px", margin: "1px 0", color: "#555" }}>
+                    বিএস ইন হেলথ সায়েন্স, যুক্তরাষ্ট্র | স্বর্ণপদক বিজয়ী (ভারত)
+                  </p>
+                  <p className="font-bangla" style={{ fontSize: "10px", margin: "1px 0", color: "#555" }}>
+                    সদস্য: হোমিওপ্যাথি ওয়ার্ল্ড কমিউনিটি, যুক্তরাষ্ট্র
                   </p>
                 </div>
 
@@ -82,26 +85,23 @@ const PrescriptionPreview = () => {
                   <h2 style={{ fontSize: "22px", fontWeight: 700, color: "#1a237e", margin: 0, lineHeight: 1.2 }}>
                     Dr. Amit Kumar Pal
                   </h2>
-                  <p style={{ fontSize: "12px", margin: "2px 0", color: "#333" }}>
-                    BHMS (Gold Medalist)
-                  </p>
-                  <p style={{ fontSize: "12px", margin: "1px 0", color: "#333" }}>
-                    Advanced Homeopathic Practitioner
-                  </p>
-                  <p style={{ fontSize: "11px", margin: "3px 0 0", color: "#c62828", fontWeight: 600 }}>
-                    Intervention Homeopath
+                  <p style={{ fontSize: "11px", margin: "2px 0", color: "#333", fontWeight: 600 }}>
+                    Homeopathic Consultant, Researcher & Wellness Specialist
                   </p>
                   <p style={{ fontSize: "11px", margin: "1px 0", color: "#c62828", fontWeight: 600 }}>
-                    and Medicine Specialist
+                    Govt Reg. Homeopathic Doctor
                   </p>
-                  <p style={{ fontSize: "11px", margin: "3px 0 0", color: "#1565c0", fontWeight: 600 }}>
-                    Newlife Homeo Hall
+                  <p style={{ fontSize: "10px", margin: "1px 0", color: "#555" }}>
+                    DHMS (BHB), Dhaka | MA, BA (English)
                   </p>
-                  <p style={{ fontSize: "10px", margin: "1px 0", color: "#333" }}>
-                    Rampal, Bagerhat
+                  <p style={{ fontSize: "10px", margin: "1px 0", color: "#555" }}>
+                    BS in Health Science, U.S.A. | Gold Medalist (India)
                   </p>
-                  <p style={{ fontSize: "10px", margin: "1px 0", color: "#333" }}>
-                    Contact: +880 1911 734 726
+                  <p style={{ fontSize: "10px", margin: "1px 0", color: "#555" }}>
+                    Member: Homeopathy World Community, U.S.A.
+                  </p>
+                  <p style={{ fontSize: "10px", margin: "3px 0 0", color: "#1565c0", fontWeight: 600 }}>
+                    📍 Dhaka, Bangladesh | 📞 01911 734 726 / 01787 354 248
                   </p>
                 </div>
               </div>
@@ -236,16 +236,16 @@ const PrescriptionPreview = () => {
                     অনলাইন ও অফলাইন পরামর্শ সেবা
                   </p>
                   <p style={{ margin: "0 0 2px", color: "#555", fontSize: "11px" }}>
-                    Newlife Homeo Hall, Rampal, Bagerhat
+                    📍 Dhaka, Bangladesh • ✉ dramithomeo@gmail.com
                   </p>
                   <p className="font-bangla" style={{ margin: "0", fontWeight: 700, color: "#c62828", fontSize: "14px" }}>
-                    ০১৯১১-৭৩৪৭২৬
+                    📞 ০১৯১১-৭৩৪৭২৬ / ০১৭৮৭-৩৫৪২৪৮
                   </p>
                 </div>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ width: "170px", borderTop: "1px solid #333", paddingTop: "4px", marginLeft: "auto" }}>
+                  <div style={{ width: "180px", borderTop: "1px solid #333", paddingTop: "4px", marginLeft: "auto" }}>
                     <p style={{ fontSize: "13px", fontWeight: 700, margin: 0, color: "#1a237e" }}>Dr. Amit Kumar Pal</p>
-                    <p style={{ fontSize: "10px", margin: 0, color: "#555" }}>BHMS (Gold Medalist)</p>
+                    <p style={{ fontSize: "10px", margin: 0, color: "#555" }}>DHMS (BHB) • Gold Medalist</p>
                   </div>
                 </div>
               </div>
