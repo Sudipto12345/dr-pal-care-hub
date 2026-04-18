@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Heart, Stethoscope, Pill, ShieldCheck, Star, ArrowRight, Calendar, Leaf, Phone, MapPin,
   Quote, Award, GraduationCap, Globe, Building2, Droplets, TreePine, Sprout, Sun,
-  MessageCircle, Play, Sparkles, Mail, Facebook,
+  MessageCircle, Play, Sparkles,
 } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useTestimonials } from "@/hooks/useTestimonials";

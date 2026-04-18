@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Leaf, Phone, MapPin, Mail, Facebook, ExternalLink } from "lucide-react";
+import { Leaf, Phone, MapPin, Mail, ExternalLink, Globe } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 const Footer = () => {
@@ -43,7 +43,7 @@ const Footer = () => {
               <Link to="/book-appointment" className="hover:text-background transition-colors">{t.nav.bookAppointment}</Link>
               <Link to="/login" className="hover:text-background transition-colors">{t.nav.patientPortal}</Link>
               <a href="https://www.facebook.com/newlifehomeopathyclinic" target="_blank" rel="noopener" className="hover:text-background transition-colors inline-flex items-center gap-1.5">
-                <Facebook className="w-3.5 h-3.5" /> Facebook
+                <Globe className="w-3.5 h-3.5" /> Facebook Page
               </a>
             </div>
           </div>
