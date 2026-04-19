@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import PageHeader from "@/components/shared/PageHeader";
 import { Link } from "react-router-dom";
 import DataTable from "@/components/shared/DataTable";
@@ -6,10 +6,36 @@ import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import AddPatientForm from "@/components/forms/AddPatientForm";
 import { usePatients, useDeletePatient, useUpdatePatient } from "@/hooks/useSupabaseData";
 import { Button } from "@/components/ui/button";
-import { Trash2, Loader2, Eye, Pencil, Save, X, Clock } from "lucide-react";
+import { Trash2, Loader2, Eye, Pencil, Save, X, Clock, Mail, IdCard, Shield, Users } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+type SourceFilter = "all" | "google" | "email" | "patient_id" | "admin";
+
+const sourceMeta: Record<string, { label: string; className: string; icon: any }> = {
+  google: { label: "Google", className: "bg-blue-500/10 text-blue-600 border-blue-500/30 hover:bg-blue-500/15", icon: () => (
+    <svg className="w-3 h-3" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+  )},
+  email: { label: "Email", className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30", icon: Mail },
+  patient_id: { label: "Patient ID", className: "bg-amber-500/10 text-amber-600 border-amber-500/30", icon: IdCard },
+  admin: { label: "Admin", className: "bg-purple-500/10 text-purple-600 border-purple-500/30", icon: Shield },
+  unknown: { label: "Unknown", className: "bg-muted text-muted-foreground border-border", icon: Users },
+};
+
+const SourceBadge = ({ source }: { source?: string | null }) => {
+  const key = source && sourceMeta[source] ? source : "unknown";
+  const meta = sourceMeta[key];
+  const Icon = meta.icon;
+  return (
+    <Badge variant="outline" className={`gap-1 font-normal text-xs ${meta.className}`}>
+      <Icon className="w-3 h-3" />
+      {meta.label}
+    </Badge>
+  );
+};
 
 const AdminPatients = () => {
   const { data: patients, isLoading } = usePatients();
@@ -18,6 +44,7 @@ const AdminPatients = () => {
 
   const [viewPatient, setViewPatient] = useState<any>(null);
   const [editPatient, setEditPatient] = useState<any>(null);
+  const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
 
   // Edit form state
   const [editName, setEditName] = useState("");
@@ -50,13 +77,55 @@ const AdminPatients = () => {
     }, { onSuccess: () => setEditPatient(null) });
   };
 
+  const counts = useMemo(() => {
+    const list = patients || [];
+    return {
+      all: list.length,
+      google: list.filter((p: any) => p.signup_source === "google").length,
+      email: list.filter((p: any) => p.signup_source === "email").length,
+      patient_id: list.filter((p: any) => p.signup_source === "patient_id").length,
+      admin: list.filter((p: any) => p.signup_source === "admin" || !p.signup_source).length,
+    };
+  }, [patients]);
+
+  const filteredPatients = useMemo(() => {
+    const list = patients || [];
+    if (sourceFilter === "all") return list;
+    if (sourceFilter === "admin") {
+      return list.filter((p: any) => p.signup_source === "admin" || !p.signup_source);
+    }
+    return list.filter((p: any) => p.signup_source === sourceFilter);
+  }, [patients, sourceFilter]);
+
   if (isLoading) return <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
 
   return (
     <div className="space-y-0 animate-fade-in">
       <PageHeader title="Patients" description="Manage patient records" actions={<AddPatientForm />} />
+
+      <Tabs value={sourceFilter} onValueChange={(v) => setSourceFilter(v as SourceFilter)} className="mb-4">
+        <TabsList className="rounded-xl flex-wrap h-auto">
+          <TabsTrigger value="all" className="rounded-lg gap-1.5">
+            All <span className="text-xs opacity-70">({counts.all})</span>
+          </TabsTrigger>
+          <TabsTrigger value="google" className="rounded-lg gap-1.5">
+            <svg className="w-3 h-3" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Google <span className="text-xs opacity-70">({counts.google})</span>
+          </TabsTrigger>
+          <TabsTrigger value="email" className="rounded-lg gap-1.5">
+            <Mail className="w-3 h-3" /> Email <span className="text-xs opacity-70">({counts.email})</span>
+          </TabsTrigger>
+          <TabsTrigger value="patient_id" className="rounded-lg gap-1.5">
+            <IdCard className="w-3 h-3" /> Patient ID <span className="text-xs opacity-70">({counts.patient_id})</span>
+          </TabsTrigger>
+          <TabsTrigger value="admin" className="rounded-lg gap-1.5">
+            <Shield className="w-3 h-3" /> Admin <span className="text-xs opacity-70">({counts.admin})</span>
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+
       <DataTable
-        data={patients || []}
+        data={filteredPatients}
         searchPlaceholder="Search patients..."
         columns={[
           {
@@ -73,6 +142,7 @@ const AdminPatients = () => {
           { header: "Age", accessor: (row: any) => row.age ? `${row.age}y` : "—" },
           { header: "Gender", accessor: (row: any) => row.gender || "—" },
           { header: "Phone", accessor: (row: any) => row.phone || "—" },
+          { header: "Source", accessor: (row: any) => <SourceBadge source={row.signup_source} /> },
           {
             header: "Actions",
             accessor: (row: any) => (
@@ -98,10 +168,14 @@ const AdminPatients = () => {
       <Dialog open={!!viewPatient} onOpenChange={() => setViewPatient(null)}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>{viewPatient?.name}</DialogTitle>
+            <DialogTitle className="flex items-center gap-2 flex-wrap">
+              {viewPatient?.name}
+              <SourceBadge source={viewPatient?.signup_source} />
+            </DialogTitle>
             <DialogDescription>Patient Information</DialogDescription>
           </DialogHeader>
           <div className="space-y-2 text-sm">
+            <div className="flex justify-between"><span className="text-muted-foreground">Patient ID:</span><span className="font-mono font-medium">{viewPatient?.patient_code || "—"}</span></div>
             <div className="flex justify-between"><span className="text-muted-foreground">Age:</span><span className="font-medium">{viewPatient?.age ? `${viewPatient.age} years` : "—"}</span></div>
             <div className="flex justify-between"><span className="text-muted-foreground">Gender:</span><span className="font-medium">{viewPatient?.gender || "—"}</span></div>
             <div className="flex justify-between"><span className="text-muted-foreground">Phone:</span><span className="font-medium">{viewPatient?.phone || "—"}</span></div>

@@ -67,6 +67,7 @@ Deno.serve(async (req) => {
         patient_code: patientCode,
         passcode,
         user_id: newUserId,
+        signup_source: "admin",
       })
       .select()
       .single();
