@@ -335,6 +335,7 @@ export type Database = {
           passcode: string | null
           patient_code: string | null
           phone: string | null
+          signup_source: string | null
           updated_at: string
           user_id: string | null
         }
@@ -349,6 +350,7 @@ export type Database = {
           passcode?: string | null
           patient_code?: string | null
           phone?: string | null
+          signup_source?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -363,6 +365,7 @@ export type Database = {
           passcode?: string | null
           patient_code?: string | null
           phone?: string | null
+          signup_source?: string | null
           updated_at?: string
           user_id?: string | null
         }
