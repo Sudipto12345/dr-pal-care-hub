@@ -460,8 +460,8 @@ const Index = () => {
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="relative rounded-3xl overflow-hidden shadow-elevated">
-            <img src={ctaBackground} alt="" loading="lazy" width={1920} height={768} className="w-full h-72 md:h-[22rem] object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/70 to-transparent" />
+            <img src={ctaBackground} alt="" loading="lazy" width={1920} height={768} className="w-full h-80 md:h-[26rem] object-cover object-[75%_15%]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/80 to-primary/20" />
             <div className="absolute inset-0 flex items-center">
               <div className="px-8 md:px-14 max-w-lg">
                 <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight">{t.cta.title}</h2>
