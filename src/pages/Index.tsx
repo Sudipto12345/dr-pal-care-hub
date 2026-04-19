@@ -72,85 +72,67 @@ const Index = () => {
 
   return (
     <div className="overflow-x-hidden">
-      {/* ─── HERO (no big image, animated nature) ─── */}
-      <section className="relative min-h-[92vh] flex items-center overflow-hidden bg-gradient-to-br from-accent/40 via-background to-primary/5">
-        {/* Soft radial glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,hsl(var(--primary)/0.12),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,hsl(var(--secondary)/0.10),transparent_50%)]" />
+      {/* ─── HERO (full-width banner with doctor image) ─── */}
+      <section className="relative min-h-screen flex items-center overflow-hidden">
+        {/* Background image */}
+        <img src={doctorHero} alt="Dr. Amit Kumar Pal - Homeopathic Doctor" className="absolute inset-0 w-full h-full object-cover object-right-top" />
 
-        {/* Decorative animated nature SVGs */}
-        <FloatingLeaf className="absolute top-16 left-6 md:left-20 w-20 h-20 text-primary/25 animate-float-leaf" />
-        <FloatingLeaf className="absolute top-1/3 right-8 w-14 h-14 text-secondary/30 animate-float-leaf" style={{ animationDelay: "1.2s" }} />
-        <FloatingLeaf className="absolute bottom-24 left-1/4 w-16 h-16 text-primary/20 animate-float-leaf" style={{ animationDelay: "2.5s" }} />
-        <FloatingLeaf className="absolute bottom-32 right-1/4 w-12 h-12 text-info/20 animate-float-leaf" style={{ animationDelay: "0.8s" }} />
+        {/* Gradient overlay - left side for content readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/85 to-transparent" />
+
+        {/* Mobile overlay for readability */}
+        <div className="absolute inset-0 bg-background/60 lg:bg-transparent" />
 
         {/* Floating particles */}
-        {[...Array(10)].map((_, i) => (
+        {[...Array(6)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1.5 h-1.5 rounded-full bg-primary/40 animate-float-particle"
+            className="absolute w-2 h-2 rounded-full bg-primary/30 animate-float-particle"
             style={{
-              left: `${8 + i * 9}%`,
-              top: `${15 + (i % 4) * 22}%`,
-              animationDelay: `${i * 0.7}s`,
-              animationDuration: `${5 + (i % 3) * 2}s`,
+              left: `${15 + i * 14}%`,
+              top: `${20 + (i % 3) * 25}%`,
+              animationDelay: `${i * 1.2}s`,
+              animationDuration: `${6 + i}s`,
             }}
           />
         ))}
 
-        {/* Animated sprout vector bottom-left */}
-        <svg viewBox="0 0 200 200" className="absolute -bottom-6 -left-6 w-44 h-44 text-primary/15 animate-float-leaf" style={{ animationDelay: "1.8s" }} fill="currentColor">
-          <path d="M100 180 C100 130, 60 110, 40 80 C70 90, 95 110, 100 140 C105 100, 130 80, 160 70 C140 100, 110 120, 100 170 Z" />
-        </svg>
+        <FloatingLeaf className="absolute top-20 left-10 w-16 h-16 text-primary/20 animate-float-leaf" />
+        <FloatingLeaf className="absolute bottom-32 right-16 w-12 h-12 text-primary/15 animate-float-leaf" style={{ animationDelay: "2s" }} />
 
-        <div className="container mx-auto px-4 relative z-10 w-full pt-24 pb-12 lg:py-0">
-          <div className="grid lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-14 items-center min-h-[calc(92vh-7rem)]">
-            {/* Left: text */}
-            <div className="text-left animate-fade-in">
-              <div className="inline-flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-full px-4 py-2 text-xs sm:text-sm text-primary font-medium mb-6 shadow-soft border border-primary/20">
-                <Sparkles className="w-4 h-4" /> Natural & Holistic Healing
+        {/* Content - Left aligned */}
+        <div className="container mx-auto px-4 relative z-10 w-full pt-20 lg:pt-0">
+          <div className="flex flex-col justify-center items-start min-h-[calc(100vh-5rem)]">
+            <div className="max-w-xl lg:max-w-lg xl:max-w-xl text-left animate-fade-in">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-full px-4 py-2 text-sm text-primary font-medium mb-6 shadow-soft border border-primary/20">
+                <Sparkles className="w-4 h-4" />
+                Natural & Holistic Healing
               </div>
 
-              <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold text-foreground mb-3 leading-[1.1] tracking-tight">
+              {/* Title */}
+              <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-foreground mb-4 leading-tight tracking-tight">
                 Dr. Amit Kumar Pal
               </h1>
-              <h2 className="font-heading text-lg sm:text-xl md:text-2xl font-semibold text-primary mb-5">
-                {t.doctor.fullTitle || "Homeopathic Consultant, Researcher & Wellness Specialist"}
+
+              <h2 className="font-heading text-xl sm:text-2xl md:text-[1.65rem] font-semibold text-primary mb-5">
+                {t.doctor.fullTitle || "Advanced Homeopathic & Wellness Care"}
               </h2>
 
-              <p className="text-muted-foreground text-base md:text-lg mb-7 leading-relaxed max-w-xl">
-                Personalized, root-cause based homeopathic treatment for long-term healing — gentle, safe, and effective for the whole family.
+              {/* Subtitle */}
+              <p className="text-muted-foreground text-base md:text-lg mb-8 leading-relaxed max-w-md">
+                Personalized, root-cause based homeopathic treatment for long-term healing
               </p>
 
+              {/* Buttons */}
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button size="lg" className="gradient-primary text-primary-foreground rounded-2xl font-semibold shadow-glow hover-scale px-8 text-base h-14" asChild>
                   <Link to="/book-appointment"><Calendar className="w-5 h-5 mr-2" /> Book Appointment</Link>
                 </Button>
-                <Button size="lg" variant="outline" className="rounded-2xl border-2 border-primary text-primary bg-card/70 hover:bg-primary/5 font-semibold text-base h-14 px-8 backdrop-blur-sm" asChild>
-                  <a href="https://wa.me/8801911734726" target="_blank" rel="noopener"><MessageCircle className="w-5 h-5 mr-2" /> WhatsApp</a>
+                <Button size="lg" variant="outline" className="rounded-2xl border-2 border-primary text-primary bg-card/80 hover:bg-primary/5 hover:text-primary font-semibold text-base h-14 px-8 backdrop-blur-sm" asChild>
+                  <a href="https://wa.me/8801911734726" target="_blank" rel="noopener"><MessageCircle className="w-5 h-5 mr-2" /> WhatsApp Consultation</a>
                 </Button>
               </div>
-            </div>
-
-            {/* Right: Doctor portrait card */}
-            <div className="relative animate-scale-in flex justify-center lg:justify-end">
-              {/* Decorative ring */}
-              <div className="absolute -inset-4 md:-inset-6 rounded-[2.5rem] bg-gradient-to-br from-primary/20 via-secondary/15 to-info/10 blur-2xl" />
-              <div className="relative w-[260px] sm:w-[320px] md:w-[360px] lg:w-[400px] aspect-[4/5] rounded-[2rem] overflow-hidden shadow-elevated ring-4 ring-card">
-                <img src={doctorHero} alt="Dr. Amit Kumar Pal — Homeopathic Consultant" className="w-full h-full object-cover object-top" />
-                {/* Floating badge */}
-                <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-md rounded-full px-3 py-1.5 shadow-lg flex items-center gap-1.5 border border-primary/20">
-                  <Award className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-[11px] font-bold text-foreground">Gold Medalist</span>
-                </div>
-                <div className="absolute bottom-4 left-4 right-4 bg-card/90 backdrop-blur-md rounded-2xl px-4 py-3 shadow-lg border border-border/30">
-                  <p className="text-xs text-muted-foreground">3rd Generation Homeopath</p>
-                  <p className="text-sm font-bold text-foreground">Dhaka, Bangladesh</p>
-                </div>
-              </div>
-              {/* Orbiting leaf */}
-              <Leaf className="absolute -top-3 -left-3 w-8 h-8 text-primary/60 animate-float-leaf" />
-              <Sprout className="absolute -bottom-3 -right-3 w-9 h-9 text-secondary/70 animate-float-leaf" style={{ animationDelay: "1.5s" }} />
             </div>
           </div>
         </div>
