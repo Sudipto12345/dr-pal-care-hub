@@ -7,12 +7,29 @@ import {
 } from "@/components/ui/sidebar";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/hooks/useAuth";
 
 const PatientSidebar = () => {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
   const { t } = useLanguage();
+  const { user, profile, patient, signOut } = useAuth();
+
+  const displayName = patient?.name || profile?.name || user?.email || "Patient";
+  const avatarUrl =
+    profile?.avatar_url ||
+    (user?.user_metadata as any)?.avatar_url ||
+    (user?.user_metadata as any)?.picture ||
+    "";
+  const initials = displayName
+    .split(" ")
+    .map((s) => s[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   const items = [
     { title: "My Case", subtitle: "View Case Details", url: "/patient/dashboard", icon: ClipboardList },
@@ -87,14 +104,34 @@ const PatientSidebar = () => {
         </div>
       )}
 
-      <SidebarFooter className="p-3 border-t border-sidebar-border">
+      <SidebarFooter className="p-3 border-t border-sidebar-border space-y-1">
+        <Link
+          to="/patient/profile"
+          className="flex items-center gap-2.5 px-2 py-2 rounded-xl hover:bg-sidebar-accent transition-colors"
+        >
+          <Avatar className="h-8 w-8 flex-shrink-0">
+            {avatarUrl && <AvatarImage src={avatarUrl} alt={displayName} referrerPolicy="no-referrer" />}
+            <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground text-xs font-semibold">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+          {!collapsed && (
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-semibold text-sidebar-foreground truncate">{displayName}</p>
+              {patient?.patient_code && (
+                <p className="text-[10px] text-sidebar-foreground/60 font-mono truncate">
+                  ID: {patient.patient_code}
+                </p>
+              )}
+            </div>
+          )}
+        </Link>
+
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link to="/" className="text-sidebar-foreground/70 hover:text-sidebar-foreground rounded-xl">
-                <LogOut className="mr-2 h-4 w-4" />
-                {!collapsed && <span className="text-sm">Back to Site</span>}
-              </Link>
+            <SidebarMenuButton onClick={() => signOut()} className="text-sidebar-foreground/70 hover:text-sidebar-foreground rounded-xl cursor-pointer">
+              <LogOut className="mr-2 h-4 w-4" />
+              {!collapsed && <span className="text-sm">Sign Out</span>}
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
