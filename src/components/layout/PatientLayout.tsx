@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import CompleteProfileGate from "@/components/auth/CompleteProfileGate";
 
 const pageTitles: Record<string, string> = {
   "/patient/dashboard": "Dashboard",
@@ -70,6 +71,7 @@ const PatientLayout = () => {
           </main>
         </div>
         <MobileBottomNav items={bottomNavItems} />
+        <CompleteProfileGate />
       </div>
     </SidebarProvider>
   );
