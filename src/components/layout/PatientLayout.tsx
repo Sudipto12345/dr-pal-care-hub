@@ -20,8 +20,23 @@ const pageTitles: Record<string, string> = {
 
 const PatientLayout = () => {
   const { t, lang, toggleLang } = useLanguage();
+  const { user, profile, patient } = useAuth();
   const location = useLocation();
   const pageTitle = pageTitles[location.pathname] || "Patient";
+
+  const displayName = patient?.name || profile?.name || user?.email || "";
+  const avatarUrl =
+    profile?.avatar_url ||
+    (user?.user_metadata as any)?.avatar_url ||
+    (user?.user_metadata as any)?.picture ||
+    "";
+  const initials = (displayName || "U")
+    .split(" ")
+    .map((s) => s[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   const bottomNavItems = [
     { label: t.patient.dashboard, url: "/patient/dashboard", icon: LayoutDashboard },
@@ -61,9 +76,14 @@ const PatientLayout = () => {
                 <Bell className="w-4 h-4" />
               </Button>
 
-              <Avatar className="h-8 w-8 cursor-pointer">
-                <AvatarFallback className="gradient-primary text-primary-foreground text-xs font-semibold">SB</AvatarFallback>
-              </Avatar>
+              <Link to="/patient/profile" aria-label="My Profile">
+                <Avatar className="h-8 w-8 cursor-pointer ring-2 ring-transparent hover:ring-primary/30 transition">
+                  {avatarUrl && <AvatarImage src={avatarUrl} alt={displayName} referrerPolicy="no-referrer" />}
+                  <AvatarFallback className="gradient-primary text-primary-foreground text-xs font-semibold">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
             </div>
           </header>
 
