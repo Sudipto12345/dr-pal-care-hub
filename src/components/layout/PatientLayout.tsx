@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CompleteProfileGate from "@/components/auth/CompleteProfileGate";
 import { useAuth } from "@/hooks/useAuth";
-import { Link } from "react-router-dom";
 
 const pageTitles: Record<string, string> = {
   "/patient/dashboard": "Dashboard",
