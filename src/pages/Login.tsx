@@ -74,8 +74,17 @@ const Login = () => {
         return;
       }
       const { error } = await signIn(loginEmail, passcode);
-      if (error) toast({ title: "Login failed", description: "Wrong Patient ID or Passcode", variant: "destructive" });
-      else navigate("/patient/dashboard");
+      if (error) {
+        toast({ title: "Login failed", description: "Wrong Patient ID or Passcode", variant: "destructive" });
+      } else {
+        const { data: { user: u } } = await supabase.auth.getUser();
+        if (u) {
+          const { data: r } = await supabase.from("user_roles").select("role").eq("user_id", u.id).maybeSingle();
+          navigate(r?.role === "admin" ? "/admin/dashboard" : "/patient/dashboard");
+        } else {
+          navigate("/patient/dashboard");
+        }
+      }
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     }
