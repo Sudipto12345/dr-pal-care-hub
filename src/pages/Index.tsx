@@ -11,8 +11,10 @@ import { useTestimonials } from "@/hooks/useTestimonials";
 import { useYoutubeVideos } from "@/hooks/useYoutubeVideos";
 
 import drAmitPal from "@/assets/dr-amit-pal.jpg";
+import doctorHero from "@/assets/doctor-hero.png";
+import doctorProfileImg from "@/assets/doctor-profile.png";
 import aboutDoctor from "@/assets/about-doctor.jpg";
-import ctaBackground from "@/assets/cta-patient.jpg";
+import ctaBackground from "@/assets/cta-doctor-red.jpg";
 import featureConsultation from "@/assets/feature-consultation.jpg";
 import featureMedicine from "@/assets/feature-medicine.jpg";
 import featureOnline from "@/assets/feature-online.jpg";
@@ -21,7 +23,7 @@ import blogHealthy from "@/assets/blog-healthy.jpg";
 import blogNotes from "@/assets/blog-notes.jpg";
 import blogNatural from "@/assets/blog-natural.jpg";
 import clinicExterior from "@/assets/clinic-exterior.jpg";
-const doctorProfile = drAmitPal;
+const doctorProfile = doctorProfileImg;
 
 /* SVG leaf decorations */
 const FloatingLeaf = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
@@ -135,7 +137,7 @@ const Index = () => {
               {/* Decorative ring */}
               <div className="absolute -inset-4 md:-inset-6 rounded-[2.5rem] bg-gradient-to-br from-primary/20 via-secondary/15 to-info/10 blur-2xl" />
               <div className="relative w-[260px] sm:w-[320px] md:w-[360px] lg:w-[400px] aspect-[4/5] rounded-[2rem] overflow-hidden shadow-elevated ring-4 ring-card">
-                <img src={drAmitPal} alt="Dr. Amit Kumar Pal — Homeopathic Consultant" className="w-full h-full object-cover object-top" />
+                <img src={doctorHero} alt="Dr. Amit Kumar Pal — Homeopathic Consultant" className="w-full h-full object-cover object-top" />
                 {/* Floating badge */}
                 <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-md rounded-full px-3 py-1.5 shadow-lg flex items-center gap-1.5 border border-primary/20">
                   <Award className="w-3.5 h-3.5 text-primary" />
