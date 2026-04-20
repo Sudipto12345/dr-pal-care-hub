@@ -48,11 +48,16 @@ Deno.serve(async (req) => {
       if (emailDup) {
         return new Response(JSON.stringify({ error: "A patient with this email already exists. Try a new one." }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
-      // Also check auth.users for orphaned signups
+      // Check auth.users — if orphaned (no patients row), clean up; else block
       const { data: existingUsers } = await admin.auth.admin.listUsers();
       const authDup = existingUsers?.users?.find((u) => u.email?.toLowerCase() === email.toLowerCase());
       if (authDup) {
-        return new Response(JSON.stringify({ error: "A patient with this email is already registered. Try a new one." }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        const { data: linkedPatient } = await admin.from("patients").select("id").eq("user_id", authDup.id).maybeSingle();
+        if (linkedPatient) {
+          return new Response(JSON.stringify({ error: "A patient with this email is already registered. Try a new one." }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+        // Orphaned auth user — delete it so we can recreate cleanly
+        await admin.auth.admin.deleteUser(authDup.id);
       }
     }
 
