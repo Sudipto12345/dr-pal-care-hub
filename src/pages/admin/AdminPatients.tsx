@@ -6,12 +6,14 @@ import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import AddPatientForm from "@/components/forms/AddPatientForm";
 import { usePatients, useDeletePatient, useUpdatePatient } from "@/hooks/useSupabaseData";
 import { Button } from "@/components/ui/button";
-import { Trash2, Loader2, Eye, Pencil, Save, X, Clock, Mail, IdCard, Shield, Users } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Trash2, Loader2, Eye, Pencil, Save, X, Clock, Mail, IdCard, Shield, Users, KeyRound, Copy, Check } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 type SourceFilter = "all" | "google" | "email" | "patient_id" | "admin";
 
@@ -44,7 +46,46 @@ const AdminPatients = () => {
 
   const [viewPatient, setViewPatient] = useState<any>(null);
   const [editPatient, setEditPatient] = useState<any>(null);
+  const [resetPatient, setResetPatient] = useState<any>(null);
+  const [resetting, setResetting] = useState(false);
+  const [resetResult, setResetResult] = useState<{ patient_code: string | null; passcode: string } | null>(null);
+  const [resetCopied, setResetCopied] = useState(false);
   const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
+
+  const handleResetPasscode = async () => {
+    if (!resetPatient) return;
+    setResetting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("reset-patient-passcode", {
+        body: { patient_id: resetPatient.id },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      setResetResult({ patient_code: (data as any).patient_code, passcode: (data as any).passcode });
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to reset passcode");
+    } finally {
+      setResetting(false);
+    }
+  };
+
+  const closeReset = () => {
+    setResetPatient(null);
+    setResetResult(null);
+    setResetCopied(false);
+  };
+
+  const copyResetCredentials = async () => {
+    if (!resetResult) return;
+    const text = `Patient ID: ${resetResult.patient_code ?? "—"}\nPasscode: ${resetResult.passcode}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setResetCopied(true);
+      setTimeout(() => setResetCopied(false), 2000);
+    } catch {
+      toast.error("Could not copy");
+    }
+  };
 
   // Edit form state
   const [editName, setEditName] = useState("");
