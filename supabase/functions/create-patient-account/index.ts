@@ -42,11 +42,17 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Duplicate email check
+    // Duplicate email check (patients table + auth.users)
     if (email) {
       const { data: emailDup } = await admin.from("patients").select("id").eq("email", email).maybeSingle();
       if (emailDup) {
         return new Response(JSON.stringify({ error: "A patient with this email already exists. Try a new one." }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      // Also check auth.users for orphaned signups
+      const { data: existingUsers } = await admin.auth.admin.listUsers();
+      const authDup = existingUsers?.users?.find((u) => u.email?.toLowerCase() === email.toLowerCase());
+      if (authDup) {
+        return new Response(JSON.stringify({ error: "A patient with this email is already registered. Try a new one." }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
     }
 
