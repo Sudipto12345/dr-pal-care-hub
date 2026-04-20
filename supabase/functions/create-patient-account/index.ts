@@ -66,7 +66,16 @@ Deno.serve(async (req) => {
       email_confirm: true,
       user_metadata: { name, patient_code: patientCode },
     });
-    if (createErr) throw new Error(createErr.message);
+    if (createErr) {
+      const msg = (createErr.message || "").toLowerCase();
+      if (msg.includes("already") && msg.includes("registered")) {
+        return new Response(
+          JSON.stringify({ error: "A patient with this email is already registered. Try a new one." }),
+          { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+      throw new Error(createErr.message);
+    }
 
     const newUserId = created.user!.id;
 
