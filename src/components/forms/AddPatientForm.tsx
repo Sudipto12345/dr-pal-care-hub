@@ -40,7 +40,7 @@ const AddPatientForm = ({ trigger, onCreated }: { trigger?: React.ReactNode; onC
         name: form.name,
         phone: form.phone,
         age: form.age ? Number(form.age) : undefined,
-        gender: form.gender?.toLowerCase() || undefined,
+        gender: form.gender || undefined,
         address: form.address || undefined,
         email: form.email || undefined,
       },
