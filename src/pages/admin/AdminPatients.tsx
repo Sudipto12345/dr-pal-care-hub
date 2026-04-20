@@ -191,6 +191,9 @@ const AdminPatients = () => {
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setViewPatient(row)} title="View"><Eye className="w-3.5 h-3.5" /></Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7 text-info" asChild title="Timeline"><Link to={`/admin/patients/${row.id}/timeline`}><Clock className="w-3.5 h-3.5" /></Link></Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(row)} title="Edit"><Pencil className="w-3.5 h-3.5" /></Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7 text-amber-600" onClick={() => { setResetPatient(row); setResetResult(null); setResetCopied(false); }} title="Reset password" disabled={!row.user_id}>
+                  <KeyRound className="w-3.5 h-3.5" />
+                </Button>
                 <ConfirmDialog
                   trigger={<Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="w-3.5 h-3.5" /></Button>}
                   title="Delete Patient"
@@ -264,6 +267,53 @@ const AdminPatients = () => {
               <Save className="w-3.5 h-3.5 mr-1" /> {updatePatient.isPending ? "Saving..." : "Save"}
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reset Passcode Popup */}
+      <Dialog open={!!resetPatient} onOpenChange={(open) => { if (!open) closeReset(); }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <KeyRound className="w-4 h-4 text-amber-600" /> Reset Patient Passcode
+            </DialogTitle>
+            <DialogDescription>
+              {resetResult
+                ? "New passcode generated. Share it with the patient — it won't be shown again."
+                : `Generate a new 6-digit passcode for ${resetPatient?.name ?? "this patient"}? Their old passcode will stop working immediately.`}
+            </DialogDescription>
+          </DialogHeader>
+
+          {resetResult && (
+            <div className="space-y-3 py-2">
+              <div className="rounded-xl border border-border p-3 bg-muted/30 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Patient ID</span>
+                  <span className="font-mono font-semibold">{resetResult.patient_code ?? "—"}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">New Passcode</span>
+                  <span className="font-mono font-semibold tracking-widest">{resetResult.passcode}</span>
+                </div>
+              </div>
+              <Button variant="outline" size="sm" className="w-full rounded-xl" onClick={copyResetCredentials}>
+                {resetCopied ? <><Check className="w-3.5 h-3.5 mr-1" /> Copied</> : <><Copy className="w-3.5 h-3.5 mr-1" /> Copy credentials</>}
+              </Button>
+            </div>
+          )}
+
+          <DialogFooter className="gap-2">
+            {resetResult ? (
+              <Button variant="hero" size="sm" className="rounded-xl" onClick={closeReset}>Done</Button>
+            ) : (
+              <>
+                <Button variant="outline" size="sm" className="rounded-xl" onClick={closeReset} disabled={resetting}>Cancel</Button>
+                <Button variant="hero" size="sm" className="rounded-xl" onClick={handleResetPasscode} disabled={resetting}>
+                  {resetting ? <><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Resetting...</> : <><KeyRound className="w-3.5 h-3.5 mr-1" /> Generate new passcode</>}
+                </Button>
+              </>
+            )}
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
