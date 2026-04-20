@@ -29,6 +29,9 @@ import BookAppointment from "./pages/BookAppointment";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import PrescriptionPreview from "./pages/PrescriptionPreview";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import AdminSettings from "./pages/admin/AdminSettings";
 
 import PatientDashboard from "./pages/patient/PatientDashboard";
 import PatientAppointments from "./pages/patient/PatientAppointments";
@@ -78,6 +81,8 @@ const App = () => (
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:slug" element={<BlogDetail />} />
                   <Route path="/book-appointment" element={<BookAppointment />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/terms-of-service" element={<TermsOfService />} />
                 </Route>
 
                 <Route path="/login" element={<Login />} />
@@ -108,6 +113,7 @@ const App = () => (
                   <Route path="/admin/blog" element={<AdminBlog />} />
                   <Route path="/admin/testimonials" element={<AdminTestimonials />} />
                   <Route path="/admin/youtube" element={<AdminYoutubeVideos />} />
+                  <Route path="/admin/settings" element={<AdminSettings />} />
                 </Route>
 
                 <Route path="*" element={<NotFound />} />
