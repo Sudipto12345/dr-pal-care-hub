@@ -522,6 +522,33 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          content: string | null
+          created_at: string
+          id: string
+          key: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          key: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          key?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       testimonials: {
         Row: {
           created_at: string
