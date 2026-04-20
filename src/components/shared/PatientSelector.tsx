@@ -104,7 +104,6 @@ const PatientSelector = ({ value, onChange, error }: PatientSelectorProps) => {
               size="sm"
               className="w-full justify-start text-secondary hover:text-secondary rounded-lg"
               onMouseDown={(e) => e.stopPropagation()}
-              onClick={() => setIsOpen(false)}
             >
               <UserPlus className="w-4 h-4 mr-2" /> Create New Patient
             </Button>
