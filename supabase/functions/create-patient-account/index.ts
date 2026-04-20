@@ -68,14 +68,50 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Generate 5-digit patient code
-    const { data: codeData, error: codeErr } = await admin.rpc("generate_patient_code");
-    if (codeErr || !codeData) throw new Error(codeErr?.message ?? "Failed to generate code");
-    const patientCode: string = codeData;
+    const findAuthUserByEmail = async (targetEmail: string) => {
+      let page = 1;
+      const perPage = 200;
+
+      while (true) {
+        const { data, error } = await admin.auth.admin.listUsers({ page, perPage });
+        if (error) throw new Error(error.message);
+
+        const match = data.users.find((u) => u.email?.toLowerCase() === targetEmail.toLowerCase());
+        if (match) return match;
+        if (data.users.length < perPage) return null;
+        page += 1;
+      }
+    };
+
+    // Generate a unique 5-digit patient code and internal login email
+    let patientCode: string | null = null;
+    let loginEmail: string | null = null;
+
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const { data: codeData, error: codeErr } = await admin.rpc("generate_patient_code");
+      if (codeErr || !codeData) throw new Error(codeErr?.message ?? "Failed to generate code");
+
+      patientCode = codeData;
+      loginEmail = `${patientCode}@patient.local`;
+
+      const authDup = await findAuthUserByEmail(loginEmail);
+      if (!authDup) break;
+
+      const { data: patientByCode } = await admin.from("patients").select("id").eq("patient_code", patientCode).maybeSingle();
+      if (!patientByCode) {
+        await admin.auth.admin.deleteUser(authDup.id);
+        break;
+      }
+
+      await admin.from("patients").update({ patient_code: null }).eq("id", patientByCode.id);
+    }
+
+    if (!patientCode || !loginEmail) {
+      throw new Error("Failed to prepare patient account credentials");
+    }
 
     // Generate 6-digit numeric passcode
     const passcode = String(Math.floor(100000 + Math.random() * 900000));
-    const loginEmail = `${patientCode}@patient.local`;
 
     // Create auth user (auto-confirmed)
     const { data: created, error: createErr } = await admin.auth.admin.createUser({
@@ -88,7 +124,7 @@ Deno.serve(async (req) => {
       const msg = (createErr.message || "").toLowerCase();
       if (msg.includes("already") && msg.includes("registered")) {
         return new Response(
-          JSON.stringify({ error: "A patient with this email is already registered. Try a new one." }),
+          JSON.stringify({ error: "Failed to generate a unique patient login. Please try again." }),
           { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
