@@ -47,7 +47,10 @@ Deno.serve(async (req) => {
     const name = parsed.data.name;
     const phone = parsed.data.phone?.trim() || null;
     const age = parsed.data.age ?? null;
-    const gender = parsed.data.gender?.trim() || null;
+    const rawGender = parsed.data.gender?.trim().toLowerCase();
+    const gender = rawGender
+      ? rawGender === "male" ? "Male" : rawGender === "female" ? "Female" : rawGender === "other" ? "Other" : null
+      : null;
     const address = parsed.data.address?.trim() || null;
     const email = parsed.data.email?.trim().toLowerCase() || null;
 
