@@ -230,25 +230,35 @@ const PrescriptionPreview = () => {
           {/* ===== FOOTER ===== */}
           <div style={{ position: "absolute", bottom: "10mm", left: "12mm", right: "12mm", borderTop: "2.5px solid #333", paddingTop: "8px", minHeight: "65px" }}>
             {showFooter ? (
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", fontSize: "11px" }}>
-                <div>
-                  <p className="font-bangla" style={{ margin: "0 0 2px", fontWeight: 600, color: "#333", fontSize: "12px" }}>
-                    অনলাইন ও অফলাইন পরামর্শ সেবা
-                  </p>
-                  <p style={{ margin: "0 0 2px", color: "#555", fontSize: "11px" }}>
-                    📍 Dhaka, Bangladesh • ✉ dramithomeo@gmail.com
-                  </p>
-                  <p className="font-bangla" style={{ margin: "0", fontWeight: 700, color: "#c62828", fontSize: "14px" }}>
-                    📞 ০১৯১১-৭৩৪৭২৬ / ০১৭৮৭-৩৫৪২৪৮
-                  </p>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ width: "180px", borderTop: "1px solid #333", paddingTop: "4px", marginLeft: "auto" }}>
-                    <p style={{ fontSize: "13px", fontWeight: 700, margin: 0, color: "#1a237e" }}>Dr. Amit Kumar Pal</p>
-                    <p style={{ fontSize: "10px", margin: 0, color: "#555" }}>DHMS (BHB) • Gold Medalist</p>
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", fontSize: "11px" }}>
+                  <div>
+                    <p className="font-bangla" style={{ margin: "0 0 2px", fontWeight: 600, color: "#333", fontSize: "12px" }}>
+                      অনলাইন ও অফলাইন পরামর্শ সেবা
+                    </p>
+                    <p style={{ margin: "0 0 2px", color: "#555", fontSize: "11px" }}>
+                      📍 Dhaka, Bangladesh • ✉ dramithomeo@gmail.com
+                    </p>
+                    <p className="font-bangla" style={{ margin: "0", fontWeight: 700, color: "#c62828", fontSize: "14px" }}>
+                      📞 ০১৯১১-৭৩৪৭২৬ / ০১৭৮৭-৩৫৪২৪৮
+                    </p>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ width: "180px", borderTop: "1px solid #333", paddingTop: "4px", marginLeft: "auto" }}>
+                      <p style={{ fontSize: "13px", fontWeight: 700, margin: 0, color: "#1a237e" }}>Dr. Amit Kumar Pal</p>
+                      <p style={{ fontSize: "10px", margin: 0, color: "#555" }}>DHMS (BHB) • Gold Medalist</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+                {(patient?.patient_code || patient?.passcode) && (
+                  <p style={{ margin: "6px 0 0", fontSize: "9.5px", color: "#777", textAlign: "center", letterSpacing: "0.3px" }}>
+                    Patient Login — ID: <span style={{ fontWeight: 600, color: "#333" }}>{patient?.patient_code || "—"}</span>
+                    {" · "}
+                    Passcode: <span style={{ fontWeight: 600, color: "#333" }}>{patient?.passcode || "—"}</span>
+                    {"  ·  Login at dramitpal.com"}
+                  </p>
+                )}
+              </>
             ) : (
               <div style={{ height: "55px" }} />
             )}

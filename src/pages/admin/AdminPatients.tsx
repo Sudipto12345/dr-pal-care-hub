@@ -6,12 +6,14 @@ import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import AddPatientForm from "@/components/forms/AddPatientForm";
 import { usePatients, useDeletePatient, useUpdatePatient } from "@/hooks/useSupabaseData";
 import { Button } from "@/components/ui/button";
-import { Trash2, Loader2, Eye, Pencil, Save, X, Clock, Mail, IdCard, Shield, Users } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Trash2, Loader2, Eye, Pencil, Save, X, Clock, Mail, IdCard, Shield, Users, KeyRound, Copy, Check } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 type SourceFilter = "all" | "google" | "email" | "patient_id" | "admin";
 
@@ -44,7 +46,46 @@ const AdminPatients = () => {
 
   const [viewPatient, setViewPatient] = useState<any>(null);
   const [editPatient, setEditPatient] = useState<any>(null);
+  const [resetPatient, setResetPatient] = useState<any>(null);
+  const [resetting, setResetting] = useState(false);
+  const [resetResult, setResetResult] = useState<{ patient_code: string | null; passcode: string } | null>(null);
+  const [resetCopied, setResetCopied] = useState(false);
   const [sourceFilter, setSourceFilter] = useState<SourceFilter>("all");
+
+  const handleResetPasscode = async () => {
+    if (!resetPatient) return;
+    setResetting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("reset-patient-passcode", {
+        body: { patient_id: resetPatient.id },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      setResetResult({ patient_code: (data as any).patient_code, passcode: (data as any).passcode });
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to reset passcode");
+    } finally {
+      setResetting(false);
+    }
+  };
+
+  const closeReset = () => {
+    setResetPatient(null);
+    setResetResult(null);
+    setResetCopied(false);
+  };
+
+  const copyResetCredentials = async () => {
+    if (!resetResult) return;
+    const text = `Patient ID: ${resetResult.patient_code ?? "—"}\nPasscode: ${resetResult.passcode}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setResetCopied(true);
+      setTimeout(() => setResetCopied(false), 2000);
+    } catch {
+      toast.error("Could not copy");
+    }
+  };
 
   // Edit form state
   const [editName, setEditName] = useState("");
@@ -150,6 +191,9 @@ const AdminPatients = () => {
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setViewPatient(row)} title="View"><Eye className="w-3.5 h-3.5" /></Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7 text-info" asChild title="Timeline"><Link to={`/admin/patients/${row.id}/timeline`}><Clock className="w-3.5 h-3.5" /></Link></Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(row)} title="Edit"><Pencil className="w-3.5 h-3.5" /></Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7 text-warning" onClick={() => { setResetPatient(row); setResetResult(null); setResetCopied(false); }} title="Reset password" disabled={!row.user_id}>
+                  <KeyRound className="w-3.5 h-3.5" />
+                </Button>
                 <ConfirmDialog
                   trigger={<Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="w-3.5 h-3.5" /></Button>}
                   title="Delete Patient"
@@ -223,6 +267,53 @@ const AdminPatients = () => {
               <Save className="w-3.5 h-3.5 mr-1" /> {updatePatient.isPending ? "Saving..." : "Save"}
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reset Passcode Popup */}
+      <Dialog open={!!resetPatient} onOpenChange={(open) => { if (!open) closeReset(); }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <KeyRound className="w-4 h-4 text-warning" /> Reset Patient Passcode
+            </DialogTitle>
+            <DialogDescription>
+              {resetResult
+                ? "New passcode generated. Share it with the patient — it won't be shown again."
+                : `Generate a new 6-digit passcode for ${resetPatient?.name ?? "this patient"}? Their old passcode will stop working immediately.`}
+            </DialogDescription>
+          </DialogHeader>
+
+          {resetResult && (
+            <div className="space-y-3 py-2">
+              <div className="rounded-xl border border-border p-3 bg-muted/30 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Patient ID</span>
+                  <span className="font-mono font-semibold">{resetResult.patient_code ?? "—"}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">New Passcode</span>
+                  <span className="font-mono font-semibold tracking-widest">{resetResult.passcode}</span>
+                </div>
+              </div>
+              <Button variant="outline" size="sm" className="w-full rounded-xl" onClick={copyResetCredentials}>
+                {resetCopied ? <><Check className="w-3.5 h-3.5 mr-1" /> Copied</> : <><Copy className="w-3.5 h-3.5 mr-1" /> Copy credentials</>}
+              </Button>
+            </div>
+          )}
+
+          <DialogFooter className="gap-2">
+            {resetResult ? (
+              <Button variant="hero" size="sm" className="rounded-xl" onClick={closeReset}>Done</Button>
+            ) : (
+              <>
+                <Button variant="outline" size="sm" className="rounded-xl" onClick={closeReset} disabled={resetting}>Cancel</Button>
+                <Button variant="hero" size="sm" className="rounded-xl" onClick={handleResetPasscode} disabled={resetting}>
+                  {resetting ? <><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Resetting...</> : <><KeyRound className="w-3.5 h-3.5 mr-1" /> Generate new passcode</>}
+                </Button>
+              </>
+            )}
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
