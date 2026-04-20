@@ -57,8 +57,12 @@ const AdminPatients = () => {
     if (!resetPatient) return;
     setResetting(true);
     try {
+      const accessToken = await getFreshAccessToken();
       const { data, error } = await supabase.functions.invoke("reset-patient-passcode", {
         body: { patient_id: resetPatient.id },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
