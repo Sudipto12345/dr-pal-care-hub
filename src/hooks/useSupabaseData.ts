@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { getFreshAccessToken } from "@/lib/getFreshAccessToken";
 
 // ─── PATIENTS ───
 export const usePatients = () =>
@@ -29,8 +30,13 @@ export const useCreatePatient = () => {
   const { toast } = useToast();
   return useMutation({
     mutationFn: async (patient: { name: string; phone?: string; age?: number; gender?: string; address?: string; email?: string }) => {
-      const { data, error } = await supabase.functions.invoke("create-patient-account", { body: patient });
-      // Edge function non-2xx: error is FunctionsHttpError; try to read the response body for a friendly message
+      const accessToken = await getFreshAccessToken();
+      const { data, error } = await supabase.functions.invoke("create-patient-account", {
+        body: patient,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       if (error) {
         let msg = error.message || "Failed to create patient";
         try {

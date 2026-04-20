@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
+import { getFreshAccessToken } from "@/lib/getFreshAccessToken";
 import { toast } from "sonner";
 
 type SourceFilter = "all" | "google" | "email" | "patient_id" | "admin";
@@ -56,8 +57,12 @@ const AdminPatients = () => {
     if (!resetPatient) return;
     setResetting(true);
     try {
+      const accessToken = await getFreshAccessToken();
       const { data, error } = await supabase.functions.invoke("reset-patient-passcode", {
         body: { patient_id: resetPatient.id },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
