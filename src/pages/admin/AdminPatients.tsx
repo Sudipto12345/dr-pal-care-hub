@@ -191,7 +191,7 @@ const AdminPatients = () => {
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setViewPatient(row)} title="View"><Eye className="w-3.5 h-3.5" /></Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7 text-info" asChild title="Timeline"><Link to={`/admin/patients/${row.id}/timeline`}><Clock className="w-3.5 h-3.5" /></Link></Button>
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(row)} title="Edit"><Pencil className="w-3.5 h-3.5" /></Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-amber-600" onClick={() => { setResetPatient(row); setResetResult(null); setResetCopied(false); }} title="Reset password" disabled={!row.user_id}>
+                <Button variant="ghost" size="icon" className="h-7 w-7 text-warning" onClick={() => { setResetPatient(row); setResetResult(null); setResetCopied(false); }} title="Reset password" disabled={!row.user_id}>
                   <KeyRound className="w-3.5 h-3.5" />
                 </Button>
                 <ConfirmDialog
@@ -275,7 +275,7 @@ const AdminPatients = () => {
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <KeyRound className="w-4 h-4 text-amber-600" /> Reset Patient Passcode
+              <KeyRound className="w-4 h-4 text-warning" /> Reset Patient Passcode
             </DialogTitle>
             <DialogDescription>
               {resetResult
