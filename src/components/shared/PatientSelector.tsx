@@ -17,6 +17,7 @@ const PatientSelector = ({ value, onChange, error }: PatientSelectorProps) => {
   const [search, setSearch] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
+  const addPatientTriggerRef = useRef<HTMLButtonElement>(null);
   const { data: patients = [] } = usePatients();
   const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
 
@@ -69,6 +70,11 @@ const PatientSelector = ({ value, onChange, error }: PatientSelectorProps) => {
     setIsOpen(false);
   };
 
+  const handleCreatePatientClick = () => {
+    setIsOpen(false);
+    addPatientTriggerRef.current?.click();
+  };
+
   const dropdown = isOpen ? (
     <div
       style={dropdownStyle}
@@ -96,20 +102,16 @@ const PatientSelector = ({ value, onChange, error }: PatientSelectorProps) => {
         )}
       </div>
       <div className="border-t border-border p-2">
-        <AddPatientForm
-          onCreated={(p) => { onChange(p.id, p.name); setSearch(""); setIsOpen(false); }}
-          trigger={
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start text-secondary hover:text-secondary rounded-lg"
-              onMouseDown={(e) => e.stopPropagation()}
-              onClick={() => setTimeout(() => setIsOpen(false), 0)}
-            >
-              <UserPlus className="w-4 h-4 mr-2" /> Create New Patient
-            </Button>
-          }
-        />
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="w-full justify-start text-secondary hover:text-secondary rounded-lg"
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={handleCreatePatientClick}
+        >
+          <UserPlus className="w-4 h-4 mr-2" /> Create New Patient
+        </Button>
       </div>
     </div>
   ) : null;
@@ -130,6 +132,10 @@ const PatientSelector = ({ value, onChange, error }: PatientSelectorProps) => {
         )}
       </div>
       {error && <p className="text-xs text-destructive mt-1">{error}</p>}
+      <AddPatientForm
+        onCreated={(p) => { onChange(p.id, p.name); setSearch(""); setIsOpen(false); }}
+        trigger={<button ref={addPatientTriggerRef} type="button" className="hidden" aria-hidden="true" tabIndex={-1} />}
+      />
       {dropdown && createPortal(dropdown, document.body)}
     </div>
   );
