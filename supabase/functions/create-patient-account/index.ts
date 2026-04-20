@@ -1,9 +1,19 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { z } from "https://esm.sh/zod@3.23.8";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+const bodySchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(120, "Name is too long"),
+  phone: z.string().trim().min(6, "Phone is too short").max(20, "Phone is too long").optional().nullable(),
+  age: z.number().int().min(0, "Age must be at least 0").max(120, "Age must be 120 or less").optional().nullable(),
+  gender: z.string().trim().max(30, "Gender is too long").optional().nullable(),
+  address: z.string().trim().max(500, "Address is too long").optional().nullable(),
+  email: z.string().trim().email("Invalid email address").max(255, "Email is too long").optional().nullable().or(z.literal("")),
+});
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -28,11 +38,18 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: "Admin access required" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const body = await req.json();
-    const { name, phone, age, gender, address, email } = body;
-    if (!name) {
-      return new Response(JSON.stringify({ error: "Name is required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const parsed = bodySchema.safeParse(await req.json());
+    if (!parsed.success) {
+      const firstMessage = Object.values(parsed.error.flatten().fieldErrors).flat().find(Boolean) ?? "Invalid request data";
+      return new Response(JSON.stringify({ error: firstMessage }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+
+    const name = parsed.data.name;
+    const phone = parsed.data.phone?.trim() || null;
+    const age = parsed.data.age ?? null;
+    const gender = parsed.data.gender?.trim() || null;
+    const address = parsed.data.address?.trim() || null;
+    const email = parsed.data.email?.trim().toLowerCase() || null;
 
     // Duplicate phone check
     if (phone) {
@@ -42,22 +59,12 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Duplicate email check (patients table + auth.users)
+    // Duplicate email check in patients table only.
+    // Admin-created patient logins use generated patient.local emails, so auth email conflicts here are not relevant.
     if (email) {
       const { data: emailDup } = await admin.from("patients").select("id").eq("email", email).maybeSingle();
       if (emailDup) {
         return new Response(JSON.stringify({ error: "A patient with this email already exists. Try a new one." }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      // Check auth.users — if orphaned (no patients row), clean up; else block
-      const { data: existingUsers } = await admin.auth.admin.listUsers();
-      const authDup = existingUsers?.users?.find((u) => u.email?.toLowerCase() === email.toLowerCase());
-      if (authDup) {
-        const { data: linkedPatient } = await admin.from("patients").select("id").eq("user_id", authDup.id).maybeSingle();
-        if (linkedPatient) {
-          return new Response(JSON.stringify({ error: "A patient with this email is already registered. Try a new one." }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        }
-        // Orphaned auth user — delete it so we can recreate cleanly
-        await admin.auth.admin.deleteUser(authDup.id);
       }
     }
 
