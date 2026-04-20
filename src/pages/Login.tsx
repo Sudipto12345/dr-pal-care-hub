@@ -8,7 +8,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 
 const Login = () => {
   const [mode, setMode] = useState<"email" | "id">("email");
@@ -111,21 +110,16 @@ const Login = () => {
             className="w-full mb-3 rounded-xl gap-2"
             onClick={async () => {
               setLoading(true);
-              const result = await lovable.auth.signInWithOAuth("google", {
-                redirect_uri: window.location.origin + "/patient/dashboard",
+              const { error } = await supabase.auth.signInWithOAuth({
+                provider: "google",
+                options: {
+                  redirectTo: window.location.origin + "/patient/dashboard",
+                },
               });
-              if (result.error) {
-                toast({ title: "Google sign-in failed", description: (result.error as any).message || "Try again", variant: "destructive" });
+              if (error) {
+                toast({ title: "Google sign-in failed", description: error.message, variant: "destructive" });
                 setLoading(false);
-                return;
               }
-              if (result.redirected) return;
-              const { data: { user: u } } = await supabase.auth.getUser();
-              if (u) {
-                const { data: r } = await supabase.from("user_roles").select("role").eq("user_id", u.id).maybeSingle();
-                navigate(r?.role === "admin" ? "/admin/dashboard" : "/patient/dashboard");
-              }
-              setLoading(false);
             }}
             disabled={loading}
           >
