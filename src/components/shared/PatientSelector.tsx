@@ -85,7 +85,14 @@ const PatientSelector = ({ value, onChange, error }: PatientSelectorProps) => {
       <div className="p-2 border-b border-border">
         <div className="relative">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name or phone..." className="pl-8 h-9 rounded-lg border-muted text-sm" autoFocus onMouseDown={(e) => e.stopPropagation()} />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name or phone..."
+            className="pl-8 h-9 rounded-lg border-muted text-sm"
+            ref={(el) => { el?.focus({ preventScroll: true }); }}
+            onMouseDown={(e) => e.stopPropagation()}
+          />
         </div>
       </div>
       <div className="max-h-48 overflow-y-auto">
