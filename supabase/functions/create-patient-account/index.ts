@@ -15,6 +15,19 @@ const bodySchema = z.object({
   email: z.string().trim().email("Invalid email address").max(255, "Email is too long").optional().nullable().or(z.literal("")),
 });
 
+const normalizeGender = (value?: string | null) => {
+  if (!value) return null;
+
+  const normalized = value.trim().toLowerCase();
+  if (!normalized) return null;
+
+  if (["male", "m"].includes(normalized)) return "Male";
+  if (["female", "f"].includes(normalized)) return "Female";
+  if (["other", "others", "non-binary", "non binary", "nonbinary"].includes(normalized)) return "Other";
+
+  return null;
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -47,10 +60,7 @@ Deno.serve(async (req) => {
     const name = parsed.data.name;
     const phone = parsed.data.phone?.trim() || null;
     const age = parsed.data.age ?? null;
-    const rawGender = parsed.data.gender?.trim().toLowerCase();
-    const gender = rawGender
-      ? rawGender === "male" ? "Male" : rawGender === "female" ? "Female" : rawGender === "other" ? "Other" : null
-      : null;
+    const gender = normalizeGender(parsed.data.gender);
     const address = parsed.data.address?.trim() || null;
     const email = parsed.data.email?.trim().toLowerCase() || null;
 

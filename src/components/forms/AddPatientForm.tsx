@@ -157,9 +157,9 @@ const AddPatientForm = ({ trigger, onCreated }: { trigger?: React.ReactNode; onC
                   <Label>Gender</Label>
                   <select value={form.gender} onChange={(e) => set("gender", e.target.value)} className="mt-1 w-full h-10 rounded-xl border border-input bg-background px-3 text-sm">
                     <option value="">Select</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
               </div>
