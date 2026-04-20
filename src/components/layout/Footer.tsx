@@ -71,8 +71,12 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="border-t border-background/10 mt-10 pt-6 text-center text-xs text-background/50">
-          © {new Date().getFullYear()} Dr. Amit Kumar Pal. {t.footer.allRightsReserved}
+        <div className="border-t border-background/10 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-background/50">
+          <span>© {new Date().getFullYear()} Dr. Amit Kumar Pal. {t.footer.allRightsReserved}</span>
+          <div className="flex items-center gap-4">
+            <Link to="/privacy-policy" className="hover:text-background transition-colors">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="hover:text-background transition-colors">Terms of Service</Link>
+          </div>
         </div>
       </div>
     </footer>
