@@ -34,6 +34,22 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: "Name is required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
+    // Duplicate phone check
+    if (phone) {
+      const { data: phoneDup } = await admin.from("patients").select("id").eq("phone", phone).maybeSingle();
+      if (phoneDup) {
+        return new Response(JSON.stringify({ error: "A patient with this phone number already exists. Try a new one." }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+    }
+
+    // Duplicate email check
+    if (email) {
+      const { data: emailDup } = await admin.from("patients").select("id").eq("email", email).maybeSingle();
+      if (emailDup) {
+        return new Response(JSON.stringify({ error: "A patient with this email already exists. Try a new one." }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+    }
+
     // Generate 5-digit patient code
     const { data: codeData, error: codeErr } = await admin.rpc("generate_patient_code");
     if (codeErr || !codeData) throw new Error(codeErr?.message ?? "Failed to generate code");

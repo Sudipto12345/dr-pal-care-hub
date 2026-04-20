@@ -49,6 +49,15 @@ const AddPatientForm = ({ trigger, onCreated }: { trigger?: React.ReactNode; onC
           setCredentials({ patient_code: data.patient_code, passcode: data.passcode, name: form.name });
           if (data?.patient?.id) onCreated?.({ id: data.patient.id, name: data.patient.name });
         },
+        onError: (err: any) => {
+          const msg: string = err?.message || "";
+          const lower = msg.toLowerCase();
+          if (lower.includes("phone")) {
+            setErrors((prev) => ({ ...prev, phone: "Already exists. Try a new one." }));
+          } else if (lower.includes("email")) {
+            setErrors((prev) => ({ ...prev, email: "Already exists. Try a new one." }));
+          }
+        },
       }
     );
   };

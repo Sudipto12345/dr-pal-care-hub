@@ -30,7 +30,21 @@ export const useCreatePatient = () => {
   return useMutation({
     mutationFn: async (patient: { name: string; phone?: string; age?: number; gender?: string; address?: string; email?: string }) => {
       const { data, error } = await supabase.functions.invoke("create-patient-account", { body: patient });
-      if (error) throw error;
+      // Edge function non-2xx: error is FunctionsHttpError; try to read the response body for a friendly message
+      if (error) {
+        let msg = error.message || "Failed to create patient";
+        try {
+          const ctx: any = (error as any).context;
+          if (ctx && typeof ctx.json === "function") {
+            const body = await ctx.json();
+            if (body?.error) msg = body.error;
+          } else if (ctx && typeof ctx.text === "function") {
+            const t = await ctx.text();
+            try { const j = JSON.parse(t); if (j?.error) msg = j.error; } catch { if (t) msg = t; }
+          }
+        } catch { /* ignore */ }
+        throw new Error(msg);
+      }
       if ((data as any)?.error) throw new Error((data as any).error);
       return data as { patient: any; patient_code: string; passcode: string };
     },
