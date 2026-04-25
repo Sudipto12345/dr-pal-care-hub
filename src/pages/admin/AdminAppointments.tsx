@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import PageHeader from "@/components/shared/PageHeader";
 import DataTable from "@/components/shared/DataTable";
 import StatusBadge from "@/components/shared/StatusBadge";
@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const AdminAppointments = () => {
   const { data: appointments, isLoading } = useAppointments();
@@ -23,6 +24,23 @@ const AdminAppointments = () => {
   const [editTime, setEditTime] = useState("");
   const [editNotes, setEditNotes] = useState("");
   const [editStatus, setEditStatus] = useState("");
+  const [statusTab, setStatusTab] = useState<"all" | "pending" | "confirmed" | "cancelled">("all");
+
+  const counts = useMemo(() => {
+    const list = appointments || [];
+    return {
+      all: list.length,
+      pending: list.filter((a: any) => a.status === "pending").length,
+      confirmed: list.filter((a: any) => a.status === "confirmed").length,
+      cancelled: list.filter((a: any) => a.status === "cancelled").length,
+    };
+  }, [appointments]);
+
+  const filteredAppts = useMemo(() => {
+    const list = appointments || [];
+    return statusTab === "all" ? list : list.filter((a: any) => a.status === statusTab);
+  }, [appointments, statusTab]);
+
 
   const openEdit = (a: any) => {
     setEditAppt(a);
@@ -48,12 +66,21 @@ const AdminAppointments = () => {
   return (
     <div className="space-y-0 animate-fade-in">
       <PageHeader title="Appointments" description="Manage all patient appointments" />
+
+      <div className="px-4 md:px-6 pt-4">
+        <Tabs value={statusTab} onValueChange={(v) => setStatusTab(v as any)}>
+          <TabsList className="rounded-xl">
+            <TabsTrigger value="all" className="rounded-lg">All <span className="ml-1.5 text-xs opacity-70">({counts.all})</span></TabsTrigger>
+            <TabsTrigger value="pending" className="rounded-lg">Pending <span className="ml-1.5 text-xs opacity-70">({counts.pending})</span></TabsTrigger>
+            <TabsTrigger value="confirmed" className="rounded-lg">Confirmed <span className="ml-1.5 text-xs opacity-70">({counts.confirmed})</span></TabsTrigger>
+            <TabsTrigger value="cancelled" className="rounded-lg">Cancelled <span className="ml-1.5 text-xs opacity-70">({counts.cancelled})</span></TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
       <DataTable
-        data={appointments || []}
+        data={filteredAppts}
         searchPlaceholder="Search by patient name..."
-        filterColumn="status"
-        filterOptions={["confirmed", "pending", "cancelled"]}
-        filterLabel="Status"
         columns={[
           { header: "Patient", accessor: (row: any) => row.patients?.name || "Unknown" },
           { header: "Date", accessor: "date" },
