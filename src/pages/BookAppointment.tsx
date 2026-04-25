@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import PageHero from "@/components/shared/PageHero";
 import heroAppointment from "@/assets/hero-appointment.jpg";
+import { supabase } from "@/integrations/supabase/client";
 
 const timeSlots = [
   "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
@@ -30,6 +31,7 @@ const BookAppointment = () => {
   const { toast } = useToast();
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const [consultType, setConsultType] = useState("");
   const [date, setDate] = useState<Date>();
@@ -43,9 +45,29 @@ const BookAppointment = () => {
     return true;
   };
 
-  const handleSubmit = () => {
-    setSubmitted(true);
-    toast({ title: "Appointment Booked!", description: `Your ${consultType} appointment is confirmed for ${date ? format(date, "PPP") : ""} at ${time}.` });
+  const handleSubmit = async () => {
+    if (!date) return;
+    setSubmitting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("book-public-appointment", {
+        body: {
+          name: form.name,
+          phone: form.phone,
+          email: form.email || null,
+          concern: form.concern || null,
+          date: format(date, "yyyy-MM-dd"),
+          time,
+          type: consultTypes.find((c) => c.value === consultType)?.label || consultType,
+        },
+      });
+      if (error || (data as any)?.error) throw new Error((data as any)?.error || error?.message);
+      setSubmitted(true);
+      toast({ title: "Appointment Booked!", description: `Confirmed for ${format(date, "PPP")} at ${time}.` });
+    } catch (e: any) {
+      toast({ title: "Booking failed", description: e?.message || "Please try again.", variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -226,8 +248,8 @@ const BookAppointment = () => {
                 Next <ArrowRight className="w-4 h-4" />
               </Button>
             ) : (
-              <Button onClick={handleSubmit} className="gradient-primary text-primary-foreground rounded-xl gap-1.5">
-                <CheckCircle className="w-4 h-4" /> Confirm Booking
+              <Button onClick={handleSubmit} disabled={submitting} className="gradient-primary text-primary-foreground rounded-xl gap-1.5">
+                <CheckCircle className="w-4 h-4" /> {submitting ? "Booking..." : "Confirm Booking"}
               </Button>
             )}
           </div>
