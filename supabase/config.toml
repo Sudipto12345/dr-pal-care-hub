@@ -1,1 +1,4 @@
 project_id = "zepyisnbnaynqcythiqh"
+
+[functions.book-public-appointment]
+verify_jwt = false
