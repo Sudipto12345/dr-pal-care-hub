@@ -18,7 +18,7 @@ const Shop = () => {
   const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("newest");
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [priceRange, setPriceRange] = useState([0, 10000]);
   const [showFilters, setShowFilters] = useState(false);
   const [stockOnly, setStockOnly] = useState(false);
   const { addItem, totalItems, setIsOpen } = useCart();
@@ -64,7 +64,7 @@ const Shop = () => {
       </div>
       <div>
         <h4 className="font-heading font-semibold text-sm text-foreground mb-3">{t.shop.priceRange}</h4>
-        <Slider min={0} max={1000} step={50} value={priceRange} onValueChange={setPriceRange} className="mb-2" />
+        <Slider min={0} max={10000} step={50} value={priceRange} onValueChange={setPriceRange} className="mb-2" />
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>৳{priceRange[0]}</span>
           <span>৳{priceRange[1]}</span>
