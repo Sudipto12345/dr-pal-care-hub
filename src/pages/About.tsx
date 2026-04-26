@@ -53,7 +53,7 @@ const About = () => {
             <div className="space-y-8">
               <div>
                 <h3 className="font-heading font-bold text-2xl text-foreground mb-3">{t.about.aboutMe}</h3>
-                <p className="text-muted-foreground text-[15px] leading-[1.8]">{t.about.bio}</p>
+                <div className="text-muted-foreground text-[15px] leading-[1.8] space-y-4 whitespace-pre-line">{t.about.bio}</div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
