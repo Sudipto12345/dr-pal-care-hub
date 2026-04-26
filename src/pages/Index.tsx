@@ -453,18 +453,25 @@ const Index = () => {
             </Button>
           </div>
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-            {blogs.map((b) => (
-              <Card key={b.title} className="group overflow-hidden border-border/40 rounded-3xl hover-lift hover-glow bg-card shadow-soft">
-                <div className="aspect-[16/10] overflow-hidden">
-                  <img src={b.img} alt={b.title} loading="lazy" width={768} height={512} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                </div>
-                <CardContent className="p-5">
-                  <p className="text-[11px] text-primary font-medium mb-2 uppercase tracking-wider">{b.date}</p>
-                  <h3 className="font-heading font-semibold text-foreground mb-2 leading-snug">{b.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{b.excerpt}</p>
-                </CardContent>
-              </Card>
-            ))}
+            {blogs.map((b) => {
+              const CardInner = (
+                <Card className="group overflow-hidden border-border/40 rounded-3xl hover-lift hover-glow bg-card shadow-soft h-full">
+                  <div className="aspect-[16/10] overflow-hidden">
+                    <img src={b.img} alt={b.title} loading="lazy" width={768} height={512} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  </div>
+                  <CardContent className="p-5">
+                    <p className="text-[11px] text-primary font-medium mb-2 uppercase tracking-wider">{b.date}</p>
+                    <h3 className="font-heading font-semibold text-foreground mb-2 leading-snug group-hover:text-primary transition-colors">{b.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{b.excerpt}</p>
+                  </CardContent>
+                </Card>
+              );
+              return b.slug ? (
+                <Link key={b.title} to={`/blog/${b.slug}`} className="block">{CardInner}</Link>
+              ) : (
+                <div key={b.title}>{CardInner}</div>
+              );
+            })}
           </div>
         </div>
       </section>
