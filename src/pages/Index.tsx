@@ -9,6 +9,7 @@ import {
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useTestimonials } from "@/hooks/useTestimonials";
 import { useYoutubeVideos } from "@/hooks/useYoutubeVideos";
+import { useBlogPosts } from "@/hooks/useSupabaseData";
 
 import drAmitPal from "@/assets/dr-amit-pal.jpg";
 import doctorHero from "@/assets/doctor-hero.png";
@@ -44,6 +45,7 @@ const Index = () => {
   const { t } = useLanguage();
   const { data: dbTestimonials } = useTestimonials(true);
   const { data: youtubeVideos } = useYoutubeVideos(true);
+  const { data: dbBlogPosts } = useBlogPosts(true);
 
   const highlights = [
     { icon: Leaf, title: t.highlights.holisticHealing, desc: t.highlights.holisticDesc },
@@ -64,11 +66,22 @@ const Index = () => {
     { name: "Anita Desai", location: "Mumbai", text: "The holistic approach and genuine caring nature of Dr. Pal is truly commendable.", rating: 5 },
   ];
 
-  const blogs = [
-    { img: blogHealthy, title: "5 Daily Habits for Natural Immunity", date: "March 15, 2025", excerpt: "Simple lifestyle changes that boost your body's natural defenses." },
-    { img: blogNotes, title: "Understanding Homeopathic Potency", date: "March 8, 2025", excerpt: "A guide to how potency works and why it matters for treatment." },
-    { img: blogNatural, title: "Herbs That Heal: A Complete Guide", date: "Feb 28, 2025", excerpt: "Discover medicinal properties of common herbs used in homeopathy." },
+  const fallbackBlogs = [
+    { img: blogHealthy, title: "5 Daily Habits for Natural Immunity", date: "March 15, 2025", excerpt: "Simple lifestyle changes that boost your body's natural defenses.", slug: null as string | null },
+    { img: blogNotes, title: "Understanding Homeopathic Potency", date: "March 8, 2025", excerpt: "A guide to how potency works and why it matters for treatment.", slug: null as string | null },
+    { img: blogNatural, title: "Herbs That Heal: A Complete Guide", date: "Feb 28, 2025", excerpt: "Discover medicinal properties of common herbs used in homeopathy.", slug: null as string | null },
   ];
+
+  const fallbackImgs = [blogHealthy, blogNotes, blogNatural];
+  const blogs = dbBlogPosts?.length
+    ? dbBlogPosts.slice(0, 3).map((p: any, i: number) => ({
+        img: p.image_url || fallbackImgs[i % fallbackImgs.length],
+        title: p.title,
+        date: new Date(p.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
+        excerpt: p.excerpt || "",
+        slug: p.slug || p.id,
+      }))
+    : fallbackBlogs;
 
   return (
     <div className="overflow-x-hidden">
