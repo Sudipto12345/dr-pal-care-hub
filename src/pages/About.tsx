@@ -1,4 +1,4 @@
-import { Award, GraduationCap, Users, Clock, Globe, Building2, Stethoscope, MapPin, CheckCircle } from "lucide-react";
+import { Award, GraduationCap, Users, Clock, Globe, Building2, Stethoscope, MapPin, CheckCircle, Camera } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -6,6 +6,17 @@ import doctorProfile from "@/assets/dr-amit-pal.jpg";
 import { useLanguage } from "@/i18n/LanguageContext";
 import PageHero from "@/components/shared/PageHero";
 import heroServices from "@/assets/hero-services.jpg";
+import galleryAward1 from "@/assets/gallery/award-ceremony-1.jpg";
+import galleryAward2 from "@/assets/gallery/award-ceremony-2.jpg";
+import galleryWomensDay from "@/assets/gallery/womens-day-event.jpg";
+import galleryIntlPatient from "@/assets/gallery/international-patient.jpg";
+
+const galleryImages = [
+  { src: galleryAward1, caption: "Recognition Ceremony — Bangladesh" },
+  { src: galleryAward2, caption: "Honored at Paschimbanga Bangla Akademi, Kolkata" },
+  { src: galleryWomensDay, caption: "International Women's Day — Kolkata" },
+  { src: galleryIntlPatient, caption: "With an International Patient" },
+];
 
 const About = () => {
   const { t } = useLanguage();
@@ -117,6 +128,38 @@ const About = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── GALLERY ─── */}
+      <section className="py-14 md:py-20 bg-accent/30 border-t border-border/40">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <span className="inline-flex items-center gap-1.5 text-secondary font-medium text-sm mb-3">
+              <Camera className="w-4 h-4" /> Gallery
+            </span>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-3">Moments & Recognition</h2>
+            <p className="text-muted-foreground max-w-md mx-auto text-sm md:text-base">
+              Glimpses from awards, events and patient interactions across Bangladesh and India.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+            {galleryImages.map((img) => (
+              <figure key={img.src} className="group relative overflow-hidden rounded-2xl shadow-soft border border-border/40 bg-card hover-lift">
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img
+                    src={img.src}
+                    alt={img.caption}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
+                <figcaption className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/75 via-black/35 to-transparent text-white text-xs font-medium">
+                  {img.caption}
+                </figcaption>
+              </figure>
+            ))}
           </div>
         </div>
       </section>
