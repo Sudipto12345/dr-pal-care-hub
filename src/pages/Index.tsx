@@ -14,7 +14,7 @@ import drAmitPal from "@/assets/dr-amit-pal.jpg";
 import doctorHero from "@/assets/doctor-hero.png";
 import doctorProfileImg from "@/assets/doctor-profile.png";
 import aboutDoctor from "@/assets/about-doctor.jpg";
-import ctaBackground from "@/assets/cta-doctor-red.jpg";
+import ctaBackground from "@/assets/doctor-cta.jpg";
 import featureConsultation from "@/assets/feature-consultation.jpg";
 import featureMedicine from "@/assets/feature-medicine.jpg";
 import featureOnline from "@/assets/feature-online.jpg";
